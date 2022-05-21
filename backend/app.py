@@ -38,7 +38,6 @@ def lees_knop(pin):
 
 
 
-
 # Code voor Flask
 
 app = Flask(__name__)
