@@ -251,7 +251,7 @@ a:focus {
     margin-right: auto;
     width: 100%;
     max-width: 56.4em; /* 56.4 * 20px = 1128px */
-    margin-bottom: 48px 0px;
+    margin-bottom: 48px 0;
 }
 
 /*
@@ -262,6 +262,7 @@ a:focus {
 
 .o-section {
     display: flow-root; /* New solution! Fixes margin collapsing */
+    padding-top: 48px;
 }
 
 .o-section + .o-section {
@@ -294,6 +295,7 @@ a:focus {
     display: -ms-flexbox;
     display: flex;
     flex-wrap: wrap;
+    margin-top:48px 0;
 }
 
     .o-layout__item {
@@ -442,6 +444,9 @@ a:focus {
   #COMPONENTS
 \*------------------------------------*/
 
+.c-waarde{
+    padding-bottom: 12px;
+}
 
 /*
     Component: Logo
@@ -630,7 +635,7 @@ a:focus {
 .c-nav__link--meta,
 .c-nav__link--meta:visited,
 .c-nav__link--meta:active {
-    color: #6C6C75;
+    color: #1d263b;
 }
 
 .is-selected .c-nav__link,

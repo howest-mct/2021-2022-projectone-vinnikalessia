@@ -21,6 +21,7 @@ class DataRepository:
         params = [id]
         return Database.get_one_row(sql, params)
 
+    # geen update nodig hiervoor
     # @staticmethod
     # def update_status_lamp(id, status):
     #     sql = "UPDATE lampen SET status = %s WHERE id = %s"
