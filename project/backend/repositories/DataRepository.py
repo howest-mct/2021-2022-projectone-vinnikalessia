@@ -11,13 +11,24 @@ class DataRepository:
         return gegevens
 
     @staticmethod
-    def read_status_devices():
+    def read_devices():
         sql = "SELECT * from device"
         return Database.get_rows(sql)
 
     @staticmethod
-    def read_status_device_by_id(id):
-        sql = "SELECT * from device WHERE id = %s"
+    def read_device_by_id(id):
+        sql = "SELECT * from device WHERE deviceid = %s"
+        params = [id]
+        return Database.get_one_row(sql, params)
+
+    @staticmethod
+    def read_alle_spelers():
+        sql = "SELECT * from player"
+        return Database.get_rows(sql)
+    
+    @staticmethod
+    def read_speler_by_id(id):
+        sql = "SELECT * from player WHERE playerid = %s"
         params = [id]
         return Database.get_one_row(sql, params)
 

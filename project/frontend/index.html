@@ -6,19 +6,7 @@
     <title>OXO-Cube</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" media="screen" href="style/screen.css">
-    <script>
-        document.addEventListener("DOMContentLoaded", function(){
-            toggleNav();
-        })
-        function toggleNav(){
-            let toggleTrigger = document.querySelectorAll(".js-toggle-nav");
-            for (let i = 0; i < toggleTrigger.length; i++) {
-                toggleTrigger[i].addEventListener("click", function () {
-                    document.querySelector("body").classList.toggle("has-mobile-nav");
-                })
-            }
-        }
-    </script>
+    <script src="script/app.js"></script>
 </head>
 <body>
     <div class="c-page">

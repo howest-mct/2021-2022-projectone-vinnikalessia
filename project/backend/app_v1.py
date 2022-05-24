@@ -1,6 +1,5 @@
 from repositories.DataRepository import DataRepository
 from flask_socketio import SocketIO, emit, send
-from helpers.klasseknop import Button
 from flask import Flask, jsonify
 from selenium import webdriver
 from logging import exception
@@ -10,7 +9,7 @@ import spidev
 import time
 from RPi import GPIO
 
-
+global sw_val, x_val, y_val
 # de joystick
 # deze hangen aan de mcp
 y_as = 0
@@ -51,11 +50,10 @@ def readChannel(channel):
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'geheim!'
-socketio = SocketIO(app, cors_allowed_origins="*", logger=False,
-                    engineio_logger=False, ping_timeout=1)
+socketio = SocketIO(app, cors_allowed_origins = "*", logger = False,
+                    engineio_logger = False, ping_timeout=1)
 
 CORS(app)
-
 
 @socketio.on_error()        # Handles the default namespace
 def error_handler(e):
@@ -67,17 +65,22 @@ def hallo():
 
 ############################################################################################
 
-@socketio.on('connect')
-def initial_connection():
-    print('A new client connect')
-    # # Send to the client!
-    # vraag de status op van de lampen uit de DB
-    status = DataRepository.read_status_lampen()
-    emit('B2F_status_lampen', {'device': status}, broadcast=True)
+# @socketio.on('connect')
+# def initial_connection():
+#     print('A new client connect')
+#     # # Send to the client!
+#     # vraag de status op van de lampen uit de DB
+#     devicenaam = DataRepository.read_devices()
+#     print(f"dit is de devicenaam: {devicenaam}")
+#     emit('B2F_devices', {'device': devicenaam}, broadcast=True)
+
+
+# @socketio.on('F2B_')
 
 try:
     setup()
     while True:
+        # global sw_val, x_val, y_val
         sw_val = readChannel(sw)
         print(f"dit is de sw: {sw_val}")
         x_val = readChannel(x_as)

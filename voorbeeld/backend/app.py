@@ -37,7 +37,6 @@ def lees_knop(pin):
             switch_light({'lamp_id': '3', 'new_status': 1})
 
 
-
 # Code voor Flask
 
 app = Flask(__name__)
