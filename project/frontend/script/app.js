@@ -1,3 +1,5 @@
+'use strict'
+let htmlDevice
 // const lanIP = `${window.location.hostname}:5000`;
 // const socket = io(`http://${lanIP}`);
 
@@ -70,15 +72,31 @@
 // };
 
 // document.addEventListener("DOMContentLoaded", function () {
-  //   console.info("DOM geladen");
-  //   listenToUI();
-  //   listenToSocket();
-  // });
-  
+//   console.info("DOM geladen");
+//   listenToUI();
+//   listenToSocket();
+// });
 
+const showDevices = function(jsonObject){
+  try{
+    console.info(jsonObject)
+  }
+  catch(err){
+    console.error(err)
+  }
+}
+
+const getDevices = function(){
+  const url = 'http://127.0.0.1:5000/project/frontend/';
+  handleData(url, showDevices);
+}
 
 const init = function(){
   console.log('😆')
+  htmlDevice = document.querySelector('.js-joy')
+  if(htmlDevice){
+    getDevices()
+  }
 
 }
 
