@@ -65,13 +65,15 @@ def error_handler(e):
 def hallo():
     return "Server is running, er zijn momenteel geen API endpoints beschikbaar."
 
+############################################################################################
+
 @socketio.on('connect')
 def initial_connection():
     print('A new client connect')
     # # Send to the client!
     # vraag de status op van de lampen uit de DB
     status = DataRepository.read_status_lampen()
-    emit('B2F_status_lampen', {'lampen': status}, broadcast=True)
+    emit('B2F_status_lampen', {'device': status}, broadcast=True)
 
 try:
     setup()
