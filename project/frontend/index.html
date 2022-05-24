@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>OXO-Cube</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" media="screen" href="style/screen.css">
     <script>
         document.addEventListener("DOMContentLoaded", function(){
             toggleNav();
@@ -21,7 +22,7 @@
 </head>
 <body>
     <div class="c-page">
-        <header class="o-row o-row--md o-row--header">
+        <header class="o-row o-row--md o-row--header c-page__header">
             <div class="o-container">
                 <div class="c-header">
                     <div class="c-header__logo">
@@ -33,15 +34,43 @@
                     <div class="c-header__nav c-header__nav--main">
                         <nav class="c-nav">
                             <ul class="o-list c-nav__list">
-                                <li class="c-nav__item is-selected"><a href="#!" class="c-nav__link">Over OXO-Cube</a></li>
+                                <li class="c-nav__item"><a href="#!" class="c-nav__link">Over OXO-Cube</a></li>
                                 <li class="c-nav__item"><a href="#!" class="c-nav__link">Jouw prestaties</a></li>
-                                <li class="c-nav__item"><a href="#!" class="c-nav__link">Contacten</a></li>
+                                <li class="c-nav__item"><a href="#!" class="c-nav__link">Live</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                    <div class="c-header__nav">
+                        <nav class="c-nav c-nav--meta">
+                            <ul class="o-list c-nav__list">
+                                <li class="c-nav__item"><a href="#!" class="c-nav__link c-nav__link--meta">Spelregels</a></li>
+                                <li class="c-nav__item"><a href="#!" class="c-nav__link c-nav__link--meta">Contacten</a>
+                                </li>
                             </ul>
                         </nav>
                     </div>
                 </div>
             </div>
         </header>
+        <section class="o-row o-row--lg u-pt-clear">
+            <div class="o-container">
+                <div class="o-section o-section--lg">
+                    <div class="o-layout o-layout--gutter-lg">
+                        <div class="o-layout__item u-1-of-2-bp3">
+                            <div class="c-joystick_x">
+                                waarden x-as: 123
+                            </div>
+                            <div class="c-joystick_y">
+                                waarden y-as: 321
+                            </div>
+                            <div class="c-joystick_sw">
+                                hoeveel keer er op de knop is gedrukt: 2
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
     </div>
 </body>
 </html>
