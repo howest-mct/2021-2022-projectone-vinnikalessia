@@ -1,7 +1,5 @@
-'use strict'
-let htmlDevice
-// const lanIP = `${window.location.hostname}:5000`;
-// const socket = io(`http://${lanIP}`);
+const lanIP = `${window.location.hostname}:5000`;
+const socket = io(`http://${lanIP}`);
 
 // const clearClassList = function (el) {
 //   el.classList.remove("c-room--wait");
@@ -77,27 +75,42 @@ let htmlDevice
 //   listenToSocket();
 // });
 
-const showDevices = function(jsonObject){
-  try{
-    console.info(jsonObject)
-  }
-  catch(err){
-    console.error(err)
-  }
-}
 
-const getDevices = function(){
-  const url = 'http://127.0.0.1:5000/project/frontend/';
-  handleData(url, showDevices);
-}
 
-const init = function(){
-  console.log('😆')
-  htmlDevice = document.querySelector('.js-devices')
-  if(htmlDevice){
-    getDevices()
-  }
-}
+const listenToSocket = function () {
+  socket.on("connected", function () {
+    console.log("verbonden met socket webserver");
+  });
 
-document.addEventListener('DOMContentLoaded', init);
+  socket.on("B2F_devices", function (jsonObject) {
+    console.log("Dit zijn alle devices");
+    console.log("Dit zijn hun namen");
+    console.log(jsonObject);
+  });
+
+  // socket.on("B2F_verandering_lamp", function (jsonObject) {
+  //   console.log("Er is een status van een lamp veranderd");
+  //   console.log(jsonObject.lamp.id);
+  //   console.log(jsonObject.lamp.status);
+
+  //   const room = document.querySelector(`.js-room[data-idlamp="${jsonObject.lamp.id}"]`);
+  //   if (room) {
+  //     const knop = room.querySelector(".js-power-btn"); //spreek de room, als start. Zodat je enkel knop krijgt die in de room staat
+  //     knop.dataset.statuslamp = jsonObject.lamp.status;
+
+  //     clearClassList(room);
+  //     if (jsonObject.lamp.status == 1) {
+  //       room.classList.add("c-room--on");
+  //     }
+  //   }
+  // });
+  // socket.on("B2F_verandering_lamp_from_HRDWR", function (jsonObject) {
+  //   console.log(jsonObject)
+  // }) 
+};
+
+document.addEventListener('DOMContentLoaded', function(){
+  console.info("Hallo! 😃")
+  listenToSocket()
+});
 

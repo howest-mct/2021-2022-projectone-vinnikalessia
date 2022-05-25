@@ -67,34 +67,51 @@ def hallo():
 
 ############################################################################################
 
-# @socketio.on('connect')
-# def initial_connection():
-#     print('A new client connect')
-#     # # Send to the client!
-#     # vraag de status op van de lampen uit de DB
-#     devicenaam = DataRepository.read_devices()
-#     print(f"dit is de devicenaam: {devicenaam}")
-#     emit('B2F_devices', {'device': devicenaam}, broadcast=True)
+@socketio.on('connect')
+def initial_connection():
+    print('A new client connect')
+    devicenaam = DataRepository.read_devices()
+    emit('B2F_devices', {'device': devicenaam}, broadcast=True)
 
 
 # @socketio.on('F2B_')
 
-try:
-    setup()
-    while True:
-        # global sw_val, x_val, y_val
-        sw_val = readChannel(sw)
-        print(f"dit is de sw: {sw_val}")
-        x_val = readChannel(x_as)
-        print(f"dit is de x: {x_val}")
-        y_val = readChannel(y_as)
-        print(f"dit is de y: {y_val}\n")
-        time.sleep(0.5)
-except Exception as e:
-    print(e)
-finally:
-    print("cleanup pi")
-    spi.close()
-    GPIO.cleanup
+# try:
+#     setup()
+#     while True:
+#         # global sw_val, x_val, y_val
+#         sw_val = readChannel(sw)
+#         print(f"dit is de sw: {sw_val}")
+#         x_val = readChannel(x_as)
+#         print(f"dit is de x: {x_val}")
+#         y_val = readChannel(y_as)
+#         print(f"dit is de y: {y_val}\n")
+#         time.sleep(0.5)
+# except KeyboardInterrupt:
+#     print("keyboardinterrupt")
+# finally:
+#     print("cleanup pi")
+#     spi.close()
+#     GPIO.cleanup()
+
+# START een thread op. Belangrijk!!! Debugging moet UIT staan op start van de server, anders start de thread dubbel op
+# werk enkel met de packages gevent en gevent-websocket.
 
 
+def start_thread():
+    print("**** Starting THREAD ****")
+    thread = threading.Thread(target = all_out, args=(), daemon=True)
+    thread.start()
+
+
+if __name__ == '__main__':
+    try:
+        setup()
+        start_thread()
+        start_chrome_thread()
+        print("**** Starting APP ****")
+        socketio.run(app, debug=False, host='0.0.0.0')
+    except KeyboardInterrupt:
+        print ('KeyboardInterrupt exception is caught')
+    finally:
+        GPIO.cleanup()
