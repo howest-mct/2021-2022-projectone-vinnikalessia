@@ -120,7 +120,7 @@ def waarden():
         nieuw_id = DataRepository.create_historiek(
             gegevens['actiedatum'], gegevens['actieid'], gegevens['commentaar'], gegevens['deviceid'], gegevens['waarde']
         )
-        return jsonify(volgnummer = nieuw_id), 201
+        return jsonify(volgnummer = nieuw_id)
 
 ############################################################################################
 
