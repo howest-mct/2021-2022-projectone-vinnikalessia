@@ -1,3 +1,4 @@
+##################### IMPORT #####################
 from repositories.DataRepository import DataRepository
 from flask_socketio import SocketIO, emit, send
 from flask import Flask, jsonify
@@ -9,28 +10,31 @@ import spidev
 import time
 from RPi import GPIO
 
+##################### GLOBALE VARIABELEN #####################
 global sw_val, x_val, y_val
-# de joystick
+
+########### JOYSTICK ###########
 # deze hangen aan de mcp
 y_as = 0
 x_as = 1
-
-
-# de sw van de joystick
+# de sw van de joystick aan de rpi
 sw = 5
-
 # teller aantal keer sw ingedrukt
 teller = 0
 
-# de spi
+##################### BUSSEN #####################
+# de spi-bus
 spi = spidev.SpiDev()
 spi.open(0,0)
 spi.max_speed_hz = 10 ** 5
 
+##################### SETUP #####################
 def setup():
     print("setup")
     GPIO.setwarnings(False)
     GPIO.setmode(GPIO.BCM)
+
+    # de joystick
     GPIO.setup(sw, GPIO.IN, GPIO.PUD_UP)
     GPIO.add_event_detect(sw, GPIO.FALLING, callback_knop, bouncetime = 100)
 
@@ -40,14 +44,12 @@ def callback_knop(pin):
     teller += 1
     print("Button pressed {0}\n".format(teller))
 
-
 def readChannel(channel):
     val = spi.xfer2([1,(8+channel)<<4,0])
     data = ((val[1] << 8) + val[2])
     return data
 
-# Code voor Flask
-
+##################### FLASK #####################
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'geheim!'
 socketio = SocketIO(app, cors_allowed_origins = "*", logger = False,

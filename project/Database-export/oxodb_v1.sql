@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 8.0.28, for Win64 (x86_64)
 --
--- Host: 127.0.0.1    Database: oxodb_v1
+-- Host: 127.0.0.1    Database: oxodb_v2
 -- ------------------------------------------------------
 -- Server version	8.0.28
 
@@ -77,7 +77,7 @@ CREATE TABLE `historiek` (
   `volgnummer` int NOT NULL AUTO_INCREMENT,
   `deviceid` int DEFAULT NULL,
   `actieid` int DEFAULT NULL,
-  `waarde` int DEFAULT NULL,
+  `waarde` float DEFAULT NULL,
   `commentaar` varchar(145) DEFAULT 'null',
   `actiedatum` datetime DEFAULT NULL,
   PRIMARY KEY (`volgnummer`),
@@ -166,4 +166,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-05-23 20:40:25
+-- Dump completed on 2022-05-25 10:02:13

@@ -93,11 +93,10 @@ const getDevices = function(){
 
 const init = function(){
   console.log('😆')
-  htmlDevice = document.querySelector('.js-joy')
+  htmlDevice = document.querySelector('.js-devices')
   if(htmlDevice){
     getDevices()
   }
-
 }
 
 document.addEventListener('DOMContentLoaded', init);
