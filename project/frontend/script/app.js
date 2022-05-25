@@ -1,118 +1,85 @@
 "use strict";
-const lanIP = `${window.location.hostname}:5000`;
-// const socket = io(`http://${lanIP}`);
 
-// const clearClassList = function (el) {
-//   el.classList.remove("c-room--wait");
-//   el.classList.remove("c-room--on");
-// };
+// #region ***  DOM references                           ***********
+let htmlDevice, htmlJoystick, htmlWaarden
+// #endregion
 
-// const listenToUI = function () {
-//   const knoppen = document.querySelectorAll(".js-power-btn");
-//   for (const knop of knoppen) {
-//     knop.addEventListener("click", function () {
-//       const id = this.dataset.idlamp;
-//       let nieuweStatus;
-//       if (this.dataset.statuslamp == 0) {
-//         nieuweStatus = 1;
-//       } else {
-//         nieuweStatus = 0;
-//       }
-//       //const statusOmgekeerd = !status;
-//       clearClassList(document.querySelector(`.js-room[data-idlamp="${id}"]`));
-//       document.querySelector(`.js-room[data-idlamp="${id}"]`).classList.add("c-room--wait");
-//       socket.emit("F2B_switch_light", { lamp_id: id, new_status: nieuweStatus });
-//     });
+// #region ***  Callback-Visualisation - show___         ***********
+// const showDevices = function(jsonObject){
+//   try{
+//     console.info(jsonObject)
+//     let htmlstring = '';
+//     for(const device of jsonObject.devices){
+//       htmlstring += `<div class="o-layout__item u-1-of-2-bp3 js-${device.devicenaam}">
+//       <h2>${device.devicenaam}:</h2>
+//       <div class="c-waarde">
+//           waarden x-as: 123
+//       </div>
+//       <div class="c-waarde">
+//           waarden y-as: 321
+//       </div>
+//       <div class="c-waarde">
+//           hoeveel keer er op de knop is gedrukt: 2
+//       </div>
+//   </div>`;
+//     }
+//     htmlDevice.innerHTML = htmlstring
 //   }
-// };
+//   catch (err){
+//     console.error(err)
+//   }
+// }
 
-// const listenToSocket = function () {
-//   socket.on("connected", function () {
-//     console.log("verbonden met socket webserver");
-//   });
+const showWaarden = function(jsonObject){
+  console.info(jsonObject)
+  let htmlstring = ''
+  for(const waarde of jsonObject.waarden){
+    htmlstring += `<div class="c-waarde js-waarden">
+    waarde: ${waarde.waarde}
+</div>`
+  }
+  htmlWaarden.innerHTML = htmlstring
+}
 
-//   socket.on("B2F_status_lampen", function (jsonObject) {
-//     console.log("alle lampen zijn automatisch uitgezet");
-//     console.log("Dit is de status van de lampen");
-//     console.log(jsonObject);
-//     for (const lamp of jsonObject.lampen) {
-//       const room = document.querySelector(`.js-room[data-idlamp="${lamp.id}"]`);
-//       if (room) {
-//         const knop = room.querySelector(".js-power-btn");
-//         knop.dataset.statuslamp = lamp.status;
-//         clearClassList(room);
-//         if (lamp.status == 1) {
-//           room.classList.add("c-room--on");
-//         }
-//       }
-//     }
-//   });
+// #endregion
 
-//   socket.on("B2F_verandering_lamp", function (jsonObject) {
-//     console.log("Er is een status van een lamp veranderd");
-//     console.log(jsonObject.lamp.id);
-//     console.log(jsonObject.lamp.status);
+// #region ***  Callback-No Visualisation - callback___  ***********
+// #endregion
 
-//     const room = document.querySelector(`.js-room[data-idlamp="${jsonObject.lamp.id}"]`);
-//     if (room) {
-//       const knop = room.querySelector(".js-power-btn"); //spreek de room, als start. Zodat je enkel knop krijgt die in de room staat
-//       knop.dataset.statuslamp = jsonObject.lamp.status;
+// #region ***  Data Access - get___                     ***********
+// const getDevices = function(){
+//   const url = 'http://192.168.168.169:5000/api/v1/devices/'
+//   handleData(url, showDevices)
+// }
 
-//       clearClassList(room);
-//       if (jsonObject.lamp.status == 1) {
-//         room.classList.add("c-room--on");
-//       }
-//     }
-//   });
-//   socket.on("B2F_verandering_lamp_from_HRDWR", function (jsonObject) {
-//     console.log(jsonObject)
-//   }) 
+const getWaarden = function(){
+  const url = 'http://192.168.168.169:5000/api/v1/waarden/'
+  handleData(url, showWaarden)
+}
+// #endregion
 
-// };
+// #region ***  Event Listeners - listenTo___            ***********
+// #endregion
 
-// document.addEventListener("DOMContentLoaded", function () {
-//   console.info("DOM geladen");
-//   listenToUI();
-//   listenToSocket();
-// });
+// #region ***  Init / DOMContentLoaded                  ***********
 
+// #endregion
 
+const init = function(){
+  console.info("😁")
+  htmlJoystick = document.querySelector('.js-joystick')
+  htmlDevice = document.querySelector('.js-devices')
+  htmlWaarden = document.querySelector('.js-waarden')
 
-const listenToSocket = function () {
-  // console.info("listentosocket")
-  // socket.on("connected", function () {
-  //   console.log("verbonden met socket webserver");
-  // });
+  // if (htmlWaarden){
+  //   console.info(htmlWaarden)
+  //   getWaarden()
+  // }
+  getWaarden()
+}
 
-  // socket.on("B2F_devices", function (jsonObject) {
-  //   console.log("Dit zijn alle devices");
-  //   console.log("Dit zijn hun namen");
-  //   console.log(jsonObject);
-  // });
-
-  // socket.on("B2F_verandering_lamp", function (jsonObject) {
-  //   console.log("Er is een status van een lamp veranderd");
-  //   console.log(jsonObject.lamp.id);
-  //   console.log(jsonObject.lamp.status);
-
-  //   const room = document.querySelector(`.js-room[data-idlamp="${jsonObject.lamp.id}"]`);
-  //   if (room) {
-  //     const knop = room.querySelector(".js-power-btn"); //spreek de room, als start. Zodat je enkel knop krijgt die in de room staat
-  //     knop.dataset.statuslamp = jsonObject.lamp.status;
-
-  //     clearClassList(room);
-  //     if (jsonObject.lamp.status == 1) {
-  //       room.classList.add("c-room--on");
-  //     }
-  //   }
-  // });
-  // socket.on("B2F_verandering_lamp_from_HRDWR", function (jsonObject) {
-  //   console.log(jsonObject)
-  // }) 
-};
-
+// document.addEventListener('DOMContentLoaded', init);
 document.addEventListener('DOMContentLoaded', function(){
-  // console.info("Hallo! 😃")
-  // listenToSocket()
+  console.info('DOM geladen')
+  init()
 });
-
