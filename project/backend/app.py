@@ -1,4 +1,5 @@
 ##################### IMPORT #####################
+import json
 from repositories.DataRepository import DataRepository
 from flask_socketio import SocketIO, emit, send
 from flask import Flask, jsonify, request
@@ -61,16 +62,21 @@ CORS(app)
 def error_handler(e):
     print(e)
 
-endpoint = '/api/v1/'
+endpoint = '/api/v1'
 
 @app.route('/')
 def hallo():
     return "Server is running, er zijn momenteel geen API endpoints beschikbaar."
 
-@app.route(endpoint + 'sensors/', methods = ['GET'])
+@app.route(endpoint + '/sensoren/', methods = ['GET'])
 def sensoren():
     if request.method == 'GET':
-        return jsonify(test = "test")
+        data = DataRepository.read_devices()
+        if data is not None:
+            return jsonify(devices = data), 200
+        else:
+            return jsonify(message = "error"), 404
+
 
 
 ############################################################################################
