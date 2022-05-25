@@ -107,6 +107,15 @@ def player(playerID):
         else:
             return jsonify(message = "error"), 404
 
+@app.route(endpoint + '/waarden/', methods = ['GET'])
+def waarden():
+    if request.method == "GET":
+        data = DataRepository.read_alle_waarden()
+        if data is not None:
+            return jsonify(waarden = data), 200
+        else:
+            return jsonify(message = "error"), 404
+
 ############################################################################################
 
 @socketio.on('connect')

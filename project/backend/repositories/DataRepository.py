@@ -31,6 +31,11 @@ class DataRepository:
         sql = "SELECT * from player WHERE playerid = %s"
         params = [id]
         return Database.get_one_row(sql, params)
+    
+    @staticmethod
+    def read_alle_waarden():
+        sql = "SELECT * from historiek"
+        return Database.get_rows(sql)
 
     # geen update nodig hiervoor
     # @staticmethod
