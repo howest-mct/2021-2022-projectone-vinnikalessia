@@ -68,8 +68,8 @@ endpoint = '/api/v1'
 def hallo():
     return "Server is running, er zijn momenteel geen API endpoints beschikbaar."
 
-@app.route(endpoint + '/sensoren/', methods = ['GET'])
-def sensoren():
+@app.route(endpoint + '/devices/', methods = ['GET'])
+def devices():
     if request.method == 'GET':
         data = DataRepository.read_devices()
         if data is not None:
@@ -77,6 +77,15 @@ def sensoren():
         else:
             return jsonify(message = "error"), 404
 
+@app.route(endpoint + '/devices/<deviceID>/', methods = ['GET'])
+def device(deviceID):
+    if request.method == "GET":
+        print(deviceID)
+        data = DataRepository.read_device_by_id(deviceID)
+        if data is not None:
+            return jsonify(device = data), 200
+        else:
+            return jsonify(message = "error"), 404
 
 
 ############################################################################################
