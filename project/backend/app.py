@@ -109,11 +109,11 @@ def player(playerID):
 
 ############################################################################################
 
-# @socketio.on('connect')
-# def initial_connection():
-#     print('A new client connect')
-#     devicenaam = DataRepository.read_devices()
-#     emit('B2F_devices', {'device': devicenaam}, broadcast=True)
+@socketio.on('connect')
+def initial_connection():
+    print('A new client connect')
+    devicenaam = DataRepository.read_devices()
+    emit('B2F_devices', {'device': devicenaam}, broadcast=True)
 
 
 # @socketio.on('F2B_')
