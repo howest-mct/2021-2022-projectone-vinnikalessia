@@ -6,11 +6,7 @@ let htmlDevice, htmlJoystick
 
 // #region ***  Callback-Visualisation - show___         ***********
 const showDevices = function(jsonObject){
-  try{
-    console.info(jsonObject)
-  }catch(err){
-    console.error(err)
-  }
+console.info(jsonObject)
 }
 // #endregion
 
@@ -19,7 +15,7 @@ const showDevices = function(jsonObject){
 
 // #region ***  Data Access - get___                     ***********
 const getDevices = function(){
-  const url = 'http://127.0.0.1:5000/api/v1/devices/'
+  const url = 'http://192.168.168.169:5000/api/v1/devices/'
   handleData(url, showDevices)
 }
 // #endregion
@@ -32,16 +28,19 @@ const getDevices = function(){
 // #endregion
 
 const init = function(){
-  console.info("DOM ingeladen")
   console.info("😁")
-  htmlJoystick = document.querySelector('.js-joystick')
-  htmlDevice = document.querySelector('.js-devices')
+  // htmlJoystick = document.querySelector('.js-joystick')
+  // htmlDevice = document.querySelector('.js-devices')
 
-  if (htmlDevice){
-    console.info(htmlDevice)
-    getDevices()
-  }
+  // if (htmlDevice){
+  //   console.info(htmlDevice)
+  //   getDevices()
+  getDevices()
+  
 }
 
-document.addEventListener('DOMContentLoaded', init);
-
+// document.addEventListener('DOMContentLoaded', init);
+document.addEventListener('DOMContentLoaded', function(){
+  console.info('DOM geladen')
+  init()
+})
