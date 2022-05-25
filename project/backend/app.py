@@ -99,7 +99,7 @@ def initial_connection():
 
 
 def start_thread():
-    print("**** Starting THREAD ****")
+    print("***** Starting THREAD *****")
     thread = threading.Thread(target = all_out, args=(), daemon=True)
     thread.start()
 
