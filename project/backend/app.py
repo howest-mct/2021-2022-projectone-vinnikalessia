@@ -1,4 +1,5 @@
 ##################### IMPORT #####################
+from curses import REPORT_MOUSE_POSITION
 import json
 from repositories.DataRepository import DataRepository
 from flask_socketio import SocketIO, emit, send
@@ -68,8 +69,8 @@ endpoint = '/api/v1'
 def hallo():
     return "Server is running, er zijn momenteel geen API endpoints beschikbaar."
 
-@app.route(endpoint + '/sensoren/', methods = ['GET'])
-def sensoren():
+@app.route(endpoint + '/devices/', methods = ['GET'])
+def devices():
     if request.method == 'GET':
         data = DataRepository.read_devices()
         if data is not None:
@@ -77,7 +78,34 @@ def sensoren():
         else:
             return jsonify(message = "error"), 404
 
+@app.route(endpoint + '/devices/<deviceID>/', methods = ['GET'])
+def device(deviceID):
+    if request.method == "GET":
+        print(deviceID)
+        data = DataRepository.read_device_by_id(deviceID)
+        if data is not None:
+            return jsonify(device = data), 200
+        else:
+            return jsonify(message = "error"), 404
 
+@app.route(endpoint + '/players/', methods = ['GET'])
+def players():
+    if request.method == "GET":
+        data = DataRepository.read_alle_spelers()
+        if data is not None:
+            return jsonify(spelers = data), 200
+        else:
+            return jsonify(message = "error"), 404
+
+@app.route(endpoint + '/players/<playerID>/', methods = ['GET'])
+def player(playerID):
+    if request.method == "GET":
+        print(playerID)
+        data = DataRepository.read_speler_by_id(playerID)
+        if data is not None:
+            return jsonify(speler = data), 200
+        else:
+            return jsonify(message = "error"), 404
 
 ############################################################################################
 
