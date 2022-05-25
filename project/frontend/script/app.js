@@ -30,16 +30,16 @@ let htmlDevice, htmlJoystick, htmlWaarden
 //   }
 // }
 
-// const showWaarden = function(jsonObject){
-//   console.info(jsonObject)
-//   let htmlstring = ''
-//   for(const waarde of jsonObject.waarden){
-//     htmlstring += `<div class="c-waarde js-waarden">
-//     waarde: ${waarde.waarde}
-// </div>`
-//   }
-//   htmlWaarden.innerHTML = htmlstring
-// }
+const showWaarden = function(jsonObject){
+  console.info(jsonObject)
+  let htmlstring = ''
+  for(const waarde of jsonObject.waarden){
+    htmlstring += `<div class="c-waarde js-waarden">
+    waarde: ${waarde.waarde}
+</div>`
+  }
+  htmlWaarden.innerHTML = htmlstring
+}
 
 // #endregion
 
@@ -52,10 +52,10 @@ let htmlDevice, htmlJoystick, htmlWaarden
 //   handleData(url, showDevices)
 // }
 
-// const getWaarden = function(){
-//   const url = 'http://192.168.168.169:5000/api/v1/waarden/'
-//   handleData(url, showWaarden)
-// }
+const getWaarden = function(){
+  const url = 'http://192.168.168.169:5000/api/v1/waarden/'
+  handleData(url, showWaarden)
+}
 // #endregion
 
 // #region ***  Event Listeners - listenTo___            ***********
@@ -75,6 +75,7 @@ const init = function(){
   //   console.info(htmlWaarden)
   //   getWaarden()
   // }
+  getWaarden()
 }
 
 // document.addEventListener('DOMContentLoaded', init);
