@@ -1,6 +1,7 @@
 "use strict";
 const lanIP = `${window.location.hostname}:5000`;
-// const socket = io(`http://${lanIP}`);
+const socket = io(`http://${lanIP}`);
+console.info(lanIP)
 
 // const clearClassList = function (el) {
 //   el.classList.remove("c-room--wait");
@@ -79,6 +80,11 @@ const lanIP = `${window.location.hostname}:5000`;
 
 
 const listenToSocket = function () {
+  socket.on("connected", function(){
+    console.info("Verbonden met socket webserver")
+  })
+
+
   // console.info("listentosocket")
   // socket.on("connected", function () {
   //   console.log("verbonden met socket webserver");
@@ -112,7 +118,9 @@ const listenToSocket = function () {
 };
 
 document.addEventListener('DOMContentLoaded', function(){
-  // console.info("Hallo! 😃")
-  // listenToSocket()
+  console.info("DOM geladen")
+  console.info("Hallo! 😃")
+  // listenToUI()
+  listenToSocket()
 });
 
