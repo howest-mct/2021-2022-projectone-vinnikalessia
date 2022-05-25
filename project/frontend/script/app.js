@@ -6,8 +6,17 @@ let htmlDevice, htmlJoystick
 
 // #region ***  Callback-Visualisation - show___         ***********
 const showDevices = function(jsonObject){
-console.info(jsonObject)
+  try{
+    console.info(jsonObject)
+    
+
+
+  }
+  catch (err){
+    console.error(err)
+  }
 }
+
 // #endregion
 
 // #region ***  Callback-No Visualisation - callback___  ***********
