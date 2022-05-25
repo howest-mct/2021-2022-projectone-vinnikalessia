@@ -107,7 +107,7 @@ def player(playerID):
         else:
             return jsonify(message = "error"), 404
 
-@app.route(endpoint + '/waarden/', methods = ['GET'])
+@app.route(endpoint + '/waarden/', methods = ['GET', 'POST'])
 def waarden():
     if request.method == "GET":
         data = DataRepository.read_alle_waarden()
@@ -115,6 +115,12 @@ def waarden():
             return jsonify(waarden = data), 200
         else:
             return jsonify(message = "error"), 404
+    elif request.method == "POST":
+        gegevens = DataRepository.json_or_formdata(request)
+        nieuw_id = DataRepository.create_historiek(
+            gegevens['actiedatum'], gegevens['actieid'], gegevens['commentaar'], gegevens['deviceid'], gegevens['waarde']
+        )
+        return jsonify(volgnummer = nieuw_id), 201
 
 ############################################################################################
 
