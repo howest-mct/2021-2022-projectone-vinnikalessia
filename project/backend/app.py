@@ -1,4 +1,5 @@
 ##################### IMPORT #####################
+from curses import REPORT_MOUSE_POSITION
 import json
 from repositories.DataRepository import DataRepository
 from flask_socketio import SocketIO, emit, send
@@ -87,6 +88,24 @@ def device(deviceID):
         else:
             return jsonify(message = "error"), 404
 
+@app.route(endpoint + '/players/', methods = ['GET'])
+def players():
+    if request.method == "GET":
+        data = DataRepository.read_alle_spelers()
+        if data is not None:
+            return jsonify(spelers = data), 200
+        else:
+            return jsonify(message = "error"), 404
+
+@app.route(endpoint + '/players/<playerID>/', methods = ['GET'])
+def player(playerID):
+    if request.method == "GET":
+        print(playerID)
+        data = DataRepository.read_speler_by_id(playerID)
+        if data is not None:
+            return jsonify(speler = data), 200
+        else:
+            return jsonify(message = "error"), 404
 
 ############################################################################################
 
