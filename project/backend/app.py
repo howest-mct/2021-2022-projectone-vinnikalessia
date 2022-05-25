@@ -1,7 +1,7 @@
 ##################### IMPORT #####################
 from repositories.DataRepository import DataRepository
 from flask_socketio import SocketIO, emit, send
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from selenium import webdriver
 from logging import exception
 from flask_cors import CORS
@@ -61,56 +61,70 @@ CORS(app)
 def error_handler(e):
     print(e)
 
+endpoint = '/api/v1/'
+
 @app.route('/')
 def hallo():
     return "Server is running, er zijn momenteel geen API endpoints beschikbaar."
 
+@app.route(endpoint + 'sensors/', methods = ['GET'])
+def sensoren():
+    if request.method == 'GET':
+        return jsonify(test = "test")
+
+
 ############################################################################################
 
-@socketio.on('connect')
-def initial_connection():
-    print('A new client connect')
-    devicenaam = DataRepository.read_devices()
-    emit('B2F_devices', {'device': devicenaam}, broadcast=True)
+# @socketio.on('connect')
+# def initial_connection():
+#     print('A new client connect')
+#     devicenaam = DataRepository.read_devices()
+#     emit('B2F_devices', {'device': devicenaam}, broadcast=True)
 
 
 # @socketio.on('F2B_')
 
-# try:
-#     setup()
-#     while True:
-#         # global sw_val, x_val, y_val
-#         sw_val = readChannel(sw)
-#         print(f"dit is de sw: {sw_val}")
-#         x_val = readChannel(x_as)
-#         print(f"dit is de x: {x_val}")
-#         y_val = readChannel(y_as)
-#         print(f"dit is de y: {y_val}\n")
-#         time.sleep(0.5)
-# except KeyboardInterrupt:
-#     print("keyboardinterrupt")
-# finally:
-#     print("cleanup pi")
-#     spi.close()
-#     GPIO.cleanup()
+def joystick_uitlezen():
+    try:
+        # setup()
+        while True:
+            # global sw_val, x_val, y_val
+            sw_val = readChannel(sw)
+            print(f"dit is de sw: {sw_val}")
+            x_val = readChannel(x_as)
+            print(f"dit is de x: {x_val}")
+            y_val = readChannel(y_as)
+            print(f"dit is de y: {y_val}\n")
+            time.sleep(0.5)
+    except KeyboardInterrupt:
+        print("keyboardinterrupt")
+    finally:
+        print("cleanup pi")
+        spi.close()
+        GPIO.cleanup()
 
 # START een thread op. Belangrijk!!! Debugging moet UIT staan op start van de server, anders start de thread dubbel op
 # werk enkel met de packages gevent en gevent-websocket.
 
+# def all_out():
+#     while True:
+#         print("***all out***")
+#         time.sleep(0.5)
 
-def start_thread():
-    print("***** Starting THREAD *****")
-    thread = threading.Thread(target = all_out, args=(), daemon=True)
-    thread.start()
+# def start_thread():
+#     print("***** Starting THREAD *****")
+#     thread = threading.Thread(target = all_out, args = (), daemon = True)
+#     thread.start()
 
 
 if __name__ == '__main__':
     try:
         setup()
-        start_thread()
-        start_chrome_thread()
+        # start_thread()
+        # start_chrome_thread()
         print("**** Starting APP ****")
-        socketio.run(app, debug=False, host='0.0.0.0')
+        socketio.run(app, debug = False, host = '0.0.0.0')
+        # joystick_uitlezen()
     except KeyboardInterrupt:
         print ('KeyboardInterrupt exception is caught')
     finally:
