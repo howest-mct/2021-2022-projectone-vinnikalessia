@@ -25,6 +25,7 @@ sw = 5
 
 # teller aantal keer sw ingedrukt
 teller = 0
+
 # test
 ##################### BUSSEN #####################
 # de spi-bus
