@@ -1,13 +1,11 @@
 "use strict";
 
-// #region ***  DOM references                           ***********
-// const lanIP = `${window.location.hostname}:5000`;
-// const lanIP = `172.0.0.1:5000`;
-const lanIP = `192.168.168.169:5000`;
+const lanIP = `${window.location.hostname}:5000`;
 console.info(lanIP)
 const socket = io(lanIP)
-// const socketio = io(`http://${lanIP}`);
-// const socketio = io(`http://192.168.168.169:5000`);
+
+// #region ***  DOM references                           ***********
+let htmlDevices, htmlJoystick, htmlWaarden
 // #endregion
 
 // #region ***  Callback-Visualisation - show___         ***********
