@@ -23,7 +23,7 @@ x_as = 1
 sw = 5
 # teller aantal keer sw ingedrukt
 teller = 0
-
+x_pos = 0
 ##################### BUSSEN #####################
 # de spi-bus
 spi = spidev.SpiDev()
@@ -131,12 +131,20 @@ def initial_connection():
     emit('B2F_devices', {'device': devicenaam}, broadcast=True)
 
 
-# @socketio.on('F2B_')
+# @socketio.on('F2B_getJoystick_x')
+# def get_value_joy_x():
+#     global x_val
+#     while True:
+#         x_val = readChannel(x_as)
+#         print(f"dit is de x: {x_val}")
+#         if x_val > pass
+
 
 def joystick_uitlezen():
     try:
         # setup()
         while True:
+            global x_pos
             # global sw_val, x_val, y_val
             sw_val = readChannel(sw)
             print(f"dit is de sw: {sw_val}")
@@ -144,6 +152,15 @@ def joystick_uitlezen():
             print(f"dit is de x: {x_val}")
             y_val = readChannel(y_as)
             print(f"dit is de y: {y_val}\n")
+
+            if(x_val >= 950 and x_pos < 2):
+                x_pos += 1
+
+            elif(x_val <= 150 and x_pos > -2):
+                x_pos -= 1
+            print(f"Dit is de positie: {x_pos}")
+
+
             time.sleep(0.5)
     except KeyboardInterrupt:
         print("keyboardinterrupt")
@@ -171,9 +188,9 @@ if __name__ == '__main__':
         setup()
         # start_thread()
         # start_chrome_thread()
-        print("**** Starting APP ****")
-        socketio.run(app, debug = False, host = '0.0.0.0')
-        # joystick_uitlezen()
+        # print("**** Starting APP ****")
+        # socketio.run(app, debug = False, host = '0.0.0.0')
+        joystick_uitlezen()
     except KeyboardInterrupt:
         print ('KeyboardInterrupt exception is caught')
     finally:
