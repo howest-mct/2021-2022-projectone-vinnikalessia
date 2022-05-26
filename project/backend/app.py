@@ -19,11 +19,13 @@ global sw_val, x_val, y_val
 # deze hangen aan de mcp
 y_as = 0
 x_as = 1
+
 # de sw van de joystick aan de rpi
 sw = 5
+
 # teller aantal keer sw ingedrukt
 teller = 0
-
+# test
 ##################### BUSSEN #####################
 # de spi-bus
 spi = spidev.SpiDev()
