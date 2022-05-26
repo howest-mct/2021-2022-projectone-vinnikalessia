@@ -134,7 +134,7 @@ def initial_connection():
 # waarden van de 1ste joystick
 @socketio.on('F2B_getJoystick_1')
 def get_values_joy_1():
-    global x_pos
+    global x_pos, y_pos
     while True:
         # de x-waarde
         x_val = readChannel(x_as)
