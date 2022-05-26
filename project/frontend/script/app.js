@@ -15,11 +15,7 @@ const listenToSocket = function(){
   })
 
   socket.on('B2F_value_joy_1', function(jsonObject){
-    console.info("live joystick: ", jsonObject.x_waarde)
-    value_x = jsonObject.x_waarde
-    let htmlstring = `${value_x}`
-    htmlXWaarde.innerhtml = htmlstring
-    console.info(value_x)
+    console.info(jsonObject)
   })
 }
 

@@ -85,10 +85,13 @@ try:
         while True:
             sw_val = readChannel(sw)
             print(f"dit is de sw: {sw_val}")
+
             x_val = readChannel(x_as)
             print(f"dit is de x: {x_val}")
+
             y_val = readChannel(y_as)
             print(f"dit is de y: {y_val}\n")
+
             emit("B2F_value_joy_1", {"x_waarde":x_val}, {"y_waarde":y_val}, {"sw_waarde":sw_val}, broadcast = True)
             time.sleep(0.5)
 
