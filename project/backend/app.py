@@ -12,7 +12,7 @@ import spidev
 import time
 from RPi import GPIO
 
-##################### GLOBALE VARIABELEN #####################
+##################### GLOBALE VARIABELEN ######################
 global sw_val, x_val, y_val
 
 ########### JOYSTICK ###########
