@@ -144,6 +144,7 @@ try:
             if data is not None:
                 return jsonify(historiek = data), 200
             else:
+                print("error")
                 return jsonify(message = "error"), 404
     
     ############################################################################################
