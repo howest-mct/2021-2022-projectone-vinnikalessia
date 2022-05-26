@@ -1,5 +1,7 @@
 "use strict";
+
 const lanIP = `${window.location.hostname}:5000`;
+const socket = io(lanIP)
 // const socket = io(`http://${lanIP}`);
 
 // const clearClassList = function (el) {
@@ -79,10 +81,10 @@ const lanIP = `${window.location.hostname}:5000`;
 
 
 const listenToSocket = function () {
-  // console.info("listentosocket")
-  // socket.on("connected", function () {
-  //   console.log("verbonden met socket webserver");
-  // });
+  console.info("listentosocket")
+  socket.on("connected", function () {
+    console.log("verbonden met socket webserver");
+  });
 
   // socket.on("B2F_devices", function (jsonObject) {
   //   console.log("Dit zijn alle devices");
@@ -111,8 +113,14 @@ const listenToSocket = function () {
   // }) 
 };
 
-document.addEventListener('DOMContentLoaded', function(){
-  // console.info("Hallo! 😃")
-  // listenToSocket()
-});
+const init = function(){
+  console.info("DOM geladen")
+  htmlDevices = document.querySelector('.js-devices')
+  htmlJoystick = document.querySelector('.js-joystick')
+  htmlXWaarde = document.querySelector('.js-xwaarde')
+
+  listenToSocket()
+}
+
+document.addEventListener('DOMContentLoaded', init());
 
