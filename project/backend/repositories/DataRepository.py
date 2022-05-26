@@ -32,6 +32,12 @@ class DataRepository:
         params = [id]
         return Database.get_one_row(sql, params)
 
+    @staticmethod
+    def read_alle_waarden():
+        sql = "SELECT * from historiek"
+        return Database.get_rows(sql)
+
+    
     # geen update nodig hiervoor
     # @staticmethod
     # def update_status_lamp(id, status):
