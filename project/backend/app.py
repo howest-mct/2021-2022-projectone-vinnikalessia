@@ -22,6 +22,7 @@ x_as = 1
 sw = 5
 # teller aantal keer sw ingedrukt
 teller = 0
+
 ##################### BUSSEN #####################
 # de spi-bus
 spi = spidev.SpiDev()
