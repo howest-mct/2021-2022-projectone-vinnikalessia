@@ -19,7 +19,7 @@ global sw_val, x_val, y_val
 # deze hangen aan de mcp
 y_as = 0
 x_as = 1
-
+# test
 # de sw van de joystick aan de rpi
 sw = 5
 
