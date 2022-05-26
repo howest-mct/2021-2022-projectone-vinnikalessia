@@ -25,6 +25,7 @@ sw = 5
 teller = 0
 x_pos = 0
 y_pos = 0
+
 ##################### BUSSEN #####################
 # de spi-bus
 spi = spidev.SpiDev()
