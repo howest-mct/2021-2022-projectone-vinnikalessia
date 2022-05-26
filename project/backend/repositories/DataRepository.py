@@ -31,19 +31,6 @@ class DataRepository:
         sql = "SELECT * from player WHERE playerid = %s"
         params = [id]
         return Database.get_one_row(sql, params)
-    
-    @staticmethod
-    def read_alle_waarden():
-        sql = "SELECT * from historiek"
-        return Database.get_rows(sql)
-    
-    # niet zeker!
-    @staticmethod
-    def create_historiek(datum, actieid, commentaar, deviceid, waarde):
-        sql = "INSERT INTO historiek(actiedatum, actieid, commentaar, deviceid, waarde) VALUES(%s, %s, %s, %s, %s)"
-        params = [datum, actieid, commentaar, deviceid, waarde]
-        return Database.execute_sql(sql, params)
-
 
     # geen update nodig hiervoor
     # @staticmethod
