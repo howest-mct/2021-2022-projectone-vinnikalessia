@@ -1,7 +1,5 @@
 ##################### IMPORT #####################
-from curses import REPORT_MOUSE_POSITION
 import json
-
 from numpy import False_
 from repositories.DataRepository import DataRepository
 from flask_socketio import SocketIO, emit, send
@@ -36,14 +34,13 @@ spi.open(0,0)
 spi.max_speed_hz = 10 ** 5
 
 
-
-
 try:
     ##################### FLASK #####################
+    # start app
     app = Flask(__name__)
     app.config['SECRET_KEY'] = 'geheim!'
-    socketio = SocketIO(app, cors_allowed_origins = "*", logger = False,
-                        engineio_logger = False, ping_timeout=1)
+
+    socketio = SocketIO(app, cors_allowed_origins="*")
     CORS(app)
     print("program started")
 
@@ -77,13 +74,12 @@ try:
     @socketio.on('connect')
     def initial_connection():
         print('A new client connect')
-        user = request.sid
-        emit("B2F_connection", f"Welkom nieuwe client {user}")
+        emit('B2F_connected', {'currentprogress': 0})
 
     @socketio.on('F2B_getJoystick1')
     def get_joystick_1():
         while True:
-            sw_val = readChannel(sw)
+            sw_val = readChannel(sw) # eigenlijk geen readchannel want via pi niet mcp
             print(f"dit is de sw: {sw_val}")
 
             x_val = readChannel(x_as)
@@ -100,8 +96,8 @@ try:
     endpoint = '/api/v1'
 
     @app.route('/')
-    def hallo():
-        return "Server is running, er zijn momenteel geen API endpoints beschikbaar."
+    def info():
+        return jsonify(info = 'Please go to the endpoint ' + endpoint)
 
     @app.route(endpoint + '/devices/', methods = ['GET'])
     def devices():
@@ -180,8 +176,7 @@ try:
     #         GPIO.cleanup()
 
     if __name__ == "__main__":
-        #app.run(debug=True)
-        socketio.run(app, host = '0.0.0.0', debug = False)
+        socketio.run(app, debug = True, host = '0.0.0.0')
 
 except KeyboardInterrupt as e:
     print(e)

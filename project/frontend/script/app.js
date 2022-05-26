@@ -2,6 +2,7 @@
 
 // const lanIP = `${window.location.hostname}:5000`;
 const lanIP = `192.168.168.169:5000`;
+// const lanIP = `127.0.0.1:5000`;
 console.info(lanIP)
 const socket = io(`http://${lanIP}`);
 
@@ -14,6 +15,11 @@ const listenToSocket = function(){
     console.info('verbonden met socket webserver')
   })
 
+  socket.on("B2F_connected", function(payload){
+    console.info(payload)
+    console.info(`eerste boodschap server: ${payload}`)
+  })
+  
   socket.on('B2F_value_joy_1', function(jsonObject){
     console.info(jsonObject)
   })
@@ -28,5 +34,5 @@ const init = function(){
   listenToSocket()
 }
 
-document.addEventListener('DOMContentLoaded', init());
+document.addEventListener('DOMContentLoaded', init);
 
