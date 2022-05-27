@@ -1,12 +1,12 @@
 "use strict";
 
 // const lanIP = `${window.location.hostname}:5000`;
-const lanIP = `192.168.168.169:5000`;
 // const lanIP = `127.0.0.1:5000`;
-console.info(lanIP)
+const lanIP = `192.168.168.169:5000`;
 const socket = io(`http://${lanIP}`);
 
 let htmlDevices, htmlJoystick, htmlXWaarde
+console.info(lanIP)
 
 
 const listenToSocket = function(){
