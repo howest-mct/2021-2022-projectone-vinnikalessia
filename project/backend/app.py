@@ -80,13 +80,13 @@ def joystick(data):
     # waarde = data['waarde']
     
     if joy_id == 14:
-        # eerste joystick
+        # eerste joystick => x-as
         commentaar = "joystick 1 registreerde beweging op x-as"
         waarde = readChannel(x_as)
         return waarde
 
     elif joy_id == 15:
-        # eerste joystick
+        # eerste joystick => y-as
         commentaar = 'joystick 1 registreerde beweging op y-as'
         waarde = readChannel(y_as)
         return waarde
@@ -103,7 +103,7 @@ def joystick(data):
 
     print(f"joystick {joy_id} met de waarde {waarde}")
 
-    DataRepository.create_historiek(joy_id, waarde, commentaar)
+    DataRepository.create_historiek_joy_1(joy_id, waarde, commentaar)
 
     data = DataRepository.read_alle_waarden()
     socketio.emit('B2F_value_joy_1', {joy_id: waarde}, broadcast = True)
