@@ -58,12 +58,54 @@ def callback_knop(pin):
     global teller
     teller += 1
     print("Knop joystick 1 is {0} keer ingedrukt\n".format(teller))
+    joystick_id(pin)
     return teller
 
 def readChannel(channel):
     val = spi.xfer2([1,(8+channel)<<4,0])
     data = ((val[1] << 8) + val[2])
     return data
+
+def joystick_id(deviceID):
+    if deviceID == 14:
+        # eerste joystick => x-as
+        commentaar = "joystick 1 registreerde beweging op x-as"
+        waarde = readChannel(x_as)
+        print(f"dit is x: {waarde}")
+        print(commentaar)
+
+    elif deviceID == 15:
+        # eerste joystick => y-as
+        commentaar = 'joystick 1 registreerde beweging op y-as'
+        waarde = readChannel(y_as)
+        print(f"dit is y: {waarde}")
+        print(commentaar)
+
+    elif deviceID == 16:
+        # eerste joystick => sw
+        commentaar = 'joystick ingedrukt'
+        # postman en hardware veranderen samen de waarde.
+        # wanneer je drukt +1, wanneer postman send +1 en de waarde past zich aan beide aan
+        waarde = 1
+        print(commentaar)
+        print(f"dit is de knop: {waarde}")
+        return commentaar
+
+    # elif joy_id == 17:
+    #     commentaar = 'joystick 2 registreerde beweging op x-as'
+    #     waarde = readChannel(x_as2)
+
+    # elif joy_id == 18:
+    #     commentaar = 'joystick 2 registreerde beweging op y-as'
+    #     waarde = readChannel(y_as2)
+
+    # elif deviceID == 19:
+    #     commentaar = 'joystick ingedrukt'
+    #     waarde = callback_knop(sw2)
+    #     print(commentaar)
+    #     print(f"dit is de knop: {waarde}")
+
+    return waarde, commentaar
 
 ##################### SOCKETIO #####################
 @socketio.on_error()        # Handles the default namespace
@@ -78,53 +120,16 @@ def initial_connection():
 @socketio.on('F2B_joystick')
 def joystick(data):
     joy_id = data['deviceid']
-    # waarde = data['waarde']
-    
-    if joy_id == 14:
-        # eerste joystick => x-as
-        commentaar = "joystick 1 registreerde beweging op x-as"
-        waarde = readChannel(x_as)
-        print(f"dit is x: {waarde}")
-        return waarde
 
-    elif joy_id == 15:
-        # eerste joystick => y-as
-        commentaar = 'joystick 1 registreerde beweging op y-as'
-        waarde = readChannel(y_as)
-        print(f"dit is y: {waarde}")
-        return waarde
+    waarde, commentaar = joystick_id(joy_id)
 
-    elif joy_id == 16:
-        # eerste joystick => sw
-        commentaar = 'joystick ingedrukt'
-        # postman en hardware veranderen samen de waarde.
-        # wanneer je drukt +1, wanneer postman send +1 en de waarde past zich aan beide aan
-        waarde = callback_knop(sw)
-        print(f"dit is de knop: {waarde}")
-        return waarde
+    DataRepository.create_historiek_joy_1(waarde, joy_id, commentaar)
 
-    # elif joy_id == 17:
-    #     commentaar = 'joystick 2 registreerde beweging op x-as'
-    #     waarde = readChannel(x_as2)
-    #     return waarde
-
-    # elif joy_id == 18:
-    #     commentaar = 'joystick 2 registreerde beweging op y-as'
-    #     waarde = readChannel(y_as2)
-    #     return waarde
-
-    print(f"joystick {joy_id} met de waarde {waarde}")
-
-    # DataRepository.create_historiek_joy_1(joy_id, waarde, commentaar)
-    DataRepository.create_hahah(joy_id, waarde, commentaar)
+    print(f"joystick met id {joy_id}, heeft de waarde {waarde}")
 
     data = DataRepository.read_alle_waarden()
     socketio.emit('B2F_value_joy_1', {joy_id: waarde}, broadcast = True)
-    print(f"dit is data: {data}")
 
-    # joystick 1 x-as
-    if joy_id == 14:
-        print("keuze van de joystick speler 1 op x-as")
     
     # while True:
     #     sw_val = readChannel(sw) # eigenlijk geen readchannel want via pi niet mcp

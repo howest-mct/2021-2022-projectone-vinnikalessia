@@ -44,6 +44,7 @@ class DataRepository:
         sql = "INSERT INTO historiek(deviceid, actieid, waarde, commentaar, actiedatum) VALUE(%s, %s, %s, %s, %s)"
         params = [deviceid, actieid, waarde, commentaar, datetime.datetime.now()]
         result = Database.execute_sql(sql, params)
+        print("create history")
         return result
     
     # geen update nodig hiervoor
