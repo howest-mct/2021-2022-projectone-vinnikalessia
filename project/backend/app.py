@@ -56,9 +56,8 @@ def setup():
 
 def callback_knop(pin):
     global teller
-    print(teller)
     teller += 1
-    print("Button pressed {0}\n".format(teller))
+    print("Knop joystick 1 is {0} keer ingedrukt\n".format(teller))
 
 def readChannel(channel):
     val = spi.xfer2([1,(8+channel)<<4,0])
