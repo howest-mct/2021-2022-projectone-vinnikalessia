@@ -119,22 +119,20 @@ def initial_connection():
 
 @socketio.on('F2B_joystick')
 def joystick(data):
-    joy_id = data['deviceid']
-    if joy_id in [14, 15, 17, 18]:
-        waarde, commentaar = joystick_id(joy_id)
+    while True:
+        joy_id = data['deviceid']
+        if joy_id in [14, 15, 17, 18]:
+            waarde, commentaar = joystick_id(joy_id)
 
-    elif joy_id in [16, 19]:
-        waarde, commentaar = joysw_id(joy_id)
-    
-    else:
-        print(f"invalid id: {joy_id}")
+        elif joy_id in [16, 19]:
+            waarde, commentaar = joysw_id(joy_id)
+        
 
-    print(f"joystick met id {joy_id}, heeft de waarde {waarde}")
+        print(f"joystick met id {joy_id}, heeft de waarde {waarde}")
+        DataRepository.create_historiek_joy(joy_id, commentaar, waarde)
 
-    DataRepository.create_historiek_joy_1(joy_id, commentaar, waarde)
-
-    # data = DataRepository.read_alle_waarden()
-    socketio.emit('B2F_value_joy_1', {joy_id: waarde}, broadcast = True)
+        socketio.emit('B2F_value_joy_1', {joy_id: waarde}, broadcast = True)
+        time.sleep(0.3)
 
     
     # while True:
