@@ -58,6 +58,7 @@ def callback_knop(pin):
     global teller
     teller += 1
     print("Knop joystick 1 is {0} keer ingedrukt\n".format(teller))
+    return teller
 
 def readChannel(channel):
     val = spi.xfer2([1,(8+channel)<<4,0])
@@ -83,12 +84,23 @@ def joystick(data):
         # eerste joystick => x-as
         commentaar = "joystick 1 registreerde beweging op x-as"
         waarde = readChannel(x_as)
+        print(f"dit is x: {waarde}")
         return waarde
 
     elif joy_id == 15:
         # eerste joystick => y-as
         commentaar = 'joystick 1 registreerde beweging op y-as'
         waarde = readChannel(y_as)
+        print(f"dit is y: {waarde}")
+        return waarde
+
+    elif joy_id == 16:
+        # eerste joystick => sw
+        commentaar = 'joystick ingedrukt'
+        # postman en hardware veranderen samen de waarde.
+        # wanneer je drukt +1, wanneer postman send +1 en de waarde past zich aan beide aan
+        waarde = callback_knop(sw)
+        print(f"dit is de knop: {waarde}")
         return waarde
 
     # elif joy_id == 17:
@@ -103,7 +115,8 @@ def joystick(data):
 
     print(f"joystick {joy_id} met de waarde {waarde}")
 
-    DataRepository.create_historiek_joy_1(joy_id, waarde, commentaar)
+    # DataRepository.create_historiek_joy_1(joy_id, waarde, commentaar)
+    DataRepository.create_hahah(joy_id, waarde, commentaar)
 
     data = DataRepository.read_alle_waarden()
     socketio.emit('B2F_value_joy_1', {joy_id: waarde}, broadcast = True)
