@@ -74,23 +74,45 @@ def initial_connection():
     print('A new client connect')
     emit('B2F_connected', {'message': "hallo nieuwe user!"})
 
-### alleen voor joystick 1 en alleen de x-waarde ###
 @socketio.on('F2B_joystick')
 def joystick(data):
     joy_id = data['deviceid']
-    waarde = data['waarde']
-    emit('B2F_value_joy_1', {joy_id: waarde})
+    # waarde = data['waarde']
+    
+    if joy_id == 14:
+        # eerste joystick
+        commentaar = "joystick 1 registreerde beweging op x-as"
+        waarde = readChannel(x_as)
+        return waarde
+
+    elif joy_id == 15:
+        # eerste joystick
+        commentaar = 'joystick 1 registreerde beweging op y-as'
+        waarde = readChannel(y_as)
+        return waarde
+
+    # elif joy_id == 17:
+    #     commentaar = 'joystick 2 registreerde beweging op x-as'
+    #     waarde = readChannel(x_as2)
+    #     return waarde
+
+    # elif joy_id == 18:
+    #     commentaar = 'joystick 2 registreerde beweging op y-as'
+    #     waarde = readChannel(y_as2)
+    #     return waarde
+
     print(f"joystick {joy_id} met de waarde {waarde}")
 
-    res = DataRepository.create_historiek(joy_id, waarde)
-    print(res)
+    DataRepository.create_historiek(joy_id, waarde, commentaar)
 
     data = DataRepository.read_alle_waarden()
+    socketio.emit('B2F_value_joy_1', {joy_id: waarde}, broadcast = True)
     print(f"dit is data: {data}")
 
     # joystick 1 x-as
     if joy_id == 14:
         print("keuze van de joystick speler 1 op x-as")
+    
     # while True:
     #     sw_val = readChannel(sw) # eigenlijk geen readchannel want via pi niet mcp
     #     print(f"dit is de sw: {sw_val}")
