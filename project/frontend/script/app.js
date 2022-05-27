@@ -18,6 +18,7 @@ const listenToSocket = function(){
   socket.on("B2F_connected", function(payload){
     // console.info(payload)
     console.info(`eerste boodschap server: ${payload.message}`)
+    // tot hier lukt alles
   })
   
   socket.on('B2F_value_joy_1', function(jsonObject){
