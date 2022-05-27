@@ -82,6 +82,10 @@ def joystick_1_x(data):
     print(f"joystick {joy_id} met de waarde {waarde}")
 
     res = DataRepository.create_historiek_joy_1_x(joy_id, waarde)
+    print(res)
+
+    data = DataRepository.read_alle_waarden()
+    print(f"dit is data: {data}")
     # while True:
     #     sw_val = readChannel(sw) # eigenlijk geen readchannel want via pi niet mcp
     #     print(f"dit is de sw: {sw_val}")

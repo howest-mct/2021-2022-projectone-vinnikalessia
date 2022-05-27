@@ -1,4 +1,5 @@
 from .Database import Database
+import datetime
 
 
 class DataRepository:
@@ -37,6 +38,14 @@ class DataRepository:
         sql = "SELECT * from historiek"
         return Database.get_rows(sql)
 
+    @staticmethod
+    def create_historiek_joy_1_x(waarde, commentaar = "joystick 1 registreerde beweging op x-as"):
+        # def create_historiek_joy_1_x(waarde, actiedatum = datetime.datetime.now(), deviceid = 14, actieid = 1, commentaar = "joystick 1 registreerde beweging op x-as"):
+        sql = "INSERT INTO historiek(deviceid, actieid, waarde, commentaar, actiedatum) VALUE(%s, %s, %s, %s, %s)"
+        # params = [deviceid, actieid, waarde, commentaar, actiedatum]
+        params = [14, 1, waarde, commentaar, datetime.datetime.now()]
+        result = Database.execute_sql(sql, params)
+        return result
     
     # geen update nodig hiervoor
     # @staticmethod
