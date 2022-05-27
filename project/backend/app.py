@@ -58,13 +58,23 @@ def callback_knop(pin):
     global teller
     teller += 1
     print("Knop joystick 1 is {0} keer ingedrukt\n".format(teller))
-    joystick_id(pin)
+    # joystick_id(pin)
     return teller
 
 def readChannel(channel):
     val = spi.xfer2([1,(8+channel)<<4,0])
     data = ((val[1] << 8) + val[2])
     return data
+
+def joysw_id(sw_id):
+    if sw_id == 16:
+        commentaar = 'joystick 1 ingedrukt'
+        waarde = 1
+
+    elif sw_id == 19:
+        commentaar = 'joystick 2 ingedrukt'
+        waarde = 1
+    return waarde, commentaar
 
 def joystick_id(deviceID):
     if deviceID == 14:
@@ -80,16 +90,6 @@ def joystick_id(deviceID):
         waarde = readChannel(y_as)
         print(f"dit is y: {waarde}")
         print(commentaar)
-
-    elif deviceID == 16:
-        # eerste joystick => sw
-        commentaar = 'joystick ingedrukt'
-        # postman en hardware veranderen samen de waarde.
-        # wanneer je drukt +1, wanneer postman send +1 en de waarde past zich aan beide aan
-        waarde = 1
-        print(commentaar)
-        print(f"dit is de knop: {waarde}")
-        return commentaar
 
     # elif joy_id == 17:
     #     commentaar = 'joystick 2 registreerde beweging op x-as'
@@ -120,14 +120,20 @@ def initial_connection():
 @socketio.on('F2B_joystick')
 def joystick(data):
     joy_id = data['deviceid']
+    if joy_id in [14, 15, 17, 18]:
+        waarde, commentaar = joystick_id(joy_id)
 
-    waarde, commentaar = joystick_id(joy_id)
-
-    DataRepository.create_historiek_joy_1(waarde, joy_id, commentaar)
+    elif joy_id in [16, 19]:
+        waarde, commentaar = joysw_id(joy_id)
+    
+    else:
+        print(f"invalid id: {joy_id}")
 
     print(f"joystick met id {joy_id}, heeft de waarde {waarde}")
 
-    data = DataRepository.read_alle_waarden()
+    DataRepository.create_historiek_joy_1(joy_id, commentaar, waarde)
+
+    # data = DataRepository.read_alle_waarden()
     socketio.emit('B2F_value_joy_1', {joy_id: waarde}, broadcast = True)
 
     
