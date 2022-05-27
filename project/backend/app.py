@@ -74,7 +74,7 @@ try:
     @socketio.on('connect')
     def initial_connection():
         print('A new client connect')
-        emit('B2F_connected', {'currentprogress': 0})
+        emit('B2F_connected', {'message': "hallo nieuwe user!"})
 
     @socketio.on('F2B_getJoystick1')
     def get_joystick_1():
@@ -177,6 +177,7 @@ try:
     #         GPIO.cleanup()
 
     if __name__ == "__main__":
+        # debug NIET op True zetten
         socketio.run(app, debug = False, host = '0.0.0.0')
 
 except KeyboardInterrupt as e:
