@@ -21,19 +21,23 @@ const listenToSocket = function(){
     // tot hier lukt alles
   })
   
-  try{
-    socket.on('B2F_value_joy_1', function(jsonObject){
-        console.info(jsonObject)
-        let htmlString = ""
-        htmlString += `<div class="c-waarde js-xwaarde">
-        waarden x-as: ${jsonObject.waarden.waarde}
-        </div>`
-        console.info(htmlString)
-        htmlJoystick.innerHTML = htmlString
-        })
-      }catch(err){
-        console.error(err)
-      }
+
+  socket.on('B2F_value_joy_1', function(jsonObject){
+      console.info(jsonObject)
+      let htmlString = ""
+      htmlString += `<div class="c-waarde js-xwaarde">
+      waarden x-as: ${jsonObject.waarden.waarde}
+      </div>
+      <div class="c-waarde">
+      waarden y-as: 321
+      </div>
+      <div class="c-waarde">
+      hoeveel keer er op de knop is gedrukt: 2
+      </div>`
+      htmlJoystick.innerHTML = htmlString
+      // tot hier werkt het ook
+      })
+
 }
 
 const init = function(){
