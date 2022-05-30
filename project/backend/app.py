@@ -156,6 +156,7 @@ endpoint = '/api/v1'
 def info():
     return jsonify(info = 'Please go to the endpoint ' + endpoint)
 
+# devices
 @app.route(endpoint + '/devices/', methods = ['GET'])
 def get_devices():
     if request.method == 'GET':
@@ -175,6 +176,7 @@ def get_device(deviceID):
         else:
             return jsonify(message = "error"), 404
 
+# spelers
 @app.route(endpoint + '/players/', methods = ['GET'])
 def get_players():
     if request.method == "GET":
@@ -194,6 +196,7 @@ def get_player(playerID):
         else:
             return jsonify(message = "error"), 404
 
+# historiek/waarden
 @app.route(endpoint + '/waarden/', methods = ['GET'])
 def get_waarden_joy():
     if request.method == "GET":
@@ -203,46 +206,35 @@ def get_waarden_joy():
         else:
             print("error")
             return jsonify(message = "error"), 404
-    # elif request.method == 'POST':
-    #     gegevens = DataRepository.json_or_formdata(request)
-    #     print(gegevens)
-    #     data = DataRepository.create_historiek_joy(gegevens["deviceid"], gegevens["commentaar"], gegevens["waarde"], gegevens["actieid"])
-    #     return jsonify(volgnummer = data), 201
+    elif request.method == 'POST':
+        gegevens = DataRepository.json_or_formdata(request)
+        print(gegevens)
+        data = DataRepository.create_historiek_joy(gegevens["deviceid"], gegevens["commentaar"], gegevens["waarde"], gegevens["actieid"])
+        return jsonify(volgnummer = data), 201
 
     
-    ############################################################################################
+##################### STARTEN #####################
+# START een thread op. Belangrijk!!! Debugging moet UIT staan op start van de server, anders start de thread dubbel op
+# werk enkel met de packages gevent en gevent-websocket.
 
-    # START een thread op. Belangrijk!!! Debugging moet UIT staan op start van de server, anders start de thread dubbel op
-    # werk enkel met de packages gevent en gevent-websocket.
 
-    # def all_out():
-    #     while True:
-    #         print("***all out***")
-    #         time.sleep(0.5)
+def start_thread():
+    print("***** Starting THREAD *****")
+    thread1 = threading.Thread(target = joystick_uitlezen, args = (), daemon = True)
+    thread1.start()
 
-    # def start_thread():
-    #     print("***** Starting THREAD *****")
-    #     thread = threading.Thread(target = all_out, args = (), daemon = True)
-    #     thread.start()
 
-    # if __name__ == '__main__':
-    #     try:
-    #         setup()
-    #         # start_thread()
-    #         # start_chrome_thread()
-    #         print("**** Starting APP ****")
-    #         socketio.run(app, debug = False, host = '0.0.0.0')
-    #         # joystick_uitlezen()
-    #     except KeyboardInterrupt:
-    #         print ('KeyboardInterrupt exception is caught')
-    #     finally:
-    #         GPIO.cleanup()
+##################### SOCKETIO.RUN #####################
 
 if __name__ == "__main__":
     try:
         # debug NIET op True zetten
         setup()
+        # start_thread()
+        # start_chrome_thread()
+        print("**** Starting APP ****")
         socketio.run(app, debug = False, host = '0.0.0.0')
+        # joystick_uitlezen()
 
     except KeyboardInterrupt as e:
         print(e)
@@ -252,24 +244,26 @@ if __name__ == "__main__":
         GPIO.cleanup()
 
 
-# # om de joystick uit te lezen
-# def joystick_uitlezen():
-#     try:
-#         # setup()
-#         while True:
-#             # global sw_val, x_val, y_val
-#             sw_val = readChannel(sw)
-#             print(f"dit is de sw: {sw_val}")
-#             x_val = readChannel(x_as)
-#             print(f"dit is de x: {x_val}")
-#             y_val = readChannel(y_as)
-#             print(f"dit is de y: {y_val}\n")
-#             time.sleep(0.5)
-#     except KeyboardInterrupt:
-#         print("keyboardinterrupt")
-#     finally:
-#         print("cleanup pi")
-#         spi.close()
-#         GPIO.cleanup()
+##################### THREADS #####################
+
+# om de joystick uit te lezen
+def joystick_uitlezen():
+    try:
+        # setup()
+        while True:
+            # global sw_val, x_val, y_val
+            sw_val = readChannel(sw)
+            print(f"dit is de sw: {sw_val}")
+            x_val = readChannel(x_as)
+            print(f"dit is de x: {x_val}")
+            y_val = readChannel(y_as)
+            print(f"dit is de y: {y_val}\n")
+            time.sleep(0.5)
+    except KeyboardInterrupt:
+        print("keyboardinterrupt")
+    finally:
+        print("cleanup pi")
+        spi.close()
+        GPIO.cleanup()
 
 

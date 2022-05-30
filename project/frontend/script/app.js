@@ -35,7 +35,7 @@ const listenToSocket = function(){
       hoeveel keer er op de knop is gedrukt: 2
       </div>`
       htmlJoystick.innerHTML = htmlString
-      // tot hier werkt het ook
+      // tot hier werkt het
       })
 
 }
