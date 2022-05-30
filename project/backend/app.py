@@ -118,8 +118,8 @@ def initial_connection():
     emit('B2F_connected', {'message': "hallo nieuwe user!"})
 
 @socketio.on('F2B_joystick')
-def joystick(dictdata):
-    data = json.loads(dictdata)
+def joystick(data):
+    # data = json.loads(dictdata) # hoeft niet als je postman op JSON zet en niet op TEXT -_-
     # while True:
     joy_id = data["deviceid"]
     if joy_id in [14, 15, 17, 18]:
@@ -131,7 +131,7 @@ def joystick(dictdata):
     print(f"joystick met id {joy_id}, heeft de waarde {waarde}")
     DataRepository.create_historiek_joy(joy_id, commentaar, waarde)
 
-    socketio.emit('B2F_value_joy_1', {joy_id: waarde}, broadcast = True)
+    socketio.emit('B2F_value_joy_1', {"waarden":{"deviceid":joy_id, "waarde":waarde}}, broadcast = True)
     time.sleep(0.5)
 
     
