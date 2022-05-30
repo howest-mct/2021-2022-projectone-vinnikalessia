@@ -134,19 +134,8 @@ def joystick(data):
     socketio.emit('B2F_value_joy_1', {"waarden":{"deviceid":joy_id, "waarde":waarde}}, broadcast = True)
     time.sleep(0.5)
 
-    
-    # while True:
-    #     sw_val = readChannel(sw) # eigenlijk geen readchannel want via pi niet mcp
-    #     print(f"dit is de sw: {sw_val}")
-
-    #     x_val = readChannel(x_as)
-    #     print(f"dit is de x: {x_val}")
-
-    #     y_val = readChannel(y_as)
-    #     print(f"dit is de y: {y_val}\n")
-
-    #     emit("B2F_value_joy_1", {"x_waarde":x_val}, {"y_waarde":y_val}, {"sw_waarde":sw_val}, broadcast = True)
-    #     time.sleep(0.5)
+    # emit("B2F_value_joy_1", {"x_waarde":x_val}, {"y_waarde":y_val}, {"sw_waarde":sw_val}, broadcast = True)
+    # time.sleep(0.5)
 
 
 ##################### ENDPOINTS #####################
@@ -248,22 +237,19 @@ if __name__ == "__main__":
 
 # om de joystick uit te lezen
 def joystick_uitlezen():
-    try:
-        # setup()
-        while True:
-            # global sw_val, x_val, y_val
-            sw_val = readChannel(sw)
-            print(f"dit is de sw: {sw_val}")
-            x_val = readChannel(x_as)
-            print(f"dit is de x: {x_val}")
-            y_val = readChannel(y_as)
-            print(f"dit is de y: {y_val}\n")
-            time.sleep(0.5)
-    except KeyboardInterrupt:
-        print("keyboardinterrupt")
-    finally:
-        print("cleanup pi")
-        spi.close()
-        GPIO.cleanup()
+    while True:
+        print("***Joystick 1 uitlezen***")
+        # global sw_val, x_val, y_val
+        # sw_val = readChannel(sw)
+        # print(f"dit is de sw: {sw_val}")
+        x_val = readChannel(x_as)
+        print(f"dit is de x: {x_val}")
+        y_val = readChannel(y_as)
+        print(f"dit is de y: {y_val}\n")
+
+        socketio.emit('B2F_value_joy_1', {"historiek":{"x_as":x_val, "y_as":y_val}})
+
+        # DataRepository.update_positie_joy_1(x_val, y_val) #ToDo
+        time.sleep(0.5)
 
 

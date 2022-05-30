@@ -46,10 +46,10 @@ class DataRepository:
         result = Database.execute_sql(sql, params)
         print("history created\n")
         return result
-    
-    # geen update nodig hiervoor
+
+    # todo    
     # @staticmethod
-    # def update_status_lamp(id, status):
+    # def update_status_lamp(x_as, y_as):
     #     sql = "UPDATE lampen SET status = %s WHERE id = %s"
     #     params = [status, id]
     #     return Database.execute_sql(sql, params)
