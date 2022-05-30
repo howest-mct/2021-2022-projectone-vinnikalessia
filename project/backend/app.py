@@ -120,7 +120,10 @@ def initial_connection():
 @socketio.on('F2B_joystick')
 def joystick(data):
     while True:
-        joy_id = data['deviceid']
+        print(data)
+        # joy_id = data['deviceid']
+        joy_id = 14
+        print(joy_id)
         if joy_id in [14, 15, 17, 18]:
             waarde, commentaar = joystick_id(joy_id)
 
@@ -157,7 +160,7 @@ def info():
     return jsonify(info = 'Please go to the endpoint ' + endpoint)
 
 @app.route(endpoint + '/devices/', methods = ['GET'])
-def devices():
+def get_devices():
     if request.method == 'GET':
         data = DataRepository.read_devices()
         if data is not None:
@@ -166,7 +169,7 @@ def devices():
             return jsonify(message = "error"), 404
 
 @app.route(endpoint + '/devices/<deviceID>/', methods = ['GET'])
-def device(deviceID):
+def get_device(deviceID):
     if request.method == "GET":
         print(deviceID)
         data = DataRepository.read_device_by_id(deviceID)
@@ -176,7 +179,7 @@ def device(deviceID):
             return jsonify(message = "error"), 404
 
 @app.route(endpoint + '/players/', methods = ['GET'])
-def players():
+def get_players():
     if request.method == "GET":
         data = DataRepository.read_alle_spelers()
         if data is not None:
@@ -185,7 +188,7 @@ def players():
             return jsonify(message = "error"), 404
 
 @app.route(endpoint + '/players/<playerID>/', methods = ['GET'])
-def player(playerID):
+def get_player(playerID):
     if request.method == "GET":
         print(playerID)
         data = DataRepository.read_speler_by_id(playerID)
@@ -194,8 +197,8 @@ def player(playerID):
         else:
             return jsonify(message = "error"), 404
 
-@app.route(endpoint + '/waarden/', methods = ['GET'])
-def waarden():
+@app.route(endpoint + '/waarden/', methods = ['GET', 'POST'])
+def get_waarden_joy():
     if request.method == "GET":
         data = DataRepository.read_alle_waarden()
         if data is not None:
@@ -203,6 +206,12 @@ def waarden():
         else:
             print("error")
             return jsonify(message = "error"), 404
+    elif request.method == 'POST':
+        gegevens = DataRepository.json_or_formdata(request)
+        print(gegevens)
+        data = DataRepository.create_historiek_joy(gegevens["deviceid"], gegevens["commentaar"], gegevens["waarde"], gegevens["actieid"])
+        return jsonify(volgnummer = data), 201
+
     
     ############################################################################################
 
