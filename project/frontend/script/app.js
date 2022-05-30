@@ -8,6 +8,21 @@ const socket = io(`http://${lanIP}`);
 let htmlDevices, htmlJoystick, htmlXWaarde
 console.info(lanIP)
 
+const callbackJoyX = function(){
+  handleData(`http://127.0.0.1:5000/api/v1/waarden`, showWaarden)
+}
+
+const showWaarden = function(jsonObject){
+  console.info(jsonObject)
+  let htmlString = ''
+  for(const waarde of jsonObject){
+    htmlString += `<div class="c-waarde js-xwaarde">
+        waarden x-as: ${waarde}
+    </div>`
+  }
+  htmlXWaarde.innerHTML += htmlString
+  print("gedaan!!!")
+}
 
 const listenToSocket = function(){
   console.info("hello!")
