@@ -47,12 +47,12 @@ class DataRepository:
         print("history created\n")
         return result
 
-    # todo    
-    # @staticmethod
-    # def update_status_lamp(x_as, y_as):
-    #     sql = "UPDATE lampen SET status = %s WHERE id = %s"
-    #     params = [status, id]
-    #     return Database.execute_sql(sql, params)
+    # # todo    
+    @staticmethod
+    def update_status_lamp(x_as, y_as):
+        sql = "UPDATE  SET status = %s WHERE id = %s"
+        params = []
+        return Database.execute_sql(sql, params)
 
     # @staticmethod
     # def update_status_alle_lampen(status):

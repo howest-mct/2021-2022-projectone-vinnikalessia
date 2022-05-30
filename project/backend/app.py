@@ -202,7 +202,7 @@ def get_waarden_joy():
         return jsonify(volgnummer = data), 201
 
     
-##################### STARTEN #####################
+##################### THREADS #####################
 # START een thread op. Belangrijk!!! Debugging moet UIT staan op start van de server, anders start de thread dubbel op
 # werk enkel met de packages gevent en gevent-websocket.
 
@@ -211,7 +211,28 @@ def start_thread():
     print("***** Starting THREAD *****")
     thread1 = threading.Thread(target = joystick_uitlezen, args = (), daemon = True)
     thread1.start()
+    threading.Timer(10, joystick_uitlezen).start()    
 
+# # om de joystick uit te lezen ===> ToDo!!!!
+def joystick_uitlezen(data):
+    while True:
+        print("***Joystick 1 uitlezen***")
+        joy_id = data["deviceid"]
+        if joy_id in [14, 15, 17, 18]:
+            waarde, commentaar = joystick_id(joy_id)
+        elif joy_id in [16, 19]:
+            waarde, commentaar = joysw_id(joy_id)
+
+        # todo
+        x_val = readChannel(x_as)
+        print(f"dit is de x: {x_val}")
+        y_val = readChannel(y_as)
+        print(f"dit is de y: {y_val}\n")
+
+        socketio.emit('B2F_value_joy_1', {"historiek":{"x_as":x_val, "y_as":y_val}})
+
+        DataRepository.create_historiek_joy(joy_id, commentaar, waarde) #ToDo
+        time.sleep(0.5)
 
 ##################### SOCKETIO.RUN #####################
 
@@ -233,23 +254,5 @@ if __name__ == "__main__":
         GPIO.cleanup()
 
 
-##################### THREADS #####################
-
-# om de joystick uit te lezen
-def joystick_uitlezen():
-    while True:
-        print("***Joystick 1 uitlezen***")
-        # global sw_val, x_val, y_val
-        # sw_val = readChannel(sw)
-        # print(f"dit is de sw: {sw_val}")
-        x_val = readChannel(x_as)
-        print(f"dit is de x: {x_val}")
-        y_val = readChannel(y_as)
-        print(f"dit is de y: {y_val}\n")
-
-        socketio.emit('B2F_value_joy_1', {"historiek":{"x_as":x_val, "y_as":y_val}})
-
-        # DataRepository.update_positie_joy_1(x_val, y_val) #ToDo
-        time.sleep(0.5)
 
 
