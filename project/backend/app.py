@@ -119,18 +119,15 @@ def initial_connection():
 
 @socketio.on('F2B_joystick')
 def joystick(data):
+    data = json.loads(data)
     while True:
-        print(data)
-        # joy_id = data['deviceid']
-        joy_id = 14
-        print(joy_id)
+        joy_id = data["deviceid"]
         if joy_id in [14, 15, 17, 18]:
             waarde, commentaar = joystick_id(joy_id)
 
         elif joy_id in [16, 19]:
             waarde, commentaar = joysw_id(joy_id)
         
-
         print(f"joystick met id {joy_id}, heeft de waarde {waarde}")
         DataRepository.create_historiek_joy(joy_id, commentaar, waarde)
 
@@ -197,7 +194,7 @@ def get_player(playerID):
         else:
             return jsonify(message = "error"), 404
 
-@app.route(endpoint + '/waarden/', methods = ['GET', 'POST'])
+@app.route(endpoint + '/waarden/', methods = ['GET'])
 def get_waarden_joy():
     if request.method == "GET":
         data = DataRepository.read_alle_waarden()
@@ -206,11 +203,11 @@ def get_waarden_joy():
         else:
             print("error")
             return jsonify(message = "error"), 404
-    elif request.method == 'POST':
-        gegevens = DataRepository.json_or_formdata(request)
-        print(gegevens)
-        data = DataRepository.create_historiek_joy(gegevens["deviceid"], gegevens["commentaar"], gegevens["waarde"], gegevens["actieid"])
-        return jsonify(volgnummer = data), 201
+    # elif request.method == 'POST':
+    #     gegevens = DataRepository.json_or_formdata(request)
+    #     print(gegevens)
+    #     data = DataRepository.create_historiek_joy(gegevens["deviceid"], gegevens["commentaar"], gegevens["waarde"], gegevens["actieid"])
+    #     return jsonify(volgnummer = data), 201
 
     
     ############################################################################################
