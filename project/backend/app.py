@@ -204,7 +204,7 @@ def get_waarden_joy():
     
 ##################### THREADS #####################
 # START een thread op. Belangrijk!!! Debugging moet UIT staan op start van de server, anders start de thread dubbel op
-# werk enkel met de packages gevent en gevent-websocket.
+# werk enkel met de packages gevent en gevent-websocket. 
 
 
 def start_thread():
