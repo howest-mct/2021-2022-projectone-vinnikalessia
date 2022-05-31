@@ -79,6 +79,7 @@ def readChannel(channel):
     return data
 
 def joysw_id(sw_id):
+    # 1 teller voor 2 sw's
     if sw_id == 16:
         commentaar = 'joystick 1 ingedrukt'
         waarde = 1

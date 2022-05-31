@@ -74,7 +74,7 @@ const listenToSocket = function(){
     htmlJoystick.innerHTML = htmlString
     })
 
-  // joy 2
+  //////////////////////////////___joy 2___//////////////////////////////
   socket.on('B2F_value_joy_2_sw', function(jsonObject){
     console.info(jsonObject)
     // ${jsonObject.waarden.waarde}
