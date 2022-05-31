@@ -11,12 +11,11 @@ def setup():
 
 def versturen(msg):
     print("bericht:")
-    for i in msg:
-        i2c.write_byte(0x3c, [i])
+    i2c.write_byte(0x3C, 0xFF)
 
 try:
     while True:
-        msg = "Hallo"
+        msg = 15
         versturen(msg) # string => int?
         time.sleep(1)
 except KeyboardInterrupt:
