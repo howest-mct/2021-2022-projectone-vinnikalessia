@@ -25,6 +25,7 @@ try:
     setup()
     while True:
         if GPIO.input(t1):
+            # GPIO.input(t1)
             print('input HIGH')
             touch()
         else:
