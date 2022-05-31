@@ -7,11 +7,11 @@ from flask import Flask, jsonify, request
 from selenium import webdriver
 from logging import exception
 from flask_cors import CORS
+from smbus import SMBus
 import threading
 import spidev
 import time
 from RPi import GPIO
-
 ##################### GLOBALE VARIABELEN ######################
 global sw_val, x_val, y_val
 
@@ -26,13 +26,15 @@ sw = 5
 # teller aantal keer sw ingedrukt
 teller = 0
 
-# test2
+
 ##################### BUSSEN #####################
 # de spi-bus
 spi = spidev.SpiDev()
 spi.open(0,0)
 spi.max_speed_hz = 10 ** 5
 
+i2c = SMBus()
+i2c.open(1)
 
 ##################### FLASK #####################
 # start app
