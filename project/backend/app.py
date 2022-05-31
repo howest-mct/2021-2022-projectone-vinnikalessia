@@ -1,17 +1,17 @@
 ##################### IMPORT #####################
-from curses import REPORT_MOUSE_POSITION
 import json
+from numpy import False_
 from repositories.DataRepository import DataRepository
 from flask_socketio import SocketIO, emit, send
 from flask import Flask, jsonify, request
 from selenium import webdriver
 from logging import exception
 from flask_cors import CORS
+from smbus import SMBus
 import threading
 import spidev
 import time
 from RPi import GPIO
-
 ##################### GLOBALE VARIABELEN ######################
 global sw_val, x_val, y_val
 
@@ -26,12 +26,25 @@ sw = 5
 # teller aantal keer sw ingedrukt
 teller = 0
 
-# test
+
 ##################### BUSSEN #####################
 # de spi-bus
 spi = spidev.SpiDev()
 spi.open(0,0)
 spi.max_speed_hz = 10 ** 5
+
+i2c = SMBus()
+i2c.open(1)
+
+##################### FLASK #####################
+# start app
+app = Flask(__name__)
+app.config['SECRET_KEY'] = 'geheim!'
+
+socketio = SocketIO(app, cors_allowed_origins="*")
+CORS(app)
+print("program started")
+
 
 ##################### SETUP #####################
 def setup():
@@ -45,35 +58,98 @@ def setup():
 
 def callback_knop(pin):
     global teller
-    print(teller)
     teller += 1
-    print("Button pressed {0}\n".format(teller))
+    print("Knop joystick 1 is {0} keer ingedrukt\n".format(teller))
+    # joystick_id(pin)
+    return teller
 
 def readChannel(channel):
     val = spi.xfer2([1,(8+channel)<<4,0])
     data = ((val[1] << 8) + val[2])
     return data
 
-##################### FLASK #####################
-app = Flask(__name__)
-app.config['SECRET_KEY'] = 'geheim!'
-socketio = SocketIO(app, cors_allowed_origins = "*", logger = False,
-                    engineio_logger = False, ping_timeout=1)
+def joysw_id(sw_id):
+    if sw_id == 16:
+        commentaar = 'joystick 1 ingedrukt'
+        waarde = 1
 
-CORS(app)
+    elif sw_id == 19:
+        commentaar = 'joystick 2 ingedrukt'
+        waarde = 1
+    return waarde, commentaar
 
+def joystick_id(deviceID):
+    if deviceID == 14:
+        # eerste joystick => x-as
+        commentaar = "joystick 1 registreerde beweging op x-as"
+        waarde = readChannel(x_as)
+        print(f"dit is x: {waarde}")
+        print(commentaar)
+
+    elif deviceID == 15:
+        # eerste joystick => y-as
+        commentaar = 'joystick 1 registreerde beweging op y-as'
+        waarde = readChannel(y_as)
+        print(f"dit is y: {waarde}")
+        print(commentaar)
+
+    # elif joy_id == 17:
+    #     commentaar = 'joystick 2 registreerde beweging op x-as'
+    #     waarde = readChannel(x_as2)
+
+    # elif joy_id == 18:
+    #     commentaar = 'joystick 2 registreerde beweging op y-as'
+    #     waarde = readChannel(y_as2)
+
+    # elif deviceID == 19:
+    #     commentaar = 'joystick ingedrukt'
+    #     waarde = callback_knop(sw2)
+    #     print(commentaar)
+    #     print(f"dit is de knop: {waarde}")
+
+    return waarde, commentaar
+
+##################### SOCKETIO #####################
 @socketio.on_error()        # Handles the default namespace
 def error_handler(e):
     print(e)
 
+@socketio.on('connect')
+def initial_connection():
+    print('A new client connect')
+    emit('B2F_connected', {'message': "hallo nieuwe user!"})
+
+@socketio.on('F2B_joystick')
+def joystick(data):
+    # data = json.loads(dictdata) # hoeft niet als je postman op JSON zet en niet op TEXT -_-
+    # while True:
+    joy_id = data["deviceid"]
+    if joy_id in [14, 15, 17, 18]:
+        waarde, commentaar = joystick_id(joy_id)
+
+    elif joy_id in [16, 19]:
+        waarde, commentaar = joysw_id(joy_id)
+    
+    print(f"joystick met id {joy_id}, heeft de waarde {waarde}")
+    DataRepository.create_historiek_joy(joy_id, commentaar, waarde)
+
+    socketio.emit('B2F_value_joy_1', {"waarden":{"deviceid":joy_id, "waarde":waarde}}, broadcast = True)
+    time.sleep(0.5)
+
+    # emit("B2F_value_joy_1", {"x_waarde":x_val}, {"y_waarde":y_val}, {"sw_waarde":sw_val}, broadcast = True)
+    # time.sleep(0.5)
+
+
+##################### ENDPOINTS #####################
 endpoint = '/api/v1'
 
 @app.route('/')
-def hallo():
-    return "Server is running, er zijn momenteel geen API endpoints beschikbaar."
+def info():
+    return jsonify(info = 'Please go to the endpoint ' + endpoint)
 
+# devices
 @app.route(endpoint + '/devices/', methods = ['GET'])
-def devices():
+def get_devices():
     if request.method == 'GET':
         data = DataRepository.read_devices()
         if data is not None:
@@ -82,7 +158,7 @@ def devices():
             return jsonify(message = "error"), 404
 
 @app.route(endpoint + '/devices/<deviceID>/', methods = ['GET'])
-def device(deviceID):
+def get_device(deviceID):
     if request.method == "GET":
         print(deviceID)
         data = DataRepository.read_device_by_id(deviceID)
@@ -91,8 +167,9 @@ def device(deviceID):
         else:
             return jsonify(message = "error"), 404
 
+# spelers
 @app.route(endpoint + '/players/', methods = ['GET'])
-def players():
+def get_players():
     if request.method == "GET":
         data = DataRepository.read_alle_spelers()
         if data is not None:
@@ -101,7 +178,7 @@ def players():
             return jsonify(message = "error"), 404
 
 @app.route(endpoint + '/players/<playerID>/', methods = ['GET'])
-def player(playerID):
+def get_player(playerID):
     if request.method == "GET":
         print(playerID)
         data = DataRepository.read_speler_by_id(playerID)
@@ -110,59 +187,74 @@ def player(playerID):
         else:
             return jsonify(message = "error"), 404
 
-############################################################################################
+# historiek/waarden
+@app.route(endpoint + '/waarden/', methods = ['GET'])
+def get_waarden_joy():
+    if request.method == "GET":
+        data = DataRepository.read_alle_waarden()
+        if data is not None:
+            return jsonify(historiek = data), 200
+        else:
+            print("error")
+            return jsonify(message = "error"), 404
+    elif request.method == 'POST':
+        gegevens = DataRepository.json_or_formdata(request)
+        print(gegevens)
+        data = DataRepository.create_historiek_joy(gegevens["deviceid"], gegevens["commentaar"], gegevens["waarde"], gegevens["actieid"])
+        return jsonify(volgnummer = data), 201
 
-@socketio.on('connect')
-def initial_connection():
-    print('A new client connect')
-    devicenaam = DataRepository.read_devices()
-    emit('B2F_devices', {'device': devicenaam}, broadcast=True)
-
-
-# @socketio.on('F2B_')
-
-def joystick_uitlezen():
-    try:
-        # setup()
-        while True:
-            # global sw_val, x_val, y_val
-            sw_val = readChannel(sw)
-            print(f"dit is de sw: {sw_val}")
-            x_val = readChannel(x_as)
-            print(f"dit is de x: {x_val}")
-            y_val = readChannel(y_as)
-            print(f"dit is de y: {y_val}\n")
-            time.sleep(0.5)
-    except KeyboardInterrupt:
-        print("keyboardinterrupt")
-    finally:
-        print("cleanup pi")
-        spi.close()
-        GPIO.cleanup()
-
+    
+##################### THREADS #####################
 # START een thread op. Belangrijk!!! Debugging moet UIT staan op start van de server, anders start de thread dubbel op
-# werk enkel met de packages gevent en gevent-websocket.
-
-# def all_out():
-#     while True:
-#         print("***all out***")
-#         time.sleep(0.5)
-
-# def start_thread():
-#     print("***** Starting THREAD *****")
-#     thread = threading.Thread(target = all_out, args = (), daemon = True)
-#     thread.start()
+# werk enkel met de packages gevent en gevent-websocket. 
 
 
-if __name__ == '__main__':
+def start_thread():
+    print("***** Starting THREAD *****")
+    thread1 = threading.Thread(target = joystick_uitlezen, args = (), daemon = True)
+    thread1.start()
+    threading.Timer(10, joystick_uitlezen).start()    
+
+# # om de joystick uit te lezen ===> ToDo!!!!
+def joystick_uitlezen(data):
+    while True:
+        print("***Joystick 1 uitlezen***")
+        joy_id = data["deviceid"]
+        if joy_id in [14, 15, 17, 18]:
+            waarde, commentaar = joystick_id(joy_id)
+        elif joy_id in [16, 19]:
+            waarde, commentaar = joysw_id(joy_id)
+
+        # todo
+        x_val = readChannel(x_as)
+        print(f"dit is de x: {x_val}")
+        y_val = readChannel(y_as)
+        print(f"dit is de y: {y_val}\n")
+
+        socketio.emit('B2F_value_joy_1', {"historiek":{"x_as":x_val, "y_as":y_val}})
+
+        DataRepository.create_historiek_joy(joy_id, commentaar, waarde) #ToDo
+        time.sleep(0.5)
+
+##################### SOCKETIO.RUN #####################
+
+if __name__ == "__main__":
     try:
+        # debug NIET op True zetten
         setup()
         # start_thread()
         # start_chrome_thread()
         print("**** Starting APP ****")
         socketio.run(app, debug = False, host = '0.0.0.0')
         # joystick_uitlezen()
-    except KeyboardInterrupt:
-        print ('KeyboardInterrupt exception is caught')
+
+    except KeyboardInterrupt as e:
+        print(e)
     finally:
+        print("cleanup pi")
+        spi.close()
         GPIO.cleanup()
+
+
+
+
