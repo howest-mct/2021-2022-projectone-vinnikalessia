@@ -38,23 +38,29 @@ def hoek_tot_duty(getal):
 
 try:
     setup()
-    motorpwm = GPIO.PWM(motor, 50)
+    motorpwm = GPIO.PWM(motor, 40)
     motorpwm.start(0)
     print("Begin scores")
     while True:
-        if GPIO.input(t1) and teller < 10:
+        if GPIO.input(t1) and teller <= 10:
             print('input HIGH')
             pwm = touch()
             motorpwm.ChangeDutyCycle(pwm)
-        elif GPIO.input(t1) and teller == 10:
-            print("Woow!")
-            teller = 0
-            print("teller is 0")
+            if teller == 10:
+                print("Woow!")
+                teller = 0
+                print("teller is 0")
         else:
             print('input LOW')
         time.sleep(1)
 except KeyboardInterrupt:
+    # print("terug naar 0")
+    # motorpwm.ChangeDutyCycle(5)
+    # time.sleep(0.5)
     print("KB")
 finally:
+    # print("terug naar 0")
+    # motorpwm.ChangeDutyCycle(5)
+    # time.sleep(0.5)
     print("cleanup")
     GPIO.cleanup()
