@@ -14,8 +14,7 @@ def setup():
     GPIO.setup(motor, GPIO.OUT)
     GPIO.setup(t1, GPIO.IN, GPIO.PUD_UP)
 
-    motorpwm = GPIO.PWM(motor, 0)
-    motorpwm.start(50)
+
 
 def touch():
     global teller
@@ -28,14 +27,18 @@ def hoek(getal):
     pwm = int((0.6 + ((getal/90)*0.9)*1000))
     print(f"Dit is de hoek in pwm: {pwm}")
     print(type(pwm))
-    GPIO.PWM(17, pwm)
+    return pwm
 
 
 try:
+    setup()
+    motorpwm = GPIO.PWM(motor, 50)
+    motorpwm.start(50)
     while True:
         print("Hello")
         msg = int(input("geef hoek in: "))
         hoek(msg)
+        motorpwm.ChangeDutyCycle(hoek(msg))
         time.sleep(0.3)
 except KeyboardInterrupt:
     print("KB")
