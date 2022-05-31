@@ -9,6 +9,9 @@ motor = 17
 t1 = 21
 teller = 0
 
+# dit is de beginhoek => 0 punten
+hoek = 5
+
 
 def setup():
     print("setup")
@@ -17,32 +20,39 @@ def setup():
     GPIO.setup(motor, GPIO.OUT)
     GPIO.setup(t1, GPIO.IN, GPIO.PUD_UP)
 
-
-
 def touch():
-    global teller
+    global teller, hoek
     teller += 1
     print("AHA! Gezien!")
     print(f"\t je bent {teller} keer gezien geweest!")
+    hoek += 9
+    hoek_tot_duty(hoek)
     return teller
 
 def hoek_tot_duty(getal):
     # pwm = int((0.6 + ((getal/90)*0.9)*1000))
+    print(f"Dit is de hoek: {getal}")
     pwm = int(getal * 0.555555555555)
     print(f"Dit is de hoek in pwm: {pwm}")
-    print(type(pwm))
     return pwm
-
 
 try:
     setup()
     motorpwm = GPIO.PWM(motor, 50)
     motorpwm.start(0)
-    print("Hello")
-    msg = int(input("geef hoek in tot 180: "))
-    hoek = hoek_tot_duty(msg)
-    motorpwm.ChangeDutyCycle(hoek)
-    time.sleep(0.3)
+    print("Begin scores")
+    while True:
+        if GPIO.input(t1) and teller < 10:
+            print('input HIGH')
+            pwm = touch()
+            motorpwm.ChangeDutyCycle(pwm)
+        elif GPIO.input(t1) and teller == 10:
+            print("Woow!")
+            teller = 0
+            print("teller is 0")
+        else:
+            print('input LOW')
+        time.sleep(1)
 except KeyboardInterrupt:
     print("KB")
 finally:

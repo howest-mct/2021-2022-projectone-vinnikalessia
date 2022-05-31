@@ -30,7 +30,6 @@ try:
             touch()
         else:
             print('input LOW')
-
         time.sleep(1)
 except KeyboardInterrupt:
     print("KB")
