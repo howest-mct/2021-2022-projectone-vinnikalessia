@@ -2,7 +2,7 @@ from smbus import SMBus
 from RPi import GPIO
 import time
 
-t1 = 2
+t1 = 21
 teller = 0
 
 
@@ -11,8 +11,8 @@ def setup():
     GPIO.setmode(GPIO.BCM)
     GPIO.setwarnings(False)
     GPIO.setup(t1, GPIO.IN, GPIO.PUD_UP)
+    # touch sensoren hebben geen mcp nodig????
 
-    # GPIO.add_event_detect(t1, GPIO.FALLING, callback_touch, bouncetime = 100)
 
 def touch():
     global teller
@@ -24,14 +24,12 @@ def touch():
 try:
     setup()
     while True:
-        print("1...")
-        if (GPIO.input(t1) == 0):
-            print("UWU")
+        if GPIO.input(t1):
+            print('input HIGH')
             touch()
-        elif (GPIO.input(t1) == 1):
-            print("O-O")
         else:
-            print("?")
+            print('input LOW')
+
         time.sleep(1)
 except KeyboardInterrupt:
     print("KB")
