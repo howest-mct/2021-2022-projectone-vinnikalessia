@@ -41,7 +41,14 @@ i2c.open(1)
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'geheim!'
 
-socketio = SocketIO(app, cors_allowed_origins="*")
+#socketio = SocketIO(app, cors_allowed_origins="*")
+
+
+socketio = SocketIO(app, cors_allowed_origins="*", logger=False,
+                    engineio_logger=False, ping_timeout=1)
+
+
+
 CORS(app)
 print("program started")
 
@@ -57,9 +64,11 @@ def setup():
     GPIO.add_event_detect(sw, GPIO.FALLING, callback_knop, bouncetime = 100)
 
 def callback_knop(pin):
-    global teller
+    global teller, socketio
     teller += 1
-    print("Knop joystick 1 is {0} keer ingedrukt\n".format(teller))
+    print("Knop joystick 1 is {} keer ingedrukt\n".format(teller))
+    socketio.emit('B2F_value_joy_1', {'teller':teller})
+    
     # joystick_id(pin)
     return teller
 
@@ -83,6 +92,8 @@ def joystick_id(deviceID):
         # eerste joystick => x-as
         commentaar = "joystick 1 registreerde beweging op x-as"
         waarde = readChannel(x_as)
+        # socketio.emit('B2F_value_joy_1', {'teller':teller})
+
         print(f"dit is x: {waarde}")
         print(commentaar)
 
@@ -209,6 +220,31 @@ def get_waarden_joy():
 # werk enkel met de packages gevent en gevent-websocket. 
 
 
+
+
+
+
+last_val = 0
+
+def start_thread_teller():
+    print("***** Starting THREAD teller *****")
+    thread2 = threading.Thread(target = teller_doorsturen, args = (), daemon = True)
+    thread2.start()
+    #threading.Timer(10, joystick_uitlezen).start()    
+
+# # om de joystick uit te lezen ===> ToDo!!!!
+def teller_doorsturen():
+    global teller, socketio, last_val
+    while True:
+        if teller != last_val:
+            print("sending teller")
+            socketio.emit('B2F_value_joy_1', {'teller':teller})
+            last_val = teller
+        time.sleep(.5)
+
+
+
+
 def start_thread():
     print("***** Starting THREAD *****")
     thread1 = threading.Thread(target = joystick_uitlezen, args = (), daemon = True)
@@ -244,8 +280,9 @@ if __name__ == "__main__":
         setup()
         # start_thread()
         # start_chrome_thread()
+        # start_thread_teller()
         print("**** Starting APP ****")
-        socketio.run(app, debug = False, host = '0.0.0.0')
+        socketio.run(app,debug = False, host = '0.0.0.0')
         # joystick_uitlezen()
 
     except KeyboardInterrupt as e:
