@@ -264,10 +264,9 @@ def joystick_uitlezen():
 
         x_val1 = readChannel(x_as1)
         print(f"dit is de x: {x_val1}")
-        time.sleep(1)
         y_val1 = readChannel(y_as1)
         print(f"dit is de y: {y_val1}\n")
-        # time.sleep(2)
+        time.sleep(1)
 
         # todo
         # x_val = readChannel(x_as)
