@@ -298,10 +298,8 @@ if __name__ == "__main__":
         start_thread()
         # start_chrome_thread()
         # start_thread_teller()
-        # joystick_uitlezen()
         print("**** Starting APP ****")
         socketio.run(app,debug = False, host = '0.0.0.0')
-
     except KeyboardInterrupt as e:
         print(e)
     finally:
