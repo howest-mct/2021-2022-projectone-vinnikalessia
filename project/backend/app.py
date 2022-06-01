@@ -75,7 +75,7 @@ def callback_knop(pin):
     global teller16
     teller16 += 1
     print("Knop joystick 1 is {} keer ingedrukt\n".format(teller16))
-    socketio.emit('B2F_value_joy_1_sw', {'teller':teller16})
+    # socketio.emit('B2F_value_joy_1_sw', {'teller':teller16}) # niet nodig?
     # joystick_id(pin)
     return teller16
 
@@ -287,7 +287,7 @@ def joystick_uitlezen():
 
         # socketio.emit('B2F_value_joy_1', {"historiek":{"x_as":x_val, "y_as":y_val}})
 
-        time.sleep(0.5)
+        time.sleep(.7)
 
 ##################### SOCKETIO.RUN #####################
 

@@ -40,7 +40,7 @@ const listenToSocket = function(){
   //     // tot hier werkt het
   //     })
 
-  //////////////////////////////___TEST___//////////////////////////////
+  //////////////////////////////___JOYSTICKS___//////////////////////////////
   // joy 1
   socket.on('B2F_value_joy_1_sw', function(jsonObject){
     console.info(jsonObject)
@@ -59,7 +59,7 @@ const listenToSocket = function(){
     let htmlString = ""
     htmlString += `
     <div class="c-waarde">
-    Joystick 1 X: ${jsonObject.joy_1_x}
+    waarden x-as: ${jsonObject.joy_1_x}
     </div>`
     htmlJoystick1X.innerHTML = htmlString
     })
@@ -70,7 +70,7 @@ const listenToSocket = function(){
     let htmlString = ""
     htmlString += `
     <div class="c-waarde">
-    hoeveel keer er op de knop is gedrukt: ${jsonObject.joy_1_y}
+    waarden y-as: ${jsonObject.joy_1_y}
     </div>`
     htmlJoystick1Y.innerHTML = htmlString
     })
