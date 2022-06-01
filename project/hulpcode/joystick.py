@@ -5,6 +5,7 @@ import time
 # deze hangen aan de mcp
 y_as = 0
 x_as = 1
+
 y_as2 = 4
 x_as2 = 5
 
