@@ -9,8 +9,8 @@ try:
     while True:
         rf.read()
         time.sleep(1)
-        rf.read_id()
-        time.sleep(1)
+        # rf.read_id()
+        # time.sleep(1)
 except KeyboardInterrupt:
     print("KB")
 finally:

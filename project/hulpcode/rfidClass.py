@@ -34,6 +34,7 @@ class SimpleMFRC522:
         return id
 
     def read_id_no_block(self):
+        print("reading id no block")
         (status, TagType) = self.READER.MFRC522_Request(self.READER.PICC_REQIDL)
         if status != self.READER.MI_OK:
             return None
@@ -43,11 +44,14 @@ class SimpleMFRC522:
         return self.uid_to_num(uid)
     
     def read_no_block(self):
+        print("reading no block")
         (status, TagType) = self.READER.MFRC522_Request(self.READER.PICC_REQIDL)
         if status != self.READER.MI_OK:
+            print("reading no block 1")
             return None, None
         (status, uid) = self.READER.MFRC522_Anticoll()
         if status != self.READER.MI_OK:
+            print("reading no block 2")
             return None, None
         id = self.uid_to_num(uid)
         self.READER.MFRC522_SelectTag(uid)
@@ -55,7 +59,9 @@ class SimpleMFRC522:
         data = []
         text_read = ''
         if status == self.READER.MI_OK:
+            print("reading no block 3")
             for block_num in self.BLOCK_ADDRS:
+                print("reading no block 3")
                 block = self.READER.MFRC522_Read(block_num) 
                 if block:
                     data += block
