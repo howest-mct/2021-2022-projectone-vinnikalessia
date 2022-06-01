@@ -114,7 +114,7 @@ const listenToSocket = function(){
 const init = function(){
   console.info("DOM geladen")
   htmlDevices = document.querySelector('.js-devices')
-  htmlJoystick = document.querySelector('.js-joystick')
+  // htmlJoystick = document.querySelector('.js-joystick') // wrsch niet nodig
   htmlJoystick1X = document.querySelector('.js-joystick1X')
   htmlJoystick1Y = document.querySelector('.js-joystick1Y')
   htmlJoystick1SW = document.querySelector('.js-joystick1SW')
