@@ -32,7 +32,8 @@ teller = 0
 ##################### BUSSEN #####################
 # de spi-bus
 spi = spidev.SpiDev()
-spi.open(0,0)
+# spi.open(0,0)
+spi.open(0,1)
 spi.max_speed_hz = 10 ** 5
 
 i2c = SMBus()
@@ -46,7 +47,8 @@ app.config['SECRET_KEY'] = 'geheim!'
 #socketio = SocketIO(app, cors_allowed_origins="*")
 
 
-socketio = SocketIO(app, cors_allowed_origins="*", logger=False, engineio_logger=False, ping_timeout=1)
+socketio = SocketIO(app, cors_allowed_origins="*", 
+    logger=False, engineio_logger=False, ping_timeout=1)
 
 
 
@@ -65,7 +67,7 @@ def setup():
     GPIO.add_event_detect(sw, GPIO.FALLING, callback_knop, bouncetime = 100)
 
 def callback_knop(pin):
-    global teller, socketio
+    global teller
     teller += 1
     print("Knop joystick 1 is {} keer ingedrukt\n".format(teller))
     socketio.emit('B2F_value_joy_1_sw', {'teller':teller})
@@ -242,24 +244,30 @@ def teller_doorsturen():
             last_val = teller
         time.sleep(.5)
 
-
-
-
 def start_thread():
     print("***** Starting THREAD *****")
     thread1 = threading.Thread(target = joystick_uitlezen, args = (), daemon = True)
     thread1.start()
-    threading.Timer(10, joystick_uitlezen).start()    
+    # threading.Timer(10, joystick_uitlezen).start()    
 
 # # om de joystick uit te lezen ===> ToDo!!!!
-def joystick_uitlezen(data):
+def joystick_uitlezen():
+    global readChannel, spi, x_val1, y_val1, x_as1, y_as1
     while True:
-        print("***Joystick 1 uitlezen***")
-        joy_id = data["deviceid"]
-        if joy_id in [14, 15, 17, 18]:
-            waarde, commentaar = joystick_id(joy_id)
-        elif joy_id in [16, 19]:
-            waarde, commentaar = joysw_id(joy_id)
+        # print("***Joystick 1 uitlezen***")
+        # joy_id = data["deviceid"]
+        # if joy_id in [14, 15, 17, 18]:
+        #     waarde, commentaar = joystick_id(joy_id)
+        #     print(waarde)
+        # elif joy_id in [16, 19]:
+        #     waarde, commentaar = joysw_id(joy_id)
+
+        x_val1 = readChannel(x_as1)
+        print(f"dit is de x: {x_val1}")
+        time.sleep(1)
+        y_val1 = readChannel(y_as1)
+        print(f"dit is de y: {y_val1}\n")
+        # time.sleep(2)
 
         # todo
         # x_val = readChannel(x_as)
@@ -269,8 +277,8 @@ def joystick_uitlezen(data):
 
         # socketio.emit('B2F_value_joy_1', {"historiek":{"x_as":x_val, "y_as":y_val}})
 
-        DataRepository.create_historiek_joy(joy_id, commentaar, waarde) #ToDo
-        time.sleep(0.5)
+        # DataRepository.create_historiek_joy(joy_id, commentaar, waarde) #ToDo
+        # time.sleep(0.5)
 
 ##################### SOCKETIO.RUN #####################
 
@@ -282,8 +290,8 @@ if __name__ == "__main__":
         # start_chrome_thread()
         # start_thread_teller()
         print("**** Starting APP ****")
-        socketio.run(app,debug = False, host = '0.0.0.0')
-        # joystick_uitlezen()
+        # socketio.run(app,debug = False, host = '0.0.0.0')
+        joystick_uitlezen()
 
     except KeyboardInterrupt as e:
         print(e)
