@@ -262,10 +262,10 @@ def joystick_uitlezen(data):
             waarde, commentaar = joysw_id(joy_id)
 
         # todo
-        x_val = readChannel(x_as)
-        print(f"dit is de x: {x_val}")
-        y_val = readChannel(y_as)
-        print(f"dit is de y: {y_val}\n")
+        # x_val = readChannel(x_as)
+        # print(f"dit is de x: {x_val}")
+        # y_val = readChannel(y_as)
+        # print(f"dit is de y: {y_val}\n")
 
         # socketio.emit('B2F_value_joy_1', {"historiek":{"x_as":x_val, "y_as":y_val}})
 
