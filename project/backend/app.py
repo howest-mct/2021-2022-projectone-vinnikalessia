@@ -64,7 +64,7 @@ def setup():
 
     # de joystick
     GPIO.setup(sw, GPIO.IN, GPIO.PUD_UP)
-    GPIO.add_event_detect(sw, GPIO.FALLING, callback_knop, bouncetime = 100)
+    GPIO.add_event_detect(sw, GPIO.FALLING, callback_knop, bouncetime = 1000)
 
 def callback_knop(pin):
     global teller
@@ -76,8 +76,11 @@ def callback_knop(pin):
     return teller
 
 def readChannel(channel):
+    print("readchannel")
     val = spi.xfer2([1,(8+channel)<<4,0])
+    print("H")
     data = ((val[1] << 8) + val[2])
+    print("return data")
     return data
 
 def joysw_id(sw_id):
@@ -250,10 +253,18 @@ def start_thread():
     thread1.start()
     # threading.Timer(10, joystick_uitlezen).start()    
 
-# # om de joystick uit te lezen ===> ToDo!!!!
+
 def joystick_uitlezen():
-    global readChannel, spi, x_val1, y_val1, x_as1, y_as1
+    print("1")
     while True:
+        print("2")
+
+        x_val1 = readChannel(x_as1)
+        print(f"dit is de x: {x_val1}")
+        y_val1 = readChannel(y_as1)
+        print(f"dit is de y: {y_val1}\n")
+        time.sleep(1)
+
         # print("***Joystick 1 uitlezen***")
         # joy_id = data["deviceid"]
         # if joy_id in [14, 15, 17, 18]:
@@ -262,13 +273,7 @@ def joystick_uitlezen():
         # elif joy_id in [16, 19]:
         #     waarde, commentaar = joysw_id(joy_id)
 
-        x_val1 = readChannel(x_as1)
-        print(f"dit is de x: {x_val1}")
-        y_val1 = readChannel(y_as1)
-        print(f"dit is de y: {y_val1}\n")
-        time.sleep(1)
-
-        # todo
+        # # todo
         # x_val = readChannel(x_as)
         # print(f"dit is de x: {x_val}")
         # y_val = readChannel(y_as)
@@ -288,9 +293,9 @@ if __name__ == "__main__":
         # start_thread()
         # start_chrome_thread()
         # start_thread_teller()
-        print("**** Starting APP ****")
         # socketio.run(app,debug = False, host = '0.0.0.0')
         joystick_uitlezen()
+        print("**** Starting APP ****")
 
     except KeyboardInterrupt as e:
         print(e)
