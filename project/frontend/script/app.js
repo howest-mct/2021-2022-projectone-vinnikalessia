@@ -50,7 +50,7 @@ const listenToSocket = function(){
     <div class="c-waarde">
     hoeveel keer er op de knop is gedrukt: ${jsonObject.teller}
     </div>`
-    htmlJoystick.innerHTML = htmlString
+    htmlJoystick1SW.innerHTML = htmlString
     })
 
   socket.on('B2F_value_joy_1_x', function(jsonObject){
@@ -65,14 +65,14 @@ const listenToSocket = function(){
     })
 
   socket.on('B2F_value_joy_1_y', function(jsonObject){
-    console.info(jsonObject)
+    console.info(jsonObject, jsonObject.joy_1_y)
     // ${jsonObject.waarden.waarde}
     let htmlString = ""
     htmlString += `
     <div class="c-waarde">
-    hoeveel keer er op de knop is gedrukt: ${jsonObject.teller}
+    hoeveel keer er op de knop is gedrukt: ${jsonObject.joy_1_y}
     </div>`
-    htmlJoystick.innerHTML = htmlString
+    htmlJoystick1Y.innerHTML = htmlString
     })
 
   //////////////////////////////___joy 2___//////////////////////////////
