@@ -32,7 +32,7 @@ teller = 0
 ##################### BUSSEN #####################
 # de spi-bus
 spi = spidev.SpiDev()
-# spi.open(0,0)
+spi.open(0,0)
 spi.open(0,1)
 spi.max_speed_hz = 10 ** 5
 
@@ -51,7 +51,6 @@ socketio = SocketIO(app, cors_allowed_origins="*",
     logger=False, engineio_logger=False, ping_timeout=1)
 
 
-
 CORS(app)
 print("program started")
 
@@ -64,21 +63,22 @@ def setup():
 
     # de joystick
     GPIO.setup(sw, GPIO.IN, GPIO.PUD_UP)
+    GPIO.setup(x_as1, GPIO.IN)
+    GPIO.setup(y_as1, GPIO.IN)
     GPIO.add_event_detect(sw, GPIO.FALLING, callback_knop, bouncetime = 1000)
+
 
 def callback_knop(pin):
     global teller
     teller += 1
     print("Knop joystick 1 is {} keer ingedrukt\n".format(teller))
     socketio.emit('B2F_value_joy_1_sw', {'teller':teller})
-    
     # joystick_id(pin)
     return teller
 
 def readChannel(channel):
     print("readchannel")
     val = spi.xfer2([1,(8+channel)<<4,0])
-    print("H")
     data = ((val[1] << 8) + val[2])
     print("return data")
     return data
@@ -251,14 +251,11 @@ def start_thread():
     print("***** Starting THREAD *****")
     thread1 = threading.Thread(target = joystick_uitlezen, args = (), daemon = True)
     thread1.start()
-    # threading.Timer(10, joystick_uitlezen).start()    
+    threading.Timer(1, joystick_uitlezen).start()
 
 
 def joystick_uitlezen():
-    print("1")
-    while True:
-        print("2")
-
+    # while True:
         x_val1 = readChannel(x_as1)
         print(f"dit is de x: {x_val1}")
         y_val1 = readChannel(y_as1)
@@ -290,11 +287,11 @@ if __name__ == "__main__":
     try:
         # debug NIET op True zetten
         setup()
-        # start_thread()
+        start_thread()
         # start_chrome_thread()
         # start_thread_teller()
         # socketio.run(app,debug = False, host = '0.0.0.0')
-        joystick_uitlezen()
+        # joystick_uitlezen()
         print("**** Starting APP ****")
 
     except KeyboardInterrupt as e:
