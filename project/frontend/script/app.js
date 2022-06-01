@@ -5,7 +5,8 @@
 const lanIP = `192.168.168.169:5000`;
 const socket = io(`http://${lanIP}`, {transports: ["polling", "websocket"] });
 
-let htmlDevices, htmlJoystick, htmlXWaarde
+let htmlDevices, htmlXWaarde
+let htmlJoystick, htmlJoystick1X, htmlJoystick1Y, htmlJoystick1SW, htmlJoystick2X, htmlJoystick2Y, htmlJoystick2SW
 console.info(lanIP)
 
 
@@ -53,14 +54,14 @@ const listenToSocket = function(){
     })
 
   socket.on('B2F_value_joy_1_x', function(jsonObject){
-    console.info(jsonObject)
+    console.info(jsonObject, jsonObject.joy_1_x)
     // ${jsonObject.waarden.waarde}
     let htmlString = ""
     htmlString += `
     <div class="c-waarde">
-    hoeveel keer er op de knop is gedrukt: ${jsonObject.teller}
+    Joystick 1 X: ${jsonObject.joy_1_x}
     </div>`
-    htmlJoystick.innerHTML = htmlString
+    htmlJoystick1X.innerHTML = htmlString
     })
 
   socket.on('B2F_value_joy_1_y', function(jsonObject){
@@ -114,6 +115,13 @@ const init = function(){
   console.info("DOM geladen")
   htmlDevices = document.querySelector('.js-devices')
   htmlJoystick = document.querySelector('.js-joystick')
+  htmlJoystick1X = document.querySelector('.js-joystick1X')
+  htmlJoystick1Y = document.querySelector('.js-joystick1Y')
+  htmlJoystick1SW = document.querySelector('.js-joystick1SW')
+
+  htmlJoystick2X = document.querySelector('.js-joystick2X')
+  htmlJoystick2Y = document.querySelector('.js-joystick2Y')
+  htmlJoystick2SW = document.querySelector('.js-joystick2SW')
 
   listenToSocket()
 }

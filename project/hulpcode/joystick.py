@@ -35,8 +35,13 @@ def callback_knop(pin):
     # socketio.emit('B2F_value_joy_1_sw', {'teller':teller})
 
 def readChannel(channel):
-    val = spi.xfer2([1,(8+channel)<<4,0])
-    data = ((val[1] << 8) + val[2])
+    # wat ik had
+    # val = spi.xfer2([1,(8+channel)<<4,0])
+    # data = ((val[1] << 8) + val[2])
+
+    # oplossing PJ
+    val = spi.xfer2([1,(8|channel)<<4,0])
+    data = (((val[1] & 3) << 8) | val[2])
     return data
 
 while True:
