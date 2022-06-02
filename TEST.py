@@ -42,12 +42,13 @@ try:
         # time.sleep(3)
         with canvas(device, dither = False) as draw:
             print("player 1")
-            points = ((10, 10), (20, 10), (20, 20), (10, 20), (5, 15))
+            draw.text((30, 40), "__Eliah__", fill="white")
+            points = ((123, 32), (118, 37), (108, 37), (108, 27), (118, 27))
             draw.polygon((points), fill="White")
             # draw.polygon(device.bounding_box, outline="white", fill="black")
         time.sleep(3)
         with canvas(device, dither = False) as draw:
-            print("player 1")
+            print("player 2")
             draw.text((30, 40), "__Aléssia__", fill="white")
             points = ((5, 32), (10, 37), (20, 37), (20, 27), (10, 27))
             draw.polygon((points), fill="White")
