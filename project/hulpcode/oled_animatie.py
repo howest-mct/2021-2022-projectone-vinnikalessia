@@ -1,3 +1,9 @@
+
+"""
+Rotating 3D box wireframe & color dithering.
+Adapted from:
+http://codentronix.com/2011/05/12/rotating-3d-cube-using-python-and-pygame/
+"""
 from luma.core.sprite_system import framerate_regulator
 from luma.core import cmdline, error
 from luma.core.render import canvas
@@ -6,11 +12,6 @@ import logging
 import math
 import sys
 
-"""
-Rotating 3D box wireframe & color dithering.
-Adapted from:
-http://codentronix.com/2011/05/12/rotating-3d-cube-using-python-and-pygame/
-"""
 
 # logging
 logging.basicConfig(
@@ -19,7 +20,6 @@ logging.basicConfig(
 )
 # ignore PIL debug messages
 logging.getLogger('PIL').setLevel(logging.ERROR)
-
 
 def display_settings(device, args):
     """
@@ -118,9 +118,7 @@ def sine_wave(min, max, step=1):
 
 
 def main(num_iterations=sys.maxsize):
-
     regulator = framerate_regulator(fps=30)
-
     vertices = [
         point(-1, 1, -1),
         point(1, 1, -1),
@@ -166,9 +164,7 @@ def main(num_iterations=sys.maxsize):
                         fill, outline = color, color
                     else:
                         fill, outline = "black", "white"
-
                     draw.polygon(t[v1].xy + t[v2].xy + t[v3].xy + t[v4].xy, fill, outline)
-
             a += 0.3
             b -= 1.1
             c += 0.85
@@ -176,6 +172,7 @@ def main(num_iterations=sys.maxsize):
 
 if __name__ == "__main__":
     try:
+        print("start")
         device = get_device()
         main()
     except KeyboardInterrupt:
