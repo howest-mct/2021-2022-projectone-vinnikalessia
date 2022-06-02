@@ -14,24 +14,44 @@ device = ssd1306(serial)
 
 try:
     while True:
-        with canvas(device) as draw:
-            draw.rectangle(device.bounding_box, outline="white", fill="black")
-            draw.text((30, 40), "Hello World", fill="white")
-        time.sleep(.5)
-        with canvas(device) as draw:
-            draw.rectangle(device.bounding_box, outline="white", fill="black")
-            draw.text((30, 40), " ", fill="white")
-        time.sleep(.5)
-        with canvas(device) as draw:
-            draw.rectangle(device.bounding_box, outline="white", fill="black")
+        # with canvas(device) as draw:
+        #     draw.rectangle(device.bounding_box, outline="white", fill="black")
+        #     draw.text((30, 40), "Hello World", fill="white")
+        # time.sleep(.5)
+        # with canvas(device) as draw:
+        #     draw.rectangle(device.bounding_box, outline="white", fill="black")
+        #     draw.text((30, 40), " ", fill="white")
+        # time.sleep(.5)
+        # with canvas(device) as draw:
+        #     draw.rectangle(device.bounding_box, outline="white", fill="black")
+        #     draw.text((30, 40), "__Aléssia__", fill="white")
+        # time.sleep(3)
+        # with canvas(device, dither=True) as draw:
+        #     draw.rectangle((10, 10, 30, 30), outline="white", fill="black")
+        # time.sleep(3)
+        # with canvas(device, dither = False) as draw:
+        #     draw.ellipse((10, 10, 30, 30), outline="white", fill="black")
+        # time.sleep(3)
+        # with canvas(device, dither = False) as draw:
+        #     draw.rectangle(device.bounding_box, outline="white", fill="black")
+        #     draw.text((30, 40), "<=", fill="white")
+        # time.sleep(3)
+        # with canvas(device, dither = False) as draw:
+        #     points = ((5, 15), (10, 20), (20, 20), (20, 10), (10, 10))
+        #     draw.polygon((points), fill="White")
+        # time.sleep(3)
+        with canvas(device, dither = False) as draw:
+            print("player 1")
+            points = ((10, 10), (20, 10), (20, 20), (10, 20), (5, 15))
+            draw.polygon((points), fill="White")
+            # draw.polygon(device.bounding_box, outline="white", fill="black")
+        time.sleep(3)
+        with canvas(device, dither = False) as draw:
+            print("player 1")
             draw.text((30, 40), "__Aléssia__", fill="white")
+            points = ((5, 32), (10, 37), (20, 37), (20, 27), (10, 27))
+            draw.polygon((points), fill="White")
         time.sleep(3)
-        with canvas(device, dither=True) as draw:
-            draw.rectangle((10, 10, 30, 30), outline="white", fill="red")
-        time.sleep(3)
-        with Image.open("Player_1.jpg") as im:
-            im.rotate(45).show()
-        print("gezien?")
 except KeyboardInterrupt as k:
     print(k)
 finally:
