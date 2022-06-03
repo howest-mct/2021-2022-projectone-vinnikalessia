@@ -12,6 +12,12 @@ import threading
 import spidev
 import time
 from RPi import GPIO
+
+##################### MY IMPORT #####################
+from project.hulpcode.touch import Touch_klasse
+# from hulpcode.joystick import 
+
+
 ##################### GLOBALE VARIABELEN ######################
 global sw_val, x_val, y_val
 
@@ -87,7 +93,7 @@ def setup():
     GPIO.setup(y_as2, GPIO.IN)
     GPIO.add_event_detect(sw2, GPIO.FALLING, callback_sw2, bouncetime = 1000)
 
-    # touchsensor
+    # touchsensoren
     GPIO.setup(t1, GPIO.IN, GPIO.PUD_UP)
     GPIO.setup(t2, GPIO.IN, GPIO.PUD_UP)
 
@@ -160,19 +166,19 @@ def joystick_id(deviceID):
     return waarde, commentaar
 
 ##################### FUNCTIONS - TOUCHSENSOR #####################
-def touch1():
-    global teller7
-    teller7 += 1
-    print("AHA! Gezien!")
-    print(f"\t je bent {teller7} keer gezien geweest!")
-    return teller7
+# def touch1():
+#     global teller7
+#     teller7 += 1
+#     print("AHA! Gezien!")
+#     print(f"\t je bent {teller7} keer gezien geweest!")
+#     return teller7
 
-def touch2():
-    global teller8
-    teller8 += 1
-    print("AHA! Gezien!")
-    print(f"\t je bent {teller8} keer gezien geweest!")
-    return teller8
+# def touch2():
+#     global teller8
+#     teller8 += 1
+#     print("AHA! Gezien!")
+#     print(f"\t je bent {teller8} keer gezien geweest!")
+#     return teller8
 
 ##################### SOCKETIO #####################
 @socketio.on_error()        # Handles the default namespace
@@ -343,6 +349,9 @@ if __name__ == "__main__":
         # start_thread_teller()
         print("**** Starting APP ****")
         socketio.run(app,debug = False, host = '0.0.0.0')
+        while True:
+            print("touch 1 lezen")
+            Touch_klasse.touch1()
     except KeyboardInterrupt as e:
         print(e)
     finally:
