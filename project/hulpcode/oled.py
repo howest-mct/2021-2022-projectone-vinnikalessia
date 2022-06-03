@@ -20,12 +20,13 @@ def setup():
     GPIO.setmode(GPIO.BCM)
     GPIO.setup(test_knop, GPIO.IN, GPIO.PUD_UP)
 
-    # GPIO.add_event_detect(sw, GPIO.FALLING, callback_knop, bouncetime = 100)
+    GPIO.add_event_detect(test_knop, GPIO.FALLING, callback_knop, bouncetime = 100)
 
 def callback_knop(pin):
     global teller
     teller += 1
     print("De TEST knop is {} keer ingedrukt\n".format(teller))
+    return teller
 
 
 def status_1():
@@ -35,15 +36,34 @@ def status_1():
 def write_ip_address(msg):
     print(msg)
 
+def status_2():
+    with canvas(device, dither = False) as draw:
+        print("player 1")
+        draw.rectangle(device.bounding_box, outline="white", fill="black")
+        draw.text((30, 40), "__Eliah__", fill="white")
+        points = ((123, 32), (118, 37), (108, 37), (108, 27), (118, 27))
+        draw.polygon((points), fill="White")
+    time.sleep(3)
+    with canvas(device, dither = False) as draw:
+        print("player 2")
+        draw.rectangle(device.bounding_box, outline="white", fill="black")
+        draw.text((30, 40), "__Aléssia__", fill="white")
+        points = ((5, 32), (10, 37), (20, 37), (20, 27), (10, 27))
+        draw.polygon((points), fill="White")
+    time.sleep(3)
 
 try:
-    print("😁")
+    setup()
+    vorige = 0
     while True:
+        print(vorige, teller)
         if vorige != teller:
             print("GEDRUKT")
             status_1()
+            vorige = teller
         else:
-            print("...")
+            print("...Playing...")
+            # status_2()
 
         print("hello")
         # with canvas(device, dither=True) as draw:
