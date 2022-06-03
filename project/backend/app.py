@@ -12,6 +12,12 @@ import threading
 import spidev
 import time
 from RPi import GPIO
+
+##################### MY IMPORT #####################
+from project.hulpcode.touch import Touch_klasse
+# from hulpcode.joystick import 
+
+
 ##################### GLOBALE VARIABELEN ######################
 global sw_val, x_val, y_val
 
@@ -19,18 +25,29 @@ global sw_val, x_val, y_val
 # deze hangen aan de mcp
 y_as1 = 0
 x_as1 = 1
-y_as2 = 4
-x_as2 = 5
+y_as2 = 3
+x_as2 = 4
 
 # de sw van de joystick aan de rpi
-sw = 5
+sw1 = 5
+sw2 = 6
 
 # teller aantal keer sw ingedrukt
 teller16 = 0
-teller19 = 0
-last_val = 0
+last_val16 = 0
 prev_teller16 = 0
+
+teller19 = 0
+last_val19 = 0
 prev_teller19 = 0
+
+########### TOUCHSENSOR ###########
+t1 = 13
+t2 = 19
+
+# teller aantal keer getouched
+teller7 = 0 # t1
+teller8 = 0 # t2
 
 ##################### BUSSEN #####################
 # de spi-bus
@@ -64,14 +81,24 @@ def setup():
     GPIO.setwarnings(False)
     GPIO.setmode(GPIO.BCM)
 
-    # de joystick
-    GPIO.setup(sw, GPIO.IN, GPIO.PUD_UP)
+    # joystick 1
+    GPIO.setup(sw1, GPIO.IN, GPIO.PUD_UP)
     GPIO.setup(x_as1, GPIO.IN)
     GPIO.setup(y_as1, GPIO.IN)
-    GPIO.add_event_detect(sw, GPIO.FALLING, callback_knop, bouncetime = 1000)
+    GPIO.add_event_detect(sw1, GPIO.FALLING, callback_sw1, bouncetime = 1000)
+    
+    # joystick 2
+    GPIO.setup(sw2, GPIO.IN, GPIO.PUD_UP)
+    GPIO.setup(x_as2, GPIO.IN)
+    GPIO.setup(y_as2, GPIO.IN)
+    GPIO.add_event_detect(sw2, GPIO.FALLING, callback_sw2, bouncetime = 1000)
 
+    # touchsensoren
+    GPIO.setup(t1, GPIO.IN, GPIO.PUD_UP)
+    GPIO.setup(t2, GPIO.IN, GPIO.PUD_UP)
 
-def callback_knop(pin):
+##################### CALLBACK #####################
+def callback_sw1(pin):
     global teller16
     teller16 += 1
     print("Knop joystick 1 is {} keer ingedrukt\n".format(teller16))
@@ -79,6 +106,13 @@ def callback_knop(pin):
     # joystick_id(pin)
     return teller16
 
+def callback_sw2(pin):
+    global teller19
+    teller19 += 1
+    print("Knop joystick 1 is {} keer ingedrukt\n".format(teller19))
+    return teller19
+
+##################### FUNCTIONS - JOYSTICK #####################
 def readChannel(channel):
     val = spi.xfer2([1,(8|channel)<<4,0])
     data = (((val[1] & 3) << 8) | val[2])
@@ -130,6 +164,21 @@ def joystick_id(deviceID):
         socketio.emit('B2F_value_joy_2_y', {'joy_2_y':waarde})
         print(f"dit is y van joystick 2: {waarde}\n")
     return waarde, commentaar
+
+##################### FUNCTIONS - TOUCHSENSOR #####################
+# def touch1():
+#     global teller7
+#     teller7 += 1
+#     print("AHA! Gezien!")
+#     print(f"\t je bent {teller7} keer gezien geweest!")
+#     return teller7
+
+# def touch2():
+#     global teller8
+#     teller8 += 1
+#     print("AHA! Gezien!")
+#     print(f"\t je bent {teller8} keer gezien geweest!")
+#     return teller8
 
 ##################### SOCKETIO #####################
 @socketio.on_error()        # Handles the default namespace
@@ -300,6 +349,9 @@ if __name__ == "__main__":
         # start_thread_teller()
         print("**** Starting APP ****")
         socketio.run(app,debug = False, host = '0.0.0.0')
+        while True:
+            print("touch 1 lezen")
+            Touch_klasse.touch1()
     except KeyboardInterrupt as e:
         print(e)
     finally:
