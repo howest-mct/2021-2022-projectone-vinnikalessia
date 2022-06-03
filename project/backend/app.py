@@ -25,8 +25,8 @@ global sw_val, x_val, y_val
 # deze hangen aan de mcp
 y_as1 = 0
 x_as1 = 1
-y_as2 = 3
-x_as2 = 4
+y_as2 = 2
+x_as2 = 3
 
 # de sw van de joystick aan de rpi
 sw1 = 5
@@ -125,7 +125,6 @@ def joysw_id(sw_id):
             commentaar = 'joystick 1 ingedrukt'
             waarde = 1
             prev_teller16 = teller16
-        
         socketio.emit('B2F_value_joy_1_sw', {'teller':teller16})
 
     elif sw_id == 19:
@@ -134,34 +133,34 @@ def joysw_id(sw_id):
         socketio.emit('B2F_value_joy_2_sw', {'teller':teller19})
     return waarde, commentaar
 
-# def joystick_id(deviceID):
-#     if deviceID == 14:
-#         commentaar = "joystick 1 registreerde beweging op x-as"
-#         # waarde = readChannel(x_as1)
-#         waarde = Joy_klasse.readChannel(x_as1)
-#         socketio.emit('B2F_value_joy_1_x', {'joy_1_x':waarde})
-#         print(f"dit is x van joystick 1: {waarde}")
-#         # print(commentaar)
+def joystick_id(deviceID):
+    if deviceID == 14:
+        commentaar = "joystick 1 registreerde beweging op x-as"
+        # waarde = readChannel(x_as1)
+        waarde = Joy_klasse.readChannel(x_as1)
+        socketio.emit('B2F_value_joy_1_x', {'joy_1_x':waarde})
+        print(f"dit is x van joystick 1: {waarde}")
+        # print(commentaar)
 
-#     elif deviceID == 15:
-#         commentaar = 'joystick 1 registreerde beweging op y-as'
-#         waarde = Joy_klasse.readChannel(y_as1)
-#         socketio.emit('B2F_value_joy_1_y', {'joy_1_y':waarde})
-#         print(f"dit is y van joystick 1: {waarde}")
-#         # print(commentaar)
+    elif deviceID == 15:
+        commentaar = 'joystick 1 registreerde beweging op y-as'
+        waarde = Joy_klasse.readChannel(y_as1)
+        socketio.emit('B2F_value_joy_1_y', {'joy_1_y':waarde})
+        print(f"dit is y van joystick 1: {waarde}")
+        print(commentaar)
 
-#     elif deviceID == 17:
-#         commentaar = 'joystick 2 registreerde beweging op x-as'
-#         waarde = Joy_klasse.readChannel(x_as2)
-#         socketio.emit('B2F_value_joy_2_x', {'joy_2_x':waarde})
-#         print(f"dit is x van joystick 2: {waarde}")
+    elif deviceID == 17:
+        commentaar = 'joystick 2 registreerde beweging op x-as'
+        waarde = Joy_klasse.readChannel(x_as2)
+        socketio.emit('B2F_value_joy_2_x', {'joy_2_x':waarde})
+        print(f"dit is x van joystick 2: {waarde}")
 
-#     elif deviceID == 18:
-#         commentaar = 'joystick 2 registreerde beweging op y-as'
-#         waarde = Joy_klasse.readChannel(y_as2)
-#         socketio.emit('B2F_value_joy_2_y', {'joy_2_y':waarde})
-#         print(f"dit is y van joystick 2: {waarde}\n")
-#     return waarde, commentaar
+    elif deviceID == 18:
+        commentaar = 'joystick 2 registreerde beweging op y-as'
+        waarde = Joy_klasse.readChannel(y_as2)
+        socketio.emit('B2F_value_joy_2_y', {'joy_2_y':waarde})
+        print(f"dit is y van joystick 2: {waarde}\n")
+    return waarde, commentaar
 
 ##################### FUNCTIONS - TOUCHSENSOR #####################
 # def touch1():
@@ -195,15 +194,15 @@ def joystick(data):
     joy_id = data["deviceid"]
     if joy_id in [14, 15, 17, 18]:
         # waarde, commentaar = joystick_id(joy_id)
-        waarde, commentaar = Joy_klasse.joystick_id(joy_id)
-        if joy_id == 14:
-            socketio.emit('B2F_value_joy_1_x', {'joy_1_x':waarde})
-        elif joy_id == 15:
-            socketio.emit('B2F_value_joy_1_y', {'joy_1_y':waarde})
-        elif joy_id == 17:
-            socketio.emit('B2F_value_joy_2_x', {'joy_2_x':waarde})
-        elif joy_id == 18:
-            socketio.emit('B2F_value_joy_2_y', {'joy_2_y':waarde})
+        waarde, commentaar = joystick_id(joy_id)
+        # if joy_id == 14:
+        #     socketio.emit('B2F_value_joy_1_x', {'joy_1_x':waarde})
+        # elif joy_id == 15:
+        #     socketio.emit('B2F_value_joy_1_y', {'joy_1_y':waarde})
+        # elif joy_id == 17:
+        #     socketio.emit('B2F_value_joy_2_x', {'joy_2_x':waarde})
+        # elif joy_id == 18:
+        #     socketio.emit('B2F_value_joy_2_y', {'joy_2_y':waarde})
         
 
     elif joy_id in [16, 19]:
@@ -325,13 +324,13 @@ def joystick_uitlezen():
         print("\n***Joystick 1 uitlezen***")
         # joy_id = data["deviceid"]
 
-        for joy_id in [14, 15]: #, 17, 18
-            waarde, commentaar = Joy_klasse.joystick_id(joy_id)
+        for joy_id in [14, 15, 17, 18]: #, 17, 18
+            waarde, commentaar = joystick_id(joy_id)
             # waarde, commentaar = joystick_id(joy_id)
             # print(waarde, commentaar)
             if waarde > 800 or waarde < 200:
                 DataRepository.create_historiek_joy(joy_id, commentaar, waarde)
-        for joy_id in [16]: #, 19
+        for joy_id in [16, 19]: #, 19
             waarde, commentaar = joysw_id(joy_id)
             # print(waarde, commentaar)
             if waarde == 1:

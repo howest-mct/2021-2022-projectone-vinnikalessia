@@ -1,14 +1,14 @@
-from flask_socketio import SocketIO, emit, send
-from flask import Flask, jsonify, request
-from flask_cors import CORS
+# from flask_socketio import SocketIO, emit, send
+# from flask import Flask, jsonify, request
+# from flask_cors import CORS
 from RPi import GPIO
 import spidev
 import time
 
-app = Flask(__name__)
-socketio = SocketIO(app, cors_allowed_origins="*", 
-    logger=False, engineio_logger=False, ping_timeout=1)
-CORS(app)
+# app = Flask(__name__)
+# socketio = SocketIO(app, cors_allowed_origins="*", 
+#     logger=False, engineio_logger=False, ping_timeout=1)
+# CORS(app)
 ########### JOYSTICK ###########
 # deze hangen aan de mcp
 y_as1 = 0
@@ -80,28 +80,47 @@ class Joy_klasse:
             commentaar = "joystick 1 registreerde beweging op x-as"
             # waarde = readChannel(x_as1)
             waarde = Joy_klasse.readChannel(x_as1)
-            socketio.emit('B2F_value_joy_1_x', {'joy_1_x':waarde})
+            # socketio.emit('B2F_value_joy_1_x', {'joy_1_x':waarde})
             print(f"dit is x van joystick 1: {waarde}")
             # print(commentaar)
 
         elif deviceID == 15:
             commentaar = 'joystick 1 registreerde beweging op y-as'
             waarde = Joy_klasse.readChannel(y_as1)
-            socketio.emit('B2F_value_joy_1_y', {'joy_1_y':waarde})
+            # socketio.emit('B2F_value_joy_1_y', {'joy_1_y':waarde})
             print(f"dit is y van joystick 1: {waarde}")
             # print(commentaar)
 
         elif deviceID == 17:
             commentaar = 'joystick 2 registreerde beweging op x-as'
             waarde = Joy_klasse.readChannel(x_as2)
-            socketio.emit('B2F_value_joy_2_x', {'joy_2_x':waarde})
+            # socketio.emit('B2F_value_joy_2_x', {'joy_2_x':waarde})
             print(f"dit is x van joystick 2: {waarde}")
 
         elif deviceID == 18:
             commentaar = 'joystick 2 registreerde beweging op y-as'
             waarde = Joy_klasse.readChannel(y_as2)
-            socketio.emit('B2F_value_joy_2_y', {'joy_2_y':waarde})
+            # socketio.emit('B2F_value_joy_2_y', {'joy_2_y':waarde})
             print(f"dit is y van joystick 2: {waarde}\n")
+        return waarde, commentaar
+    
+    def joysw_id(sw_id):
+        global teller16, prev_teller16
+        # 1 teller voor 2 sw's
+        waarde = 0 # als de callback gecalled is, dan 1, anders 0
+        if sw_id == 16:
+            commentaar = "joystick 1 is niet ingedrukt"
+            if teller16 != prev_teller16:
+                commentaar = 'joystick 1 ingedrukt'
+                waarde = 1
+                prev_teller16 = teller16
+            
+            # socketio.emit('B2F_value_joy_1_sw', {'teller':teller16})
+
+        elif sw_id == 19:
+            commentaar = 'joystick 2 ingedrukt'
+            waarde = 1
+            # socketio.emit('B2F_value_joy_2_sw', {'teller':teller19})
         return waarde, commentaar
 
 # while True:
