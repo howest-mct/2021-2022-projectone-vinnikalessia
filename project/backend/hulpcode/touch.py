@@ -9,29 +9,21 @@ teller7 = 0
 teller8 = 0
 
 class Touch_klasse:
-    # def __init__(self) -> None:
-    #     pass
-
-    # def setup(self):
-    #     print("setup")
-    #     GPIO.setmode(GPIO.BCM)
-    #     GPIO.setwarnings(False)
-    #     GPIO.setup(t1, GPIO.IN, GPIO.PUD_UP)
-    #     GPIO.setup(t2, GPIO.IN, GPIO.PUD_UP)
-
     def touch1():
         global teller7
         teller7 += 1
-        print("AHA! Gezien!")
-        print(f"\t je bent {teller7} keer gezien geweest!")
-        return teller7
+        print(f"\t je hebt {teller7} keer de touch geraakt!")
+        commentaar = "Aanraking touchsensor 1 gedetecteerd"
+        waarde = 1
+        return commentaar, waarde
 
     def touch2():
         global teller8
         teller8 += 1
-        print("AHA! Gezien!")
-        print(f"\t je bent {teller8} keer gezien geweest!")
-        return teller8
+        print(f"\t je bent {teller8} keer de touch geraakt!")
+        commentaar = "Aanraking touchsensor 2 gedetecteerd"
+        waarde = 1
+        return commentaar, waarde
 
 # try:
 #     setup()

@@ -136,11 +136,9 @@ def joysw_id(sw_id):
 def joystick_id(deviceID):
     if deviceID == 14:
         commentaar = "joystick 1 registreerde beweging op x-as"
-        # waarde = readChannel(x_as1)
         waarde = Joy_klasse.readChannel(x_as1)
         socketio.emit('B2F_value_joy_1_x', {'joy_1_x':waarde})
         print(f"dit is x van joystick 1: {waarde}")
-        # print(commentaar)
 
     elif deviceID == 15:
         commentaar = 'joystick 1 registreerde beweging op y-as'
@@ -195,27 +193,28 @@ def joystick(data):
     if joy_id in [14, 15, 17, 18]:
         # waarde, commentaar = joystick_id(joy_id)
         waarde, commentaar = joystick_id(joy_id)
-        # if joy_id == 14:
-        #     socketio.emit('B2F_value_joy_1_x', {'joy_1_x':waarde})
-        # elif joy_id == 15:
-        #     socketio.emit('B2F_value_joy_1_y', {'joy_1_y':waarde})
-        # elif joy_id == 17:
-        #     socketio.emit('B2F_value_joy_2_x', {'joy_2_x':waarde})
-        # elif joy_id == 18:
-        #     socketio.emit('B2F_value_joy_2_y', {'joy_2_y':waarde})
-        
 
     elif joy_id in [16, 19]:
         waarde, commentaar = joysw_id(joy_id)
-    
-    # print(f"joystick met id {joy_id}, heeft de waarde {waarde}")
-    DataRepository.create_historiek_joy(joy_id, commentaar, waarde)
 
-    # socketio.emit('B2F_value_joy_1_x', {"waarden":{"deviceid":joy_id, "waarde":waarde}}, broadcast = True)
-    # time.sleep(0.5)
+    DataRepository.create_historiek(joy_id, commentaar, waarde)
 
-    # emit("B2F_value_joy_1_x", {"x_waarde":x_val}, {"y_waarde":y_val}, {"sw_waarde":sw_val}, broadcast = True)
-    # time.sleep(0.5)
+@socketio.on('F2B_touch')
+def touch(data):
+    touch_id = data['deviceid']
+    if touch_id == 7:
+        print(f"sensor 1: {touch_id}")
+        teller7, commentaar, waarde = Touch_klasse.touch1()
+        print(teller7)
+
+    elif touch_id == 8:
+        print(f"sensor 2: {touch_id}")
+        teller8, commentaar, waarde = Touch_klasse.touch2()
+        print(teller8)
+
+    else:
+        print('IDK')
+    DataRepository.create_historiek(touch_id, commentaar, waarde)
 
 
 ##################### ENDPOINTS #####################
@@ -278,7 +277,7 @@ def get_waarden_joy():
     elif request.method == 'POST':
         gegevens = DataRepository.json_or_formdata(request)
         print(gegevens)
-        data = DataRepository.create_historiek_joy(gegevens["deviceid"], gegevens["commentaar"], gegevens["waarde"], gegevens["actieid"])
+        data = DataRepository.create_historiek(gegevens["deviceid"], gegevens["commentaar"], gegevens["waarde"], gegevens["actieid"])
         return jsonify(volgnummer = data), 201
 
     
@@ -307,44 +306,37 @@ def get_waarden_joy():
 def start_thread():
     print("***** Starting THREAD *****")
     thread1 = threading.Thread(target = joystick_uitlezen, args = (), daemon = True)
-    thread1.start()
+    thread2 = threading.Thread(target = touch_uitlezen, args = (), daemon = True)
+    # thread1.start()
+    thread2.start()
     # threading.Timer(1, joystick_uitlezen).start() # niet nodig want anders start je het 2 keer
 
 
 def joystick_uitlezen():
     while True:
-        # x_val1 = readChannel(x_as1)
-        # print(f"dit is de x: {x_val1}")
-        # socketio.emit("B2F_value_joy_1_x", {"waarde": x_val1}, broadcast=True)
-        # DataRepository.create_historiek_joy(14, "", waarde) #ToDo
-        # y_val1 = readChannel(y_as1)
-        # print(f"dit is de y: {y_val1}\n")
-        # time.sleep(1)
-
-        print("\n***Joystick 1 uitlezen***")
-        # joy_id = data["deviceid"]
-
-        for joy_id in [14, 15, 17, 18]: #, 17, 18
+        print("\n***Joysticks uitlezen***")
+        for joy_id in [14, 15, 17, 18]:
             waarde, commentaar = joystick_id(joy_id)
-            # waarde, commentaar = joystick_id(joy_id)
-            # print(waarde, commentaar)
             if waarde > 800 or waarde < 200:
-                DataRepository.create_historiek_joy(joy_id, commentaar, waarde)
-        for joy_id in [16, 19]: #, 19
+                DataRepository.create_historiek(joy_id, commentaar, waarde)
+        for joy_id in [16, 19]:
             waarde, commentaar = joysw_id(joy_id)
-            # print(waarde, commentaar)
             if waarde == 1:
-                DataRepository.create_historiek_joy(joy_id, commentaar, waarde)
+                DataRepository.create_historiek(joy_id, commentaar, waarde)
+        time.sleep(0.7)
 
-        # # todo
-        # x_val = readChannel(x_as)
-        # print(f"dit is de x: {x_val}")
-        # y_val = readChannel(y_as)
-        # print(f"dit is de y: {y_val}\n")
-
-        # socketio.emit('B2F_value_joy_1', {"historiek":{"x_as":x_val, "y_as":y_val}})
-
-        time.sleep(.7)
+def touch_uitlezen():
+    while True:
+        print("\n***Touchs uitlezen***")
+        if GPIO.input(t1):
+            waarde, commentaar = Touch_klasse.touch1()
+            print(waarde, commentaar, "😁")
+        elif GPIO.input(t2):
+            waarde, commentaar = Touch_klasse.touch2()
+            print(waarde, commentaar, "😎")
+        else:
+            print("Geen touch")
+        time.sleep(0.7)
 
 ##################### SOCKETIO.RUN #####################
 
@@ -357,9 +349,6 @@ if __name__ == "__main__":
         # start_thread_teller()
         print("**** Starting APP ****")
         socketio.run(app,debug = False, host = '0.0.0.0')
-        while True:
-            print("touch 1 lezen")
-            Touch_klasse.touch1()
     except KeyboardInterrupt as e:
         print(e)
     finally:
