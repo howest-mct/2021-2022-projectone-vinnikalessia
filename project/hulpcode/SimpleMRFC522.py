@@ -1,4 +1,5 @@
 # from . import MFRC522
+# from MRFC522 import MFRC522
 from MRFC522 import MFRC522
 import RPi.GPIO as GPIO
 import spidev
@@ -23,6 +24,7 @@ class SimpleMFRC522:
         id, text = self.read_no_block()
         while not id:
             id, text = self.read_no_block()
+            print("geen kaart gedetecteerd...")
             # wanneer er geen kaart is
         return id, text
 
