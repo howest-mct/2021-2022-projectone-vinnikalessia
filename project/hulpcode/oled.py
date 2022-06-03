@@ -26,6 +26,7 @@ def callback_knop(pin):
     global teller
     teller += 1
     print("De TEST knop is {} keer ingedrukt\n".format(teller))
+    status_2()
     return teller
 
 
@@ -35,6 +36,10 @@ def status_1():
 
 def write_ip_address(msg):
     print(msg)
+    with canvas(device, dither = False) as draw:
+        draw.text((30, 40), msg, fill="white")
+    time.sleep(3)
+
 
 def status_2():
     with canvas(device, dither = False) as draw:
@@ -63,7 +68,6 @@ try:
             vorige = teller
         else:
             print("...Playing...")
-            # status_2()
 
         print("hello")
         # with canvas(device, dither=True) as draw:
