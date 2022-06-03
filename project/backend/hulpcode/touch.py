@@ -9,8 +9,8 @@ teller7 = 0
 teller8 = 0
 
 class Touch_klasse:
-    def __init__(self) -> None:
-        pass
+    # def __init__(self) -> None:
+    #     pass
 
     # def setup(self):
     #     print("setup")
@@ -19,14 +19,14 @@ class Touch_klasse:
     #     GPIO.setup(t1, GPIO.IN, GPIO.PUD_UP)
     #     GPIO.setup(t2, GPIO.IN, GPIO.PUD_UP)
 
-    def touch1(self):
+    def touch1():
         global teller7
         teller7 += 1
         print("AHA! Gezien!")
         print(f"\t je bent {teller7} keer gezien geweest!")
         return teller7
 
-    def touch2(self):
+    def touch2():
         global teller8
         teller8 += 1
         print("AHA! Gezien!")
