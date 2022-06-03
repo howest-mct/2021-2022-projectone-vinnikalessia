@@ -1,7 +1,14 @@
+from flask_socketio import SocketIO, emit, send
+from flask import Flask, jsonify, request
+from flask_cors import CORS
 from RPi import GPIO
 import spidev
 import time
 
+app = Flask(__name__)
+socketio = SocketIO(app, cors_allowed_origins="*", 
+    logger=False, engineio_logger=False, ping_timeout=1)
+CORS(app)
 ########### JOYSTICK ###########
 # deze hangen aan de mcp
 y_as1 = 0

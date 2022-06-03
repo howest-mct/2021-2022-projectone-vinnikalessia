@@ -196,6 +196,15 @@ def joystick(data):
     if joy_id in [14, 15, 17, 18]:
         # waarde, commentaar = joystick_id(joy_id)
         waarde, commentaar = Joy_klasse.joystick_id(joy_id)
+        if joy_id == 14:
+            socketio.emit('B2F_value_joy_1_x', {'joy_1_x':waarde})
+        elif joy_id == 15:
+            socketio.emit('B2F_value_joy_1_y', {'joy_1_y':waarde})
+        elif joy_id == 17:
+            socketio.emit('B2F_value_joy_2_x', {'joy_2_x':waarde})
+        elif joy_id == 18:
+            socketio.emit('B2F_value_joy_2_y', {'joy_2_y':waarde})
+        
 
     elif joy_id in [16, 19]:
         waarde, commentaar = joysw_id(joy_id)
@@ -318,6 +327,7 @@ def joystick_uitlezen():
 
         for joy_id in [14, 15]: #, 17, 18
             waarde, commentaar = Joy_klasse.joystick_id(joy_id)
+            # waarde, commentaar = joystick_id(joy_id)
             # print(waarde, commentaar)
             if waarde > 800 or waarde < 200:
                 DataRepository.create_historiek_joy(joy_id, commentaar, waarde)
