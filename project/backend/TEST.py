@@ -120,7 +120,7 @@ def setup():
 
     # touchsensoren
     GPIO.setup(motor1, GPIO.OUT)
-    # GPIO.setup(motor2, GPIO.OUT)
+    GPIO.setup(motor2, GPIO.OUT)
 
 
 ##################### CALLBACK #####################

@@ -60,5 +60,8 @@ finally:
     # print("terug naar 0")
     # motorpwm.ChangeDutyCycle(5)
     # time.sleep(0.5)
+    pwm = hoek_tot_duty(0)
+    motor.ChangeDutyCycle(pwm)
+    time.sleep(0.2)
     print("cleanup")
     GPIO.cleanup()
