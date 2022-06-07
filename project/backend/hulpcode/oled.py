@@ -71,7 +71,7 @@ try:
 
         print("hello")
         # with canvas(device, dither=True) as draw:
-        #     draw.rectangle((10, 10, 30, 30), outline="white", fill="red")
+        #     draw.rectangle((10, 10, 30, 30), outline="white", fill="black")
         time.sleep(1)
 except KeyboardInterrupt as k:
     print(k)
