@@ -16,6 +16,7 @@ import time
 ##################### MY IMPORT #####################
 from hulpcode.joystick import Joy_klasse
 from hulpcode.touch import Touch_klasse
+# from hulpcode.motor import motor_klasse
 
 
 ##################### GLOBALE VARIABELEN ######################
@@ -48,6 +49,15 @@ t2 = 19
 # teller aantal keer getouched
 teller7 = 0 # t1
 teller8 = 0 # t2
+
+########### TOUCHSENSOR ###########
+motor1 = 17
+# motor2 = 27
+hoek = 5
+
+# teller
+tellerm1 = 0
+# tellerm2 = 0
 
 ##################### BUSSEN #####################
 # de spi-bus
@@ -94,9 +104,14 @@ def setup():
     GPIO.setup(t1, GPIO.IN, GPIO.PUD_UP)
     GPIO.setup(t2, GPIO.IN, GPIO.PUD_UP)
 
+    # touchsensoren
+    GPIO.setup(motor1, GPIO.OUT)
+    # GPIO.setup(motor2, GPIO.OUT)
+
+
 ##################### CALLBACK #####################
 def callback_sw1(pin):
-    global teller16
+    global teller16, teller19
     teller16 += 1
     print("Knop joystick 1 is {} keer ingedrukt\n".format(teller16))
     # socketio.emit('B2F_value_joy_1_sw', {'teller':teller16}) # niet nodig?
@@ -116,7 +131,7 @@ def callback_sw2(pin):
 #     return data
 
 def joysw_id(sw_id):
-    global teller16, prev_teller16
+    global teller16, prev_teller16, teller19, prev_teller19
     # 1 teller voor 2 sw's
     waarde = 0 # als de callback gecalled is, dan 1, anders 0
     if sw_id == 16:
@@ -128,8 +143,11 @@ def joysw_id(sw_id):
         socketio.emit('B2F_value_joy_1_sw', {'teller':teller16})
 
     elif sw_id == 19:
-        commentaar = 'joystick 2 ingedrukt'
-        waarde = 1
+        commentaar = 'joystick 2 niet ingedrukt'
+        if teller19 != prev_teller19:
+            commentaar = "joystick 2 ingedrukt"
+            waarde = 1
+            prev_teller19 = teller19
         socketio.emit('B2F_value_joy_2_sw', {'teller':teller19})
     return waarde, commentaar
 
@@ -174,6 +192,13 @@ def joystick_id(deviceID):
 #     print("AHA! Gezien!")
 #     print(f"\t je bent {teller8} keer gezien geweest!")
 #     return teller8
+
+##################### FUNCTIONS - MOTOR #####################
+def hoek_tot_duty(getal):
+    print(f"Dit is de hoek: {getal}")
+    pwm = int(getal * 0.555555)
+    print(f"Dit is de hoek in pwm: {pwm}")
+    return pwm
 
 ##################### SOCKETIO #####################
 @socketio.on_error()        # Handles the default namespace
@@ -303,12 +328,13 @@ def get_waarden_joy():
 #             last_val = teller
 #         time.sleep(.5)
 
+# ALS JE DE ENE LEEST, KAN JE DE ANDER NIET UITLEZEN!!
 def start_thread():
     print("***** Starting THREAD *****")
     thread1 = threading.Thread(target = joystick_uitlezen, args = (), daemon = True)
-    thread2 = threading.Thread(target = touch_uitlezen, args = (), daemon = True)
-    # thread1.start()
-    thread2.start()
+    # thread2 = threading.Thread(target = touch_uitlezen, args = (), daemon = True)
+    thread1.start()
+    # thread2.start()
     # threading.Timer(1, joystick_uitlezen).start() # niet nodig want anders start je het 2 keer
 
 
@@ -323,20 +349,21 @@ def joystick_uitlezen():
             waarde, commentaar = joysw_id(joy_id)
             if waarde == 1:
                 DataRepository.create_historiek(joy_id, commentaar, waarde)
+        
         time.sleep(0.7)
 
-def touch_uitlezen():
-    while True:
-        print("\n***Touchs uitlezen***")
-        if GPIO.input(t1):
-            waarde, commentaar = Touch_klasse.touch1()
-            print(waarde, commentaar, "😁")
-        elif GPIO.input(t2):
-            waarde, commentaar = Touch_klasse.touch2()
-            print(waarde, commentaar, "😎")
-        else:
-            print("Geen touch")
-        time.sleep(0.7)
+# def touch_uitlezen():
+#     while True:
+#         print("\n***Touchs uitlezen***")
+#         if GPIO.input(t1):
+#             waarde, commentaar = Touch_klasse.touch1()
+#             print(waarde, commentaar, "😁")
+#         elif GPIO.input(t2):
+#             waarde, commentaar = Touch_klasse.touch2()
+#             print(waarde, commentaar, "😎")
+#         else:
+#             print("Geen touch")
+#         time.sleep(0.7)
 
 ##################### SOCKETIO.RUN #####################
 

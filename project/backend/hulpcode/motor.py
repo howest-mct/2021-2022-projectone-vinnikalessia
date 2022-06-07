@@ -3,8 +3,6 @@ from smbus import SMBus
 from RPi import GPIO
 import time
 
-
-
 motor = 17
 t1 = 21
 teller = 0
