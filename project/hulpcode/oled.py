@@ -60,18 +60,19 @@ def status_2():
 try:
     setup()
     vorige = 0
+    teller = 0
     while True:
         print(vorige, teller)
         if vorige != teller:
             print("GEDRUKT")
-            status_1()
+            status_2()
             vorige = teller
         else:
             print("...Playing...")
 
         print("hello")
         # with canvas(device, dither=True) as draw:
-        #     draw.rectangle((10, 10, 30, 30), outline="white", fill="red")
+        #     draw.rectangle((10, 10, 30, 30), outline="white", fill="black")
         time.sleep(1)
 except KeyboardInterrupt as k:
     print(k)
