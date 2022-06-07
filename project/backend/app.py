@@ -366,7 +366,7 @@ def joystick_uitlezen():
             waarde, commentaar = joysw_id(joy_id)
             if waarde == 1:
                 DataRepository.create_historiek(joy_id, commentaar, waarde)
-        
+
         time.sleep(0.7)
 
 # def touch_uitlezen():
