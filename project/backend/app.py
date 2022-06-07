@@ -1,12 +1,19 @@
 ##################### IMPORT #####################
+from luma.core.virtual import viewport, snapshot, range_overlap
+from luma.core.interface.serial import i2c, spi, pcf8574
 from repositories.DataRepository import DataRepository
+from luma.core.interface.parallel import bitbang_6800
 from flask_socketio import SocketIO, emit, send
 from flask import Flask, jsonify, request
+from luma.oled.device import ssd1306
 from numpy import False_, broadcast
+from subprocess import check_output
 from selenium import webdriver
 from logging import exception
 from flask_cors import CORS
+from luma.core.render import canvas
 from smbus import SMBus
+from PIL import Image
 from RPi import GPIO
 import threading
 import spidev
@@ -16,6 +23,7 @@ import time
 ##################### MY IMPORT #####################
 from hulpcode.joystick import Joy_klasse
 from hulpcode.touch import Touch_klasse
+# from hulpcode.oled import oled
 # from hulpcode.motor import motor_klasse
 
 
@@ -50,7 +58,7 @@ t2 = 19
 teller7 = 0 # t1
 teller8 = 0 # t2
 
-########### TOUCHSENSOR ###########
+########### MOTOR ###########
 motor1 = 17
 # motor2 = 27
 hoek = 5
@@ -58,6 +66,12 @@ hoek = 5
 # teller
 tellerm1 = 0
 # tellerm2 = 0
+
+########### OLED ###########
+tellerOled = 0
+serial = i2c(port = 1, address = 0x3C)
+device = ssd1306(serial)
+
 
 ##################### BUSSEN #####################
 # de spi-bus
@@ -199,6 +213,10 @@ def hoek_tot_duty(getal):
     pwm = int(getal * 0.555555)
     print(f"Dit is de hoek in pwm: {pwm}")
     return pwm
+
+##################### FUNCTIONS - OLED #####################
+
+
 
 ##################### SOCKETIO #####################
 @socketio.on_error()        # Handles the default namespace
