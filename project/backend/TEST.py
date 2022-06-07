@@ -400,7 +400,9 @@ def keuze():
                 draw.text((30, 50), "keuze 3", fill = "white")
             time.sleep(0.5)
 
-
+        if GPIO.input(t1):
+            # als de touchsensor aanraking detecteerd, dan...
+            print("Let's start the game!")
 
 def spel_starten():
     global tellerKeuze
