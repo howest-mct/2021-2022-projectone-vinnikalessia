@@ -304,7 +304,6 @@ def get_waarden_joy():
         print(gegevens)
         data = DataRepository.create_historiek(gegevens["deviceid"], gegevens["commentaar"], gegevens["waarde"], gegevens["actieid"])
         return jsonify(volgnummer = data), 201
-
     
 ##################### THREADS #####################
 # START een thread op. Belangrijk!!! Debugging moet UIT staan op start van de server, anders start de thread dubbel op
