@@ -29,7 +29,6 @@ def callback_knop(pin):
     status_2()
     return teller
 
-
 def status_1():
     ips = check_output(['hostname', '--all-ip-addresses'])
     write_ip_address(ips)
