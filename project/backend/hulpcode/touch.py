@@ -15,15 +15,15 @@ class Touch_klasse:
         print(f"\t je hebt {teller7} keer de touch geraakt!")
         commentaar = "Aanraking touchsensor 1 gedetecteerd"
         waarde = 1
-        return commentaar, waarde
+        return waarde, commentaar
 
     def touch2():
         global teller8
         teller8 += 1
-        print(f"\t je bent {teller8} keer de touch geraakt!")
+        print(f"\t je hebt {teller8} keer de touch geraakt!")
         commentaar = "Aanraking touchsensor 2 gedetecteerd"
         waarde = 1
-        return commentaar, waarde
+        return waarde, commentaar
 
 # try:
 #     setup()
