@@ -27,9 +27,6 @@ from hulpcode.touch import Touch_klasse
 # from hulpcode.motor import motor_klasse
 
 
-##################### GLOBALE VARIABELEN ######################
-global sw_val, x_val, y_val
-
 ########### JOYSTICK ###########
 # deze hangen aan de mcp
 y_as1 = 0
@@ -50,6 +47,9 @@ teller19 = 0
 last_val19 = 0
 prev_teller19 = 0
 
+# is de teller voordat het spel begint. Hiermee wordt er gekozen tot hoeveel er wordt gespeeld
+tellerKeuze = 0
+
 ########### TOUCHSENSOR ###########
 t1 = 13
 t2 = 19
@@ -60,12 +60,12 @@ teller8 = 0 # t2
 
 ########### MOTOR ###########
 motor1 = 17
-# motor2 = 27
+motor2 = 27
 hoek = 5
 
 # teller
 tellerm1 = 0
-# tellerm2 = 0
+tellerm2 = 0
 
 ########### OLED ###########
 tellerOled = 0
@@ -118,9 +118,10 @@ def setup():
     GPIO.setup(t1, GPIO.IN, GPIO.PUD_UP)
     GPIO.setup(t2, GPIO.IN, GPIO.PUD_UP)
 
-    # touchsensoren
+    # motoren
     GPIO.setup(motor1, GPIO.OUT)
     GPIO.setup(motor2, GPIO.OUT)
+
 
 
 ##################### CALLBACK #####################
@@ -128,22 +129,15 @@ def callback_sw1(pin):
     global teller16, teller19
     teller16 += 1
     print("Knop joystick 1 is {} keer ingedrukt\n".format(teller16))
-    # socketio.emit('B2F_value_joy_1_sw', {'teller':teller16}) # niet nodig?
-    # joystick_id(pin)
     return teller16
 
 def callback_sw2(pin):
     global teller19
     teller19 += 1
-    print("Knop joystick 1 is {} keer ingedrukt\n".format(teller19))
+    print("Knop joystick 2 is {} keer ingedrukt\n".format(teller19))
     return teller19
 
 ##################### FUNCTIONS - JOYSTICK #####################
-# def readChannel(channel):
-#     val = spi.xfer2([1,(8|channel)<<4,0])
-#     data = (((val[1] & 3) << 8) | val[2])
-#     return data
-
 def joysw_id(sw_id):
     global teller16, prev_teller16, teller19, prev_teller19
     # 1 teller voor 2 sw's
@@ -348,26 +342,60 @@ def get_waarden_joy():
 # ALS JE DE ENE LEEST, KAN JE DE ANDER NIET UITLEZEN!!
 def start_thread():
     print("***** Starting THREAD *****")
-    thread1 = threading.Thread(target = joystick_uitlezen, args = (), daemon = True)
+    thread1 = threading.Thread(target = spel_starten, args = (), daemon = True)
     # thread2 = threading.Thread(target = touch_uitlezen, args = (), daemon = True)
     thread1.start()
     # thread2.start()
     # threading.Timer(1, joystick_uitlezen).start() # niet nodig want anders start je het 2 keer
 
 
-def joystick_uitlezen():
-    while True:
-        print("\n***Joysticks uitlezen***")
-        for joy_id in [14, 15, 17, 18]:
-            waarde, commentaar = joystick_id(joy_id)
-            if waarde > 800 or waarde < 200:
-                DataRepository.create_historiek(joy_id, commentaar, waarde)
-        for joy_id in [16, 19]:
-            waarde, commentaar = joysw_id(joy_id)
-            if waarde == 1:
-                DataRepository.create_historiek(joy_id, commentaar, waarde)
+def keuze():
+        print("dit zijn de keuzes: ")
+        if tellerKeuze == 0:
+            with canvas(device, dither = False) as draw:
+                draw.text((30, 10), "keuze 1", fill = "white")
+                draw.text((30, 30), "keuze 2", fill = "white")
+                draw.text((30, 50), "keuze 3", fill = "white")
+                points = ((5, 32), (10, 37), (20, 37), (20, 27), (10, 27))
+                draw.polygon((points), fill="White")
+        elif tellerKeuze == 1:
+                draw.text((30, 10), "keuze 1", fill = "white")
+                draw.text((30, 30), "keuze 2", fill = "white")
+                draw.text((30, 50), "keuze 3", fill = "white")
+        elif tellerKeuze == 2:
+                draw.text((30, 10), "keuze 1", fill = "white")
+                draw.text((30, 30), "keuze 2", fill = "white")
+                draw.text((30, 50), "keuze 3", fill = "white")
 
-        time.sleep(0.7)
+
+
+def spel_starten():
+    global tellerKeuze
+    tellerKeuze = 0
+    while True:
+        # print("Kies tot hoeveel er gespeeld wordt: ")
+        keuze()
+        # with canvas(device, dither = False) as draw:
+        #     print("dit zijn de keuzes: ")
+        #     draw.text((30, 10), "keuze 1", fill = "white")
+        #     draw.text((30, 30), "keuze 2", fill = "white")
+        #     draw.text((30, 50), "keuze 3", fill = "white")
+        time.sleep(3)
+        # if tellerKeuze
+
+
+        # # if teller van een van de touch niet == 1, dan loop verder doen
+        # print("\n***Joysticks uitlezen***")
+        # for joy_id in [14, 15, 17, 18]:
+        #     waarde, commentaar = joystick_id(joy_id)
+        #     if waarde > 800 or waarde < 200:
+        #         DataRepository.create_historiek(joy_id, commentaar, waarde)
+        # for joy_id in [16, 19]:
+        #     waarde, commentaar = joysw_id(joy_id)
+        #     if waarde == 1:
+        #         DataRepository.create_historiek(joy_id, commentaar, waarde)
+
+        # time.sleep(0.7)
 
 # def touch_uitlezen():
 #     while True:
