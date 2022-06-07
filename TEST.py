@@ -36,47 +36,22 @@
 
 ##############################################################################
 
-from luma.core.interface.serial import i2c, spi, pcf8574
-from luma.core.interface.parallel import bitbang_6800
-from luma.core.render import canvas
-from luma.oled.device import ssd1306, ssd1309, ssd1325, ssd1331, sh1106, ws0010
-from PIL import Image
-import time
-# rev.1 users set port=0
-# substitute spi(device=0, port=0) below if using that interface
-# substitute bitbang_6800(RS=7, E=8, PINS=[25,24,23,27]) below if using that interface
-
-serial = i2c(port=1, address=0x3C)
-# substitute ssd1331(...) or sh1106(...) below if using that device
-device = ssd1306(serial)
+import random
 
 
 try:
-    print('hello')
     while True:
-
-        with canvas(device, dither = False) as draw:
-            print("player 1")
-            draw.rectangle(device.bounding_box, outline="white", fill="black")
-            draw.text((30, 40), "__Eliah__", fill="white")
-            points = ((123, 32), (118, 37), (108, 37), (108, 27), (118, 27))
-            draw.polygon((points), fill="White")
-            # draw.polygon(device.bounding_box, outline="white", fill="black")
-        time.sleep(3)
-        with canvas(device, dither = False) as draw:
-            print("player 2")
-            draw.rectangle(device.bounding_box, outline="white", fill="black")
-            draw.text((30, 40), "__Aléssia__", fill="white")
-            points = ((5, 32), (10, 37), (20, 37), (20, 27), (10, 27))
-            draw.polygon((points), fill="White")
-        time.sleep(3)
-except KeyboardInterrupt as k:
-    print(k)
+        speler = random.randint(1,2)
+        if speler == 1:
+            print("player1")
+        elif speler == 2:
+            print("player2")
+        else:
+            print("ONBEKEND")
+except KeyboardInterrupt as kb:
+    print(kb)
 finally:
-    print("finally")
-    print("Leeg")
-
-
+    print("einde")
 
 
 
