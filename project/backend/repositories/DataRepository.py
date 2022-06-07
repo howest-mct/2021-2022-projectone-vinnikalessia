@@ -39,7 +39,7 @@ class DataRepository:
         return Database.get_rows(sql)
 
     @staticmethod
-    def create_historiek_joy(deviceid, commentaar, waarde = 1, actieid = 1):
+    def create_historiek(deviceid, commentaar, waarde = 1, actieid = 1):
     # def create_historiek_joy_1_x(waarde, commentaar = "joystick 1 registreerde beweging op x-as"):
         sql = "INSERT INTO historiek(deviceid, actieid, waarde, commentaar, actiedatum) VALUE(%s, %s, %s, %s, %s)"
         params = [deviceid, actieid, waarde, commentaar, datetime.datetime.now()]
@@ -48,11 +48,11 @@ class DataRepository:
         return result
 
     # # todo    
-    @staticmethod
-    def update_status_lamp(x_as, y_as):
-        sql = "UPDATE  SET status = %s WHERE id = %s"
-        params = []
-        return Database.execute_sql(sql, params)
+    # @staticmethod
+    # def update_status_lamp(x_as, y_as):
+    #     sql = "UPDATE  SET status = %s WHERE id = %s"
+    #     params = []
+    #     return Database.execute_sql(sql, params)
 
     # @staticmethod
     # def update_status_alle_lampen(status):

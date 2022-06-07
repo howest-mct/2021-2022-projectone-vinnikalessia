@@ -26,6 +26,7 @@ class SimpleMFRC522:
             id, text = self.read_no_block()
             print("geen kaart gedetecteerd...")
             # wanneer er geen kaart is
+        print("11")
         return id, text
 
     def read_id(self):
@@ -48,25 +49,36 @@ class SimpleMFRC522:
         return self.uid_to_num(uid)
     
     def read_no_block(self):
+        print("1")
         (status, TagType) = self.READER.MFRC522_Request(self.READER.PICC_REQIDL)
         if status != self.READER.MI_OK:
+            print("2")
             return None, None
         (status, uid) = self.READER.MFRC522_Anticoll()
+        print("3")
         if status != self.READER.MI_OK:
+            print("4")
             return None, None
+        print("4")
         id = self.uid_to_num(uid)
         self.READER.MFRC522_SelectTag(uid)
         status = self.READER.MFRC522_Auth(self.READER.PICC_AUTHENT1A, 11, self.KEY, uid)
         data = []
         text_read = ''
+        print("5")
         if status == self.READER.MI_OK:
+            print("6")
             for block_num in self.BLOCK_ADDRS:
+                print("7")
                 block = self.READER.MFRC522_Read(block_num) 
                 if block:
+                    print("8")
                     data += block
                 if data:
+                    print("9")
                     text_read = ''.join(chr(i) for i in data)
         self.READER.MFRC522_StopCrypto1()
+        print("10")
         return id, text_read
     
     def write(self, text):

@@ -36,7 +36,7 @@ try:
         id, text = reader.read()
         print("ID: %s\nText: %s" % (id,text))
         print("YAAAAAAAY!!!\n")
-        time.sleep(5)
+        time.sleep(3)
         # id_rfid, text = reader.read_no_block()  # uitlezen van de id_rfid en text constant
         if (id is None):  # als er niets wordt uitgelezen
             print("onbekend")
