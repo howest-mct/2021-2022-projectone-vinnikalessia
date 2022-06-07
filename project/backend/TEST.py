@@ -1,6 +1,7 @@
 ##################### IMPORT #####################
 from luma.core.virtual import viewport, snapshot, range_overlap
 from luma.core.interface.serial import i2c, spi, pcf8574
+from project.backend.app import joystick_uitlezen
 from repositories.DataRepository import DataRepository
 from luma.core.interface.parallel import bitbang_6800
 from flask_socketio import SocketIO, emit, send
@@ -348,24 +349,56 @@ def start_thread():
     # thread2.start()
     # threading.Timer(1, joystick_uitlezen).start() # niet nodig want anders start je het 2 keer
 
+def joystick_uitlezen():
+    # while True: # uitgezet voor de start van het spel
+        print("\n***Joysticks uitlezen***")
+        for joy_id in [14, 15, 17, 18]:
+            waarde, commentaar = joystick_id(joy_id)
+            if waarde > 800 or waarde < 200:
+                DataRepository.create_historiek(joy_id, commentaar, waarde)
+                if waarde > 800:
+                    tellerKeuze -= 1
+                    return tellerKeuze
+                elif waarde < 200:
+                    tellerKeuze += 1
+                    return tellerKeuze
+        for joy_id in [16, 19]:
+            waarde, commentaar = joysw_id(joy_id)
+            if waarde == 1:
+                DataRepository.create_historiek(joy_id, commentaar, waarde)
+
+        time.sleep(0.7)
 
 def keuze():
         print("dit zijn de keuzes: ")
+        # met touchsensor bevestigen 'confirm'
+    
+        joystick_uitlezen()
+        print(tellerKeuze)
         if tellerKeuze == 0:
+            # tot 1 => default
             with canvas(device, dither = False) as draw:
                 draw.text((30, 10), "keuze 1", fill = "white")
                 draw.text((30, 30), "keuze 2", fill = "white")
                 draw.text((30, 50), "keuze 3", fill = "white")
-                points = ((5, 32), (10, 37), (20, 37), (20, 27), (10, 27))
-                draw.polygon((points), fill="White")
+                # points = ((5, 32), (10, 37), (20, 37), (20, 27), (10, 27))
+                # draw.polygon((points), fill="White")
+            time.sleep(0.5)
         elif tellerKeuze == 1:
+            # tot 3
+            with canvas(device, dither = False) as draw:
                 draw.text((30, 10), "keuze 1", fill = "white")
                 draw.text((30, 30), "keuze 2", fill = "white")
                 draw.text((30, 50), "keuze 3", fill = "white")
+            time.sleep(0.5)
+
         elif tellerKeuze == 2:
+            # tot 5
+            with canvas(device, dither = False) as draw:
                 draw.text((30, 10), "keuze 1", fill = "white")
                 draw.text((30, 30), "keuze 2", fill = "white")
                 draw.text((30, 50), "keuze 3", fill = "white")
+            time.sleep(0.5)
 
 
 
