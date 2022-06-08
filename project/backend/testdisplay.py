@@ -48,8 +48,8 @@ draw.rectangle(
 font = ImageFont.load_default()
 
 # Draw Some Text
-text = "Hello World2!"
-(font_width, font_height) = font.getsize(text)
+# text = "Hello World2!"
+# (font_width, font_height) = font.getsize(text)
 
 
 # draw.text(
