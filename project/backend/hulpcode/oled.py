@@ -237,7 +237,7 @@ try:
 except KeyboardInterrupt as k:
     print(k)
 finally:
-    
+    GPIO.cleanup()
     print("einde")
 
 # rev.1 users set port=0

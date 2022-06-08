@@ -20,6 +20,7 @@ import threading
 import spidev
 import json
 import time
+import random
 
 ##################### MY IMPORT #####################
 from hulpcode.joystick import Joy_klasse
@@ -87,6 +88,11 @@ tellerdown2 = 0 # down2
 # is de teller voordat het spel begint. Hiermee wordt er gekozen tot hoeveel er wordt gespeeld
 tellerKeuze = 0
 
+########### RGB ###########
+r = 23
+g = 24
+b = 25
+
 ##################### BUSSEN #####################
 # de spi-bus
 spi = spidev.SpiDev()
@@ -148,6 +154,11 @@ def setup():
 
     GPIO.setup(down2, GPIO.IN, GPIO.PUD_UP)
     GPIO.add_event_detect(down2, GPIO.FALLING, callback_down2, bouncetime = 1000)
+
+    # RGB led
+    GPIO.setup(r, GPIO.OUT)
+    GPIO.setup(g, GPIO.OUT)
+    GPIO.setup(b, GPIO.OUT)
 
 
 ##################### CALLBACK #####################
@@ -477,6 +488,25 @@ def spel_starten():
 
     time.sleep(0.2)
     print("LET'S START THE GAME!")
+    start_game()
+
+
+def start_game():
+    print('we starten het spel ☺ ')
+    randomPlayer = random.randint(0, 1)
+    if randomPlayer == 0:
+        # blauw
+        print("Player 1 begint")
+        GPIO.output(r, GPIO.LOW)
+        GPIO.output(g, GPIO.LOW)
+        GPIO.output(b, GPIO.HIGH)
+    
+    elif randomPlayer == 1:
+        # rood
+        print("Player 2 begint")
+        GPIO.output(r, GPIO.HIGH)
+        GPIO.output(g, GPIO.LOW)
+        GPIO.output(b, GPIO.LOW)
 
 
 # def touch_uitlezen():
