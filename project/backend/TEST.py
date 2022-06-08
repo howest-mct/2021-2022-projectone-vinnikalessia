@@ -24,7 +24,7 @@ import time
 ##################### MY IMPORT #####################
 from hulpcode.joystick import Joy_klasse
 from hulpcode.touch import Touch_klasse
-# from hulpcode.oled import oled
+# from hulpcode.oled import keuzelijst, oled, status_2
 # from hulpcode.motor import motor_klasse
 
 
@@ -77,10 +77,10 @@ up2 = 20
 down2 = 21
 
 # tellers
-# telleru1 = 0 # up1
-# tellerd1 = 0 # udown1
-# telleru2 = 0 # up2
-# tellerd2 = 0 # down2
+tellerup1 = 0 # up1
+tellerdown1 = 0 # udown1
+tellerup2 = 0 # up2
+tellerdown2 = 0 # down2
 
 # is de teller voordat het spel begint. Hiermee wordt er gekozen tot hoeveel er wordt gespeeld
 tellerKeuze = 0
@@ -136,16 +136,16 @@ def setup():
 
     # knoppen
     GPIO.setup(up1, GPIO.IN, GPIO.PUD_UP)
-    GPIO.add_event_detect(up1, GPIO.FALLING, callback_up, bouncetime = 1000)
+    GPIO.add_event_detect(up1, GPIO.FALLING, callback_up1, bouncetime = 1000)
 
     GPIO.setup(down1, GPIO.IN, GPIO.PUD_UP)
-    GPIO.add_event_detect(down1, GPIO.FALLING, callback_down, bouncetime = 1000)
+    GPIO.add_event_detect(down1, GPIO.FALLING, callback_down1, bouncetime = 1000)
 
     GPIO.setup(up2, GPIO.IN, GPIO.PUD_UP)
-    GPIO.add_event_detect(up2, GPIO.FALLING, callback_up, bouncetime = 1000)
+    GPIO.add_event_detect(up2, GPIO.FALLING, callback_up2, bouncetime = 1000)
 
     GPIO.setup(down2, GPIO.IN, GPIO.PUD_UP)
-    GPIO.add_event_detect(down2, GPIO.FALLING, callback_down, bouncetime = 1000)
+    GPIO.add_event_detect(down2, GPIO.FALLING, callback_down2, bouncetime = 1000)
 
 
 ##################### CALLBACK #####################
@@ -161,19 +161,29 @@ def callback_sw2(pin):
     print("Knop joystick 2 is {} keer ingedrukt\n".format(teller19))
     return teller19
 
-def callback_up(pin):
-    global tellerKeuze
-    # bij het begin van de spel zal dat veranderen om te kiezen tot hoeveel er wordt gespeeld
-    # bij het spelen zal het veranderen om de led te kiezen.
-    tellerKeuze += 1
-    print("UP")
+def callback_up1(pin):
+    global tellerup1
+    tellerup1 += 1
+    print("1 UP")
+    return tellerup1
 
-def callback_down(pin):
-    global tellerKeuze
-    # bij het begin van de spel zal dat veranderen om te kiezen tot hoeveel er wordt gespeeld
-    # bij het spelen zal het veranderen om de led te kiezen.
-    tellerKeuze -= 1
-    print("DOWN")
+def callback_down1(pin):
+    global tellerdown1
+    tellerdown1 -= 1
+    print("1 DOWN")
+    return tellerdown1
+
+def callback_up2(pin):
+    global tellerup2
+    tellerup2 += 1
+    print("2 UP")
+    return tellerup2
+
+def callback_down2(pin):
+    global tellerdown2
+    tellerdown2 -= 1
+    print("2 DOWN")
+    return tellerdown2
 
 ##################### FUNCTIONS - JOYSTICK #####################
 def joysw_id(sw_id):
@@ -418,54 +428,99 @@ def knopjes_uitlezen():
     elif tellerKeuze == 0:
         print("TOT 9 SPELEN!")
 
-def keuze():
-        print("dit zijn de keuzes: ")
-        # met joywticks naar boven/onder bewegen of de knopjes? => knopjes
-        # met touchsensor bevestigen 'confirm'
-        knopjes_uitlezen()
-        print(tellerKeuze)
-        if tellerKeuze == 0:
-            # tot 1 => default
-            with canvas(device, dither = False) as draw:
-                draw.text((30, 10), "keuze 1", fill = "white")
-                draw.text((30, 30), "keuze 2", fill = "white")
-                draw.text((30, 50), "keuze 3", fill = "white")
-                # points = ((5, 32), (10, 37), (20, 37), (20, 27), (10, 27))
-                # draw.polygon((points), fill="White")
-            time.sleep(0.5)
-        elif tellerKeuze == 1:
-            # tot 3
-            with canvas(device, dither = False) as draw:
-                draw.text((30, 10), "keuze 1", fill = "white")
-                draw.text((30, 30), "keuze 2", fill = "white")
-                draw.text((30, 50), "keuze 3", fill = "white")
-            time.sleep(0.5)
+# def keuze():
+#         print("dit zijn de keuzes: ")
+#         # met joywticks naar boven/onder bewegen of de knopjes? => knopjes
+#         # met touchsensor bevestigen 'confirm'
+#         knopjes_uitlezen()
+#         print(tellerKeuze)
+#         if tellerKeuze == 0:
+#             # tot 1 => default
+#             with canvas(device, dither = False) as draw:
+#                 draw.text((30, 10), "keuze 1", fill = "white")
+#                 draw.text((30, 30), "keuze 2", fill = "white")
+#                 draw.text((30, 50), "keuze 3", fill = "white")
+#                 # points = ((5, 32), (10, 37), (20, 37), (20, 27), (10, 27))
+#                 # draw.polygon((points), fill="White")
+#             time.sleep(0.5)
+#         elif tellerKeuze == 1:
+#             # tot 3
+#             with canvas(device, dither = False) as draw:
+#                 draw.text((30, 10), "keuze 1", fill = "white")
+#                 draw.text((30, 30), "keuze 2", fill = "white")
+#                 draw.text((30, 50), "keuze 3", fill = "white")
+#             time.sleep(0.5)
 
-        elif tellerKeuze == 2:
-            # tot 5
-            with canvas(device, dither = False) as draw:
-                draw.text((30, 10), "keuze 1", fill = "white")
-                draw.text((30, 30), "keuze 2", fill = "white")
-                draw.text((30, 50), "keuze 3", fill = "white")
-            time.sleep(0.5)
+#         elif tellerKeuze == 2:
+#             # tot 5
+#             with canvas(device, dither = False) as draw:
+#                 draw.text((30, 10), "keuze 1", fill = "white")
+#                 draw.text((30, 30), "keuze 2", fill = "white")
+#                 draw.text((30, 50), "keuze 3", fill = "white")
+#             time.sleep(0.5)
 
-        if GPIO.input(t1):
-            # als de touchsensor aanraking detecteerd, dan...
-            print("Let's start the game!")
+#         if GPIO.input(t1):
+#             # als de touchsensor aanraking detecteerd, dan...
+#             print("Let's start the game!")
+
+def keuzelijst():
+    global tellerKeuze
+    print("Kies tot hoeveel er gespeeld wordt")
+    if tellerKeuze > 3:
+            tellerKeuze = 3
+
+    elif tellerKeuze < 0:
+        tellerKeuze = 0
+
+    print(f"dit is de teller: {tellerKeuze}")
+
+    if tellerKeuze == 0:
+        with canvas(device, dither = False) as draw:
+            print("player 2")
+            draw.rectangle(device.bounding_box, outline="white", fill="black")
+            draw.text((5, 2), "__ tot 1 spelen __", fill="white")# gekozen
+            draw.text((5, 17), "   tot 3 spelen", fill="red") 
+            draw.text((5, 32), "   tot 5 spelen", fill="white")
+            draw.text((5, 47), "   tot 9 spelen", fill="white")
+    elif tellerKeuze == 1:
+        with canvas(device, dither = False) as draw:
+            print("player 2")
+            draw.rectangle(device.bounding_box, outline="white", fill="black")
+            draw.text((5, 2), "   tot 1 spelen", fill="white")
+            draw.text((5, 17), "__ tot 3 spelen __", fill="red") # gekozen
+            draw.text((5, 32), "   tot 5 spelen", fill="white")
+            draw.text((5, 47), "   tot 9 spelen", fill="white")
+    elif tellerKeuze == 2:
+        with canvas(device, dither = False) as draw:
+            print("player 2")
+            draw.rectangle(device.bounding_box, outline="white", fill="black")
+            draw.text((5, 2), "   tot 1 spelen", fill="white")
+            draw.text((5, 17), "   tot 3 spelen", fill="red") 
+            draw.text((5, 32), "__ tot 5 spelen __", fill="white")# gekozen
+            draw.text((5, 47), "   tot 9 spelen", fill="white")
+    elif tellerKeuze == 3:
+        with canvas(device, dither = False) as draw:
+            print("player 2")
+            draw.rectangle(device.bounding_box, outline="white", fill="black")
+            draw.text((5, 2), "   tot 1 spelen", fill="white")
+            draw.text((5, 17), "   tot 3 spelen", fill="red") 
+            draw.text((5, 32), "   tot 5 spelen", fill="white")
+            draw.text((5, 47), "__ tot 9 spelen __", fill="white")# gekozen
+    else:
+        print("KAN NIET")
+    return tellerKeuze
 
 def spel_starten():
     global tellerKeuze
-    # tellerkeuze is de teller die de keuze van de spelers zal bijhouden: 1, 3, 5 of tot 9 spelen?
-    tellerKeuze = 0
     while True:
-        print("Kies tot hoeveel er gespeeld wordt")
+        # eerst keuzelijst
         # keuze()
-        with canvas(device, dither = False) as draw:
-            print("dit zijn de keuzes: ")
-            draw.text((30, 10), "keuze 1", fill = "white")
-            draw.text((30, 30), "keuze 2", fill = "white")
-            draw.text((30, 50), "keuze 3", fill = "white")
-        time.sleep(3)
+        if GPIO.input(t1):
+            print("😎😊")
+        keuzelijst()
+        if tellerKeuze == 0:
+            print("😀😀😀😀😀😀😀😀😀😀😀😀😀😀")
+        time.sleep(0.2)
         # if tellerKeuze
 
 

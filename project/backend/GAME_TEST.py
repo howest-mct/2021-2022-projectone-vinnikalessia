@@ -62,19 +62,12 @@ def status_1():
     write_ip_address(ips)
 
 def write_ip_address(msg):
-    # print(f"dit is gewoon {msg}")
-    # print(f"dit niet meer {str(msg)}")
-    # ip = msg.split(" ", 1)[0]
-    # print(f"dit is ip: {ip}")
-    # ip1 = ip.split("b'", 0)[0]
-    # print(f"uiteindelijk: {ip1}")
-    ips = check_output(['hostname', '--all-ip-addresses'])
-    ip = ips.decode(encoding='utf-8').strip()
-    ip_adresses = ip.split()
-    print(ip_adresses)
-    print(ip_adresses[1])
-    print(ip_adresses[0])
-
+    print(f"dit is gewoon {msg}")
+    print(f"dit niet meer {str(msg)}")
+    ip = msg.split(" ", 1)[0]
+    print(f"dit is ip: {ip}")
+    ip1 = ip.split("b'", 0)[0]
+    print(f"uiteindelijk: {ip1}")
 
     # ip2 = msg.split("b'", 1)[1]
     # print(f"Dit is het eerste ip: {ip1}")
@@ -90,6 +83,7 @@ def write_ip_address(msg):
 
     with canvas(device, dither = False) as draw:
         draw.text((30, 10), ip, fill="white")
+        draw.text((30, 40), ip1, fill="white")
     time.sleep(3)
 
 
