@@ -455,62 +455,68 @@ def joystick_uitlezen():
 
 def keuzelijst():
     global tellerKeuze, app_running
-    while app_running and True:
-        print("Kies tot hoeveel er gespeeld wordt")
-        if tellerKeuze > 3:
-                tellerKeuze = 3
-        elif tellerKeuze < 0:
-            tellerKeuze = 0
-        print(tellerKeuze)
-        draw.rectangle((0, 0, oled.width, oled.height), outline=255, fill=255)
-        draw.rectangle(
-            (BORDER, BORDER, oled.width - BORDER - 1, oled.height - BORDER - 1),
-            outline=0,
-            fill=0,
-        )        
-        # if tellerKeuze == 0:
-        #     print("keuze 1")
-        #     draw.text((5, 2), "__ tot 1 spelen __", font=font, fill=255)# gekozen
-        #     draw.text((5, 17), "   tot 3 spelen", font=font, fill=255) 
-        #     draw.text((5, 32), "   tot 5 spelen", font=font, fill=255)
-        #     draw.text((5, 47), "   tot 9 spelen", font=font, fill=255)
-        # elif tellerKeuze == 1:
-        #     print("keuze 2")
-        #     draw.text((5, 2), "   tot 1 spelen", font=font, fill=255)# gekozen
-        #     draw.text((5, 17), "__  tot 3 spelen __", font=font, fill=255) 
-        #     draw.text((5, 32), "   tot 5 spelen", font=font, fill=255)
-        #     draw.text((5, 47), "   tot 9 spelen", font=font, fill=255)
-        # elif tellerKeuze == 2:
-        #     print("keuze 3")
-        #     draw.text((5, 2), "   tot 1 spelen", font=font, fill=255)# gekozen
-        #     draw.text((5, 17), "   tot 3 spelen", font=font, fill=255) 
-        #     draw.text((5, 32), "__ tot 5 spelen __", font=font, fill=255)
-        #     draw.text((5, 47), "   tot 9 spelen", font=font, fill=255)
-        # elif tellerKeuze == 3:
-        #     print("keuze 4")
-        #     draw.text((5, 2), "   tot 1 spelen", font=font, fill=255)# gekozen
-        #     draw.text((5, 17), "   tot 3 spelen", font=font, fill=255) 
-        #     draw.text((5, 32), "   tot 5 spelen", font=font, fill=255)
-        #     draw.text((5, 47), "__ tot 9 spelen __", font=font, fill=255)
-        # else:
-        #     print("KAN NIET")
-        draw.text((5, 2), "__ tot 1 spelen __", font=font,     fill=255)# gekozen
-        draw.text((5, 17), "   tot 3 spelen", font=font,     fill=255) 
-        draw.text((5, 32), "   tot 5 spelen", font=font,     fill=255)
-        draw.text((5, 47), "   tot 9 spelen", font=font,     fill=255)
+    # while app_running and True:
+    print("Kies tot hoeveel er gespeeld wordt")
+    if tellerKeuze > 3:
+            tellerKeuze = 3
+    elif tellerKeuze < 0:
+        tellerKeuze = 0
+    print(tellerKeuze)
+    draw.rectangle((0, 0, oled.width, oled.height), outline=255, fill=255)
+    draw.rectangle(
+        (BORDER, BORDER, oled.width - BORDER - 1, oled.height - BORDER - 1),
+        outline=0,
+        fill=0,
+    )
+    print("we wachten even")
+    time.sleep(3)
+    oled.image(image)
+    oled.show()
+    time.sleep(0.2)
+    # if tellerKeuze == 0:
+    #     print("keuze 1")
+    #     draw.text((5, 2), "__ tot 1 spelen __", font=font, fill=255)# gekozen
+    #     draw.text((5, 17), "   tot 3 spelen", font=font, fill=255) 
+    #     draw.text((5, 32), "   tot 5 spelen", font=font, fill=255)
+    #     draw.text((5, 47), "   tot 9 spelen", font=font, fill=255)
+    # elif tellerKeuze == 1:
+    #     print("keuze 2")
+    #     draw.text((5, 2), "   tot 1 spelen", font=font, fill=255)# gekozen
+    #     draw.text((5, 17), "__  tot 3 spelen __", font=font, fill=255) 
+    #     draw.text((5, 32), "   tot 5 spelen", font=font, fill=255)
+    #     draw.text((5, 47), "   tot 9 spelen", font=font, fill=255)
+    # elif tellerKeuze == 2:
+    #     print("keuze 3")
+    #     draw.text((5, 2), "   tot 1 spelen", font=font, fill=255)# gekozen
+    #     draw.text((5, 17), "   tot 3 spelen", font=font, fill=255) 
+    #     draw.text((5, 32), "__ tot 5 spelen __", font=font, fill=255)
+    #     draw.text((5, 47), "   tot 9 spelen", font=font, fill=255)
+    # elif tellerKeuze == 3:
+    #     print("keuze 4")
+    #     draw.text((5, 2), "   tot 1 spelen", font=font, fill=255)# gekozen
+    #     draw.text((5, 17), "   tot 3 spelen", font=font, fill=255) 
+    #     draw.text((5, 32), "   tot 5 spelen", font=font, fill=255)
+    #     draw.text((5, 47), "__ tot 9 spelen __", font=font, fill=255)
+    # else:
+    #     print("KAN NIET")
+    # draw.text((5, 2), "__ tot 1 spelen __", font=font,     fill=255)# gekozen
+    # draw.text((5, 17), "   tot 3 spelen", font=font,     fill=255) 
+    # draw.text((5, 32), "   tot 5 spelen", font=font,     fill=255)
+    # draw.text((5, 47), "   tot 9 spelen", font=font,     fill=255)
 
-        oled.image(image)
-        # oled.show()
+    # oled.image(image)
+    # oled.show()
+    # time.sleep(0.2)
 
-        # als touchsensor aanraking ziet, dan start spel
-        if GPIO.input(t1) or GPIO.input(t2):
-            # dus als er input is van t1/t2
-            print('touchsensor aangeraakt => confirm de keuze')
-            return tellerKeuze
-        else:
-            time.sleep(0.2)
-            if not app_running:
-                print("done")
+    # als touchsensor aanraking ziet, dan start spel
+    if GPIO.input(t1) or GPIO.input(t2):
+        # dus als er input is van t1/t2
+        print('touchsensor aangeraakt => confirm de keuze')
+        return tellerKeuze
+    else:
+        time.sleep(0.2)
+        if not app_running:
+            print("done")
 
 def spel_starten():
     global tellerKeuze
@@ -556,13 +562,13 @@ def start_game():
 if __name__ == "__main__":
     try:
         # debug NIET op True zetten
-        draw.text((5, 2), "__ tot 1 spelen __", font=font,     fill=255)# gekozen
-        draw.text((5, 17), "   tot 3 spelen", font=font,     fill=255) 
-        draw.text((5, 32), "   tot 5 spelen", font=font,     fill=255)
-        draw.text((5, 47), "   tot 9 spelen", font=font,     fill=255)
+        # draw.text((5, 2), "__ tot 1 spelen __", font=font,     fill=255)# gekozen
+        # draw.text((5, 17), "   tot 3 spelen", font=font,     fill=255) 
+        # draw.text((5, 32), "   tot 5 spelen", font=font,     fill=255)
+        # draw.text((5, 47), "   tot 9 spelen", font=font,     fill=255)
         
-        oled.image(image)
-        oled.show()
+        # oled.image(image)
+        # oled.show()
         time.sleep(1)
         setup()
         start_thread()
@@ -575,9 +581,6 @@ if __name__ == "__main__":
     finally:
         print("cleanup pi")
         app_running = False
-        # pwm = hoek_tot_duty(0)
-        # motor1.ChangeDutyCycle(0)
-        # motor2.ChangeDutyCycle(0)
         pwm_motor1.stop()
         pwm_motor2.stop()
         # serial.cleanup()
