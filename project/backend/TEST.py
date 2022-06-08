@@ -493,20 +493,18 @@ def spel_starten():
 
 def start_game():
     print('we starten het spel ☺ ')
+    GPIO.output(r, GPIO.LOW)
+    GPIO.output(g, GPIO.LOW)
+    GPIO.output(b, GPIO.LOW)
     randomPlayer = random.randint(0, 1)
     if randomPlayer == 0:
         # blauw
         print("Player 1 begint")
-        GPIO.output(r, GPIO.LOW)
-        GPIO.output(g, GPIO.LOW)
         GPIO.output(b, GPIO.HIGH)
-    
     elif randomPlayer == 1:
         # rood
         print("Player 2 begint")
         GPIO.output(r, GPIO.HIGH)
-        GPIO.output(g, GPIO.LOW)
-        GPIO.output(b, GPIO.LOW)
 
 
 # def touch_uitlezen():
@@ -537,6 +535,9 @@ if __name__ == "__main__":
         print(e)
     finally:
         print("cleanup pi")
+        pwm = hoek_tot_duty(0)
+        motor1.ChangeDutyCycle(pwm)
+        motor2.ChangeDutyCycle(pwm)
         GPIO.cleanup()
         spi.close()
 
