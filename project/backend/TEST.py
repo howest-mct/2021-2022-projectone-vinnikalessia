@@ -1,6 +1,7 @@
 ##################### IMPORT #####################
 from luma.core.virtual import viewport, snapshot, range_overlap
 from luma.core.interface.serial import i2c, spi, pcf8574
+#
 # from project.backend.app import joystick_uitlezen
 from repositories.DataRepository import DataRepository
 from luma.core.interface.parallel import bitbang_6800
@@ -69,6 +70,13 @@ tellerm2 = 0
 tellerStap = 0
 
 ########### OLED ###########
+
+
+# i2c = SMBus()
+# i2c.open(1)
+
+
+
 tellerOled = 0
 serial = i2c(port = 1, address = 0x3C)
 device = ssd1306(serial)
@@ -87,7 +95,7 @@ tellerdown2 = 0 # down2
 
 # is de teller voordat het spel begint. Hiermee wordt er gekozen tot hoeveel er wordt gespeeld
 tellerKeuze = 0
-
+app_running = True
 ########### RGB ###########
 r = 23
 g = 24
@@ -99,9 +107,6 @@ spi = spidev.SpiDev()
 spi.open(0,0)
 spi.open(0,1)
 spi.max_speed_hz = 10 ** 5
-
-i2c = SMBus()
-i2c.open(1)
 
 ##################### FLASK #####################
 # start app
@@ -141,6 +146,10 @@ def setup():
     # motoren
     GPIO.setup(motor1, GPIO.OUT)
     GPIO.setup(motor2, GPIO.OUT)
+    pwm_motor1 = GPIO.PWM(motor1, 1000)
+    pwm_motor2 = GPIO.PWM(motor2, 1000)
+    pwm_motor1.start(0)
+    pwm_motor2.start(0)
 
     # knoppen
     GPIO.setup(up1, GPIO.IN, GPIO.PUD_UP)
@@ -431,61 +440,65 @@ def joystick_uitlezen():
 
 
 def keuzelijst():
-    global tellerKeuze
-    while True:
-        print("Kies tot hoeveel er gespeeld wordt")
-        # als het boven/onder de range zit => aanpassen
-        if tellerKeuze > 3:
-                tellerKeuze = 3
-        elif tellerKeuze < 0:
-            tellerKeuze = 0
+    global tellerKeuze, app_running
 
-        # de keuzes
-        if tellerKeuze == 0:
-            with canvas(device, dither = False) as draw:
+
+
+    with canvas(device, dither = False) as draw:
+
+        while app_running and True:
+            print("Kies tot hoeveel er gespeeld wordt")
+            # als het boven/onder de range zit => aanpassen
+            if tellerKeuze > 3:
+                    tellerKeuze = 3
+            elif tellerKeuze < 0:
+                tellerKeuze = 0
+
+            # de keuzes
+            if tellerKeuze == 0:
                 print("player 2")
                 draw.rectangle(device.bounding_box, outline="white", fill="black")
                 draw.text((5, 2), "__ tot 1 spelen __", fill="white")# gekozen
                 draw.text((5, 17), "   tot 3 spelen", fill="red") 
                 draw.text((5, 32), "   tot 5 spelen", fill="white")
                 draw.text((5, 47), "   tot 9 spelen", fill="white")
-        elif tellerKeuze == 1:
-            with canvas(device, dither = False) as draw:
+            elif tellerKeuze == 1:
                 print("player 2")
                 draw.rectangle(device.bounding_box, outline="white", fill="black")
                 draw.text((5, 2), "   tot 1 spelen", fill="white")
                 draw.text((5, 17), "__ tot 3 spelen __", fill="red") # gekozen
                 draw.text((5, 32), "   tot 5 spelen", fill="white")
                 draw.text((5, 47), "   tot 9 spelen", fill="white")
-        elif tellerKeuze == 2:
-            with canvas(device, dither = False) as draw:
+            elif tellerKeuze == 2:
                 print("player 2")
                 draw.rectangle(device.bounding_box, outline="white", fill="black")
                 draw.text((5, 2), "   tot 1 spelen", fill="white")
                 draw.text((5, 17), "   tot 3 spelen", fill="red") 
                 draw.text((5, 32), "__ tot 5 spelen __", fill="white")# gekozen
                 draw.text((5, 47), "   tot 9 spelen", fill="white")
-        elif tellerKeuze == 3:
-            with canvas(device, dither = False) as draw:
+            elif tellerKeuze == 3:
                 print("player 2")
                 draw.rectangle(device.bounding_box, outline="white", fill="black")
                 draw.text((5, 2), "   tot 1 spelen", fill="white")
                 draw.text((5, 17), "   tot 3 spelen", fill="red") 
                 draw.text((5, 32), "   tot 5 spelen", fill="white")
                 draw.text((5, 47), "__ tot 9 spelen __", fill="white")# gekozen
-        else:
-            print("KAN NIET")
-        # als touchsensor aanraking ziet, dan start spel
-        if GPIO.input(t1) or GPIO.input(t2):
-            # dus als er input is van t1/t2
-            print('touchsensor aangeraakt => confirm de keuze')
-            return tellerKeuze
+            else:
+                print("KAN NIET")
+            # als touchsensor aanraking ziet, dan start spel
+            if GPIO.input(t1) or GPIO.input(t2):
+                # dus als er input is van t1/t2
+                print('touchsensor aangeraakt => confirm de keuze')
+                return tellerKeuze
+            else:
+                time.sleep(0.2)
+        if not app_running:
+            print("done")
 
 def spel_starten():
     global tellerKeuze
     keuze = keuzelijst()
     print(f"dit is wat er gekozen werd: {keuze}")
-
     time.sleep(0.2)
     print("LET'S START THE GAME!")
     start_game()
@@ -493,6 +506,7 @@ def spel_starten():
 
 def start_game():
     print('we starten het spel ☺ ')
+    # alles uitzetten van de rgb
     GPIO.output(r, GPIO.LOW)
     GPIO.output(g, GPIO.LOW)
     GPIO.output(b, GPIO.LOW)
@@ -535,11 +549,19 @@ if __name__ == "__main__":
         print(e)
     finally:
         print("cleanup pi")
+        pwm_motor1.stop()
+        app_running = False
         pwm = hoek_tot_duty(0)
-        motor1.ChangeDutyCycle(pwm)
-        motor2.ChangeDutyCycle(pwm)
-        GPIO.cleanup()
+        # motor1.ChangeDutyCycle(pwm)
+        # motor2.ChangeDutyCycle(pwm)
+        serial.cleanup()
         spi.close()
+        
+        # i2c = SMBus()
+        # i2c.open(1)
+        # i2c.close()
+        GPIO.cleanup()
+
 
 
 
