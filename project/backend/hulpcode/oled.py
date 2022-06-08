@@ -60,18 +60,37 @@ try:
     setup()
     vorige = 0
     while True:
-        print(vorige, teller)
-        if vorige != teller:
-            print("GEDRUKT")
-            status_1()
-            vorige = teller
-        else:
-            print("...Playing...")
+        with canvas(device, dither = False) as draw:
+            print("player 1")
+            draw.rectangle(device.bounding_box, outline="white", fill="black")
+            draw.text((30, 40), "__Eliah__", fill="white")
+            points = ((123, 32), (118, 37), (108, 37), (108, 27), (118, 27))
+            draw.polygon((points), fill="White")
+        time.sleep(3)
+        with canvas(device, dither = False) as draw:
+            print("player 2")
+            draw.rectangle(device.bounding_box, outline="white", fill="black")
+            draw.text((30, 40), "__Aléssia__", fill="white")
+            points = ((5, 32), (10, 37), (20, 37), (20, 27), (10, 27))
+            draw.polygon((points), fill="White")
+        time.sleep(3)
 
-        print("hello")
+
+
+
+        ##########################################################
+        # print(vorige, teller)
+        # if vorige != teller:
+        #     print("GEDRUKT")
+        #     status_2()
+        #     vorige = teller
+        # else:
+        #     print("...Playing...")
+
+        # print("hello")
         # with canvas(device, dither=True) as draw:
         #     draw.rectangle((10, 10, 30, 30), outline="white", fill="black")
-        time.sleep(1)
+        # time.sleep(1)
 except KeyboardInterrupt as k:
     print(k)
 finally:

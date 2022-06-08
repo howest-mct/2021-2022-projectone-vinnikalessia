@@ -48,9 +48,6 @@ teller19 = 0
 last_val19 = 0
 prev_teller19 = 0
 
-# is de teller voordat het spel begint. Hiermee wordt er gekozen tot hoeveel er wordt gespeeld
-tellerKeuze = 0
-
 ########### TOUCHSENSOR ###########
 t1 = 13
 t2 = 19
@@ -73,6 +70,20 @@ tellerOled = 0
 serial = i2c(port = 1, address = 0x3C)
 device = ssd1306(serial)
 
+########### KNOP ###########
+up1 = 12
+down1 = 16
+up2 = 20
+down2 = 21
+
+# tellers
+# telleru1 = 0 # up1
+# tellerd1 = 0 # udown1
+# telleru2 = 0 # up2
+# tellerd2 = 0 # down2
+
+# is de teller voordat het spel begint. Hiermee wordt er gekozen tot hoeveel er wordt gespeeld
+tellerKeuze = 0
 
 ##################### BUSSEN #####################
 # de spi-bus
@@ -123,6 +134,18 @@ def setup():
     GPIO.setup(motor1, GPIO.OUT)
     GPIO.setup(motor2, GPIO.OUT)
 
+    # knoppen
+    GPIO.setup(up1, GPIO.IN, GPIO.PUD_UP)
+    GPIO.add_event_detect(up1, GPIO.FALLING, callback_up, bouncetime = 1000)
+
+    GPIO.setup(down1, GPIO.IN, GPIO.PUD_UP)
+    GPIO.add_event_detect(down1, GPIO.FALLING, callback_down, bouncetime = 1000)
+
+    GPIO.setup(up2, GPIO.IN, GPIO.PUD_UP)
+    GPIO.add_event_detect(up2, GPIO.FALLING, callback_up, bouncetime = 1000)
+
+    GPIO.setup(down2, GPIO.IN, GPIO.PUD_UP)
+    GPIO.add_event_detect(down2, GPIO.FALLING, callback_down, bouncetime = 1000)
 
 
 ##################### CALLBACK #####################
@@ -137,6 +160,20 @@ def callback_sw2(pin):
     teller19 += 1
     print("Knop joystick 2 is {} keer ingedrukt\n".format(teller19))
     return teller19
+
+def callback_up(pin):
+    global tellerKeuze
+    # bij het begin van de spel zal dat veranderen om te kiezen tot hoeveel er wordt gespeeld
+    # bij het spelen zal het veranderen om de led te kiezen.
+    tellerKeuze += 1
+    print("UP")
+
+def callback_down(pin):
+    global tellerKeuze
+    # bij het begin van de spel zal dat veranderen om te kiezen tot hoeveel er wordt gespeeld
+    # bij het spelen zal het veranderen om de led te kiezen.
+    tellerKeuze -= 1
+    print("DOWN")
 
 ##################### FUNCTIONS - JOYSTICK #####################
 def joysw_id(sw_id):
@@ -369,11 +406,15 @@ def joystick_uitlezen():
 
         time.sleep(0.7)
 
+def knopjes_uitlezen():
+    print("We gaan de knoppen uitlezen.")
+    if 
+
 def keuze():
         print("dit zijn de keuzes: ")
+        # met joywticks naar boven/onder bewegen of de knopjes? => knopjes
         # met touchsensor bevestigen 'confirm'
-    
-        joystick_uitlezen()
+        knopjes_uitlezen()
         print(tellerKeuze)
         if tellerKeuze == 0:
             # tot 1 => default
@@ -406,15 +447,16 @@ def keuze():
 
 def spel_starten():
     global tellerKeuze
+    # tellerkeuze is de teller die de keuze van de spelers zal bijhouden: 1, 3, 5 of tot 9 spelen?
     tellerKeuze = 0
     while True:
-        # print("Kies tot hoeveel er gespeeld wordt: ")
-        keuze()
-        # with canvas(device, dither = False) as draw:
-        #     print("dit zijn de keuzes: ")
-        #     draw.text((30, 10), "keuze 1", fill = "white")
-        #     draw.text((30, 30), "keuze 2", fill = "white")
-        #     draw.text((30, 50), "keuze 3", fill = "white")
+        print("Kies tot hoeveel er gespeeld wordt")
+        # keuze()
+        with canvas(device, dither = False) as draw:
+            print("dit zijn de keuzes: ")
+            draw.text((30, 10), "keuze 1", fill = "white")
+            draw.text((30, 30), "keuze 2", fill = "white")
+            draw.text((30, 50), "keuze 3", fill = "white")
         time.sleep(3)
         # if tellerKeuze
 
