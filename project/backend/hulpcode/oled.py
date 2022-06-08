@@ -60,23 +60,63 @@ try:
     setup()
     vorige = 0
     while True:
+        # with canvas(device, dither = False) as draw:
+        #     print("player 1")
+        #     draw.rectangle(device.bounding_box, outline="white", fill="black")
+        #     draw.text((30, 40), "__Eliah__", fill="white")
+        #     points = ((123, 32), (118, 37), (108, 37), (108, 27), (118, 27))
+        #     draw.polygon((points), fill="White")
+        # time.sleep(3)
+        # with canvas(device, dither = False) as draw:
+        #     print("player 2")
+        #     draw.rectangle(device.bounding_box, outline="white", fill="black")
+        #     draw.text((5, 2), "__ tot 1 spelen __", fill="white")
+        #     draw.text((5, 17), "__ tot 3 spelen __", fill="white")
+        #     draw.text((5, 32), "__ tot 5 spelen __", fill="white")
+        #     draw.text((5, 47), "__ tot 9 spelen __", fill="white")
+        #     points = ((5, 32), (10, 37), (20, 37), (20, 27), (10, 27))
+        #     # draw.polygon((points), fill="White")
+        # time.sleep(3)
         with canvas(device, dither = False) as draw:
-            print("player 1")
+            print("player 2")
             draw.rectangle(device.bounding_box, outline="white", fill="black")
-            draw.text((30, 40), "__Eliah__", fill="white")
-            points = ((123, 32), (118, 37), (108, 37), (108, 27), (118, 27))
-            draw.polygon((points), fill="White")
+            draw.text((5, 2), "__ tot 1 spelen __", fill="white")
+            draw.text((5, 17), "   tot 3 spelen", fill="red") # gekozen
+            draw.text((5, 32), "   tot 5 spelen", fill="white")
+            draw.text((5, 47), "   tot 9 spelen", fill="white")
         time.sleep(3)
         with canvas(device, dither = False) as draw:
             print("player 2")
             draw.rectangle(device.bounding_box, outline="white", fill="black")
-            draw.text((30, 40), "__Aléssia__", fill="white")
-            points = ((5, 32), (10, 37), (20, 37), (20, 27), (10, 27))
-            draw.polygon((points), fill="White")
+            draw.text((5, 2), "   tot 1 spelen", fill="white")
+            draw.text((5, 17), "__ tot 3 spelen __", fill="red") # gekozen
+            draw.text((5, 32), "   tot 5 spelen", fill="white")
+            draw.text((5, 47), "   tot 9 spelen", fill="white")
+        time.sleep(3)
+        with canvas(device, dither = False) as draw:
+            print("player 2")
+            draw.rectangle(device.bounding_box, outline="white", fill="black")
+            draw.text((5, 2), "   tot 1 spelen", fill="white")
+            draw.text((5, 17), "   tot 3 spelen", fill="red") # gekozen
+            draw.text((5, 32), "__ tot 5 spelen __", fill="white")
+            draw.text((5, 47), "   tot 9 spelen", fill="white")
+        time.sleep(3)
+        with canvas(device, dither = False) as draw:
+            print("player 2")
+            draw.rectangle(device.bounding_box, outline="white", fill="black")
+            draw.text((5, 2), "   tot 1 spelen", fill="white")
+            draw.text((5, 17), "   tot 3 spelen", fill="red") # gekozen
+            draw.text((5, 32), "   tot 5 spelen", fill="white")
+            draw.text((5, 47), "__ tot 9 spelen __", fill="white")
         time.sleep(3)
 
-
-
+        # with canvas(device, dither = False) as draw:
+        #     print("player 2")
+        #     draw.rectangle(device.bounding_box, outline="white", fill="black")
+        #     draw.text((30, 40), "__Aléssia__", fill="white")
+        #     points = ((5, 32), (10, 37), (20, 37), (20, 27), (10, 27))
+        #     draw.polygon((points), fill="White")
+        # time.sleep(3)
 
         ##########################################################
         # print(vorige, teller)
