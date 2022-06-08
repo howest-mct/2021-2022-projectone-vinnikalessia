@@ -65,6 +65,8 @@ hoek = 5
 tellerm1 = 0
 tellerm2 = 0
 
+tellerStap = 0
+
 ########### OLED ###########
 tellerOled = 0
 serial = i2c(port = 1, address = 0x3C)
@@ -404,11 +406,11 @@ def joystick_uitlezen():
             if waarde > 800 or waarde < 200:
                 DataRepository.create_historiek(joy_id, commentaar, waarde)
                 if waarde > 800:
-                    tellerKeuze -= 1
-                    return tellerKeuze
+                    tellerStap -= 1
+                    return tellerStap
                 elif waarde < 200:
-                    tellerKeuze += 1
-                    return tellerKeuze
+                    tellerStap += 1
+                    return tellerStap
         for joy_id in [16, 19]:
             waarde, commentaar = joysw_id(joy_id)
             if waarde == 1:
@@ -416,126 +418,66 @@ def joystick_uitlezen():
 
         time.sleep(0.7)
 
-def knopjes_uitlezen():
-    tellerKeuze = 3 # want boven/standaard is het 1. up = +,  down = -
-    print("We gaan de knoppen uitlezen.")
-    if tellerKeuze == 3:
-        print("TOT 1 SPELEN!")
-    elif tellerKeuze == 2:
-        print("TOT 3 SPELEN!")
-    elif tellerKeuze == 1:
-        print("TOT 5 SPELEN!")
-    elif tellerKeuze == 0:
-        print("TOT 9 SPELEN!")
-
-# def keuze():
-#         print("dit zijn de keuzes: ")
-#         # met joywticks naar boven/onder bewegen of de knopjes? => knopjes
-#         # met touchsensor bevestigen 'confirm'
-#         knopjes_uitlezen()
-#         print(tellerKeuze)
-#         if tellerKeuze == 0:
-#             # tot 1 => default
-#             with canvas(device, dither = False) as draw:
-#                 draw.text((30, 10), "keuze 1", fill = "white")
-#                 draw.text((30, 30), "keuze 2", fill = "white")
-#                 draw.text((30, 50), "keuze 3", fill = "white")
-#                 # points = ((5, 32), (10, 37), (20, 37), (20, 27), (10, 27))
-#                 # draw.polygon((points), fill="White")
-#             time.sleep(0.5)
-#         elif tellerKeuze == 1:
-#             # tot 3
-#             with canvas(device, dither = False) as draw:
-#                 draw.text((30, 10), "keuze 1", fill = "white")
-#                 draw.text((30, 30), "keuze 2", fill = "white")
-#                 draw.text((30, 50), "keuze 3", fill = "white")
-#             time.sleep(0.5)
-
-#         elif tellerKeuze == 2:
-#             # tot 5
-#             with canvas(device, dither = False) as draw:
-#                 draw.text((30, 10), "keuze 1", fill = "white")
-#                 draw.text((30, 30), "keuze 2", fill = "white")
-#                 draw.text((30, 50), "keuze 3", fill = "white")
-#             time.sleep(0.5)
-
-#         if GPIO.input(t1):
-#             # als de touchsensor aanraking detecteerd, dan...
-#             print("Let's start the game!")
 
 def keuzelijst():
     global tellerKeuze
-    print("Kies tot hoeveel er gespeeld wordt")
-    if tellerKeuze > 3:
-            tellerKeuze = 3
+    while True:
+        print("Kies tot hoeveel er gespeeld wordt")
+        # als het boven/onder de range zit => aanpassen
+        if tellerKeuze > 3:
+                tellerKeuze = 3
+        elif tellerKeuze < 0:
+            tellerKeuze = 0
 
-    elif tellerKeuze < 0:
-        tellerKeuze = 0
-
-    print(f"dit is de teller: {tellerKeuze}")
-
-    if tellerKeuze == 0:
-        with canvas(device, dither = False) as draw:
-            print("player 2")
-            draw.rectangle(device.bounding_box, outline="white", fill="black")
-            draw.text((5, 2), "__ tot 1 spelen __", fill="white")# gekozen
-            draw.text((5, 17), "   tot 3 spelen", fill="red") 
-            draw.text((5, 32), "   tot 5 spelen", fill="white")
-            draw.text((5, 47), "   tot 9 spelen", fill="white")
-    elif tellerKeuze == 1:
-        with canvas(device, dither = False) as draw:
-            print("player 2")
-            draw.rectangle(device.bounding_box, outline="white", fill="black")
-            draw.text((5, 2), "   tot 1 spelen", fill="white")
-            draw.text((5, 17), "__ tot 3 spelen __", fill="red") # gekozen
-            draw.text((5, 32), "   tot 5 spelen", fill="white")
-            draw.text((5, 47), "   tot 9 spelen", fill="white")
-    elif tellerKeuze == 2:
-        with canvas(device, dither = False) as draw:
-            print("player 2")
-            draw.rectangle(device.bounding_box, outline="white", fill="black")
-            draw.text((5, 2), "   tot 1 spelen", fill="white")
-            draw.text((5, 17), "   tot 3 spelen", fill="red") 
-            draw.text((5, 32), "__ tot 5 spelen __", fill="white")# gekozen
-            draw.text((5, 47), "   tot 9 spelen", fill="white")
-    elif tellerKeuze == 3:
-        with canvas(device, dither = False) as draw:
-            print("player 2")
-            draw.rectangle(device.bounding_box, outline="white", fill="black")
-            draw.text((5, 2), "   tot 1 spelen", fill="white")
-            draw.text((5, 17), "   tot 3 spelen", fill="red") 
-            draw.text((5, 32), "   tot 5 spelen", fill="white")
-            draw.text((5, 47), "__ tot 9 spelen __", fill="white")# gekozen
-    else:
-        print("KAN NIET")
-    return tellerKeuze
+        # de keuzes
+        if tellerKeuze == 0:
+            with canvas(device, dither = False) as draw:
+                print("player 2")
+                draw.rectangle(device.bounding_box, outline="white", fill="black")
+                draw.text((5, 2), "__ tot 1 spelen __", fill="white")# gekozen
+                draw.text((5, 17), "   tot 3 spelen", fill="red") 
+                draw.text((5, 32), "   tot 5 spelen", fill="white")
+                draw.text((5, 47), "   tot 9 spelen", fill="white")
+        elif tellerKeuze == 1:
+            with canvas(device, dither = False) as draw:
+                print("player 2")
+                draw.rectangle(device.bounding_box, outline="white", fill="black")
+                draw.text((5, 2), "   tot 1 spelen", fill="white")
+                draw.text((5, 17), "__ tot 3 spelen __", fill="red") # gekozen
+                draw.text((5, 32), "   tot 5 spelen", fill="white")
+                draw.text((5, 47), "   tot 9 spelen", fill="white")
+        elif tellerKeuze == 2:
+            with canvas(device, dither = False) as draw:
+                print("player 2")
+                draw.rectangle(device.bounding_box, outline="white", fill="black")
+                draw.text((5, 2), "   tot 1 spelen", fill="white")
+                draw.text((5, 17), "   tot 3 spelen", fill="red") 
+                draw.text((5, 32), "__ tot 5 spelen __", fill="white")# gekozen
+                draw.text((5, 47), "   tot 9 spelen", fill="white")
+        elif tellerKeuze == 3:
+            with canvas(device, dither = False) as draw:
+                print("player 2")
+                draw.rectangle(device.bounding_box, outline="white", fill="black")
+                draw.text((5, 2), "   tot 1 spelen", fill="white")
+                draw.text((5, 17), "   tot 3 spelen", fill="red") 
+                draw.text((5, 32), "   tot 5 spelen", fill="white")
+                draw.text((5, 47), "__ tot 9 spelen __", fill="white")# gekozen
+        else:
+            print("KAN NIET")
+        # als touchsensor aanraking ziet, dan start spel
+        if GPIO.input(t1) or GPIO.input(t2):
+            # dus als er input is van t1/t2
+            print('touchsensor aangeraakt => confirm de keuze')
+            return tellerKeuze
 
 def spel_starten():
     global tellerKeuze
-    while True:
-        # eerst keuzelijst
-        # keuze()
-        if GPIO.input(t1):
-            print("😎😊")
-        keuzelijst()
-        if tellerKeuze == 0:
-            print("😀😀😀😀😀😀😀😀😀😀😀😀😀😀")
-        time.sleep(0.2)
-        # if tellerKeuze
+    keuze = keuzelijst()
+    print(f"dit is wat er gekozen werd: {keuze}")
 
+    time.sleep(0.2)
+    print("LET'S START THE GAME!")
 
-        # # if teller van een van de touch niet == 1, dan loop verder doen
-        # print("\n***Joysticks uitlezen***")
-        # for joy_id in [14, 15, 17, 18]:
-        #     waarde, commentaar = joystick_id(joy_id)
-        #     if waarde > 800 or waarde < 200:
-        #         DataRepository.create_historiek(joy_id, commentaar, waarde)
-        # for joy_id in [16, 19]:
-        #     waarde, commentaar = joysw_id(joy_id)
-        #     if waarde == 1:
-        #         DataRepository.create_historiek(joy_id, commentaar, waarde)
-
-        # time.sleep(0.7)
 
 # def touch_uitlezen():
 #     while True:
