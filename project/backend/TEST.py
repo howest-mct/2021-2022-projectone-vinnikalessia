@@ -70,13 +70,6 @@ tellerm2 = 0
 tellerStap = 0
 
 ########### OLED ###########
-
-
-# i2c = SMBus()
-# i2c.open(1)
-
-
-
 tellerOled = 0
 serial = i2c(port = 1, address = 0x3C)
 device = ssd1306(serial)
@@ -146,10 +139,6 @@ def setup():
     # motoren
     GPIO.setup(motor1, GPIO.OUT)
     GPIO.setup(motor2, GPIO.OUT)
-    pwm_motor1 = GPIO.PWM(motor1, 1000)
-    pwm_motor2 = GPIO.PWM(motor2, 1000)
-    pwm_motor1.start(0)
-    pwm_motor2.start(0)
 
     # knoppen
     GPIO.setup(up1, GPIO.IN, GPIO.PUD_UP)
@@ -169,7 +158,10 @@ def setup():
     GPIO.setup(g, GPIO.OUT)
     GPIO.setup(b, GPIO.OUT)
 
-
+pwm_motor1 = GPIO.PWM(motor1, 1000)
+pwm_motor2 = GPIO.PWM(motor2, 1000)
+pwm_motor1.start(0)
+pwm_motor2.start(0)
 ##################### CALLBACK #####################
 def callback_sw1(pin):
     global teller16, teller19
@@ -549,17 +541,18 @@ if __name__ == "__main__":
         print(e)
     finally:
         print("cleanup pi")
-        pwm_motor1.stop()
         app_running = False
-        pwm = hoek_tot_duty(0)
-        # motor1.ChangeDutyCycle(pwm)
-        # motor2.ChangeDutyCycle(pwm)
+        # pwm = hoek_tot_duty(0)
+        # motor1.ChangeDutyCycle(0)
+        # motor2.ChangeDutyCycle(0)
+        pwm_motor1.stop()
+        pwm_motor2.stop()
         serial.cleanup()
         spi.close()
         
         # i2c = SMBus()
         # i2c.open(1)
-        # i2c.close()
+        i2c.close()
         GPIO.cleanup()
 
 
