@@ -1,7 +1,7 @@
 ##################### IMPORT #####################
 from luma.core.virtual import viewport, snapshot, range_overlap
 from luma.core.interface.serial import i2c, spi, pcf8574
-from project.backend.app import joystick_uitlezen
+# from project.backend.app import joystick_uitlezen
 from repositories.DataRepository import DataRepository
 from luma.core.interface.parallel import bitbang_6800
 from flask_socketio import SocketIO, emit, send
@@ -407,8 +407,16 @@ def joystick_uitlezen():
         time.sleep(0.7)
 
 def knopjes_uitlezen():
+    tellerKeuze = 3 # want boven/standaard is het 1. up = +,  down = -
     print("We gaan de knoppen uitlezen.")
-    if 
+    if tellerKeuze == 3:
+        print("TOT 1 SPELEN!")
+    elif tellerKeuze == 2:
+        print("TOT 3 SPELEN!")
+    elif tellerKeuze == 1:
+        print("TOT 5 SPELEN!")
+    elif tellerKeuze == 0:
+        print("TOT 9 SPELEN!")
 
 def keuze():
         print("dit zijn de keuzes: ")
@@ -502,8 +510,8 @@ if __name__ == "__main__":
         print(e)
     finally:
         print("cleanup pi")
-        spi.close()
         GPIO.cleanup()
+        spi.close()
 
 
 

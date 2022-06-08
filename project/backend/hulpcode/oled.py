@@ -8,7 +8,8 @@ from PIL import Image
 from RPi import GPIO
 import time
 
-test_knop = 20
+test_knop1 = 20
+test_knop2 = 21
 teller = 0
 vorige = 0
 
@@ -18,15 +19,24 @@ device = ssd1306(serial)
 def setup():
     print("setup")
     GPIO.setmode(GPIO.BCM)
-    GPIO.setup(test_knop, GPIO.IN, GPIO.PUD_UP)
+    GPIO.setup(test_knop1, GPIO.IN, GPIO.PUD_UP)
+    GPIO.setup(test_knop2, GPIO.IN, GPIO.PUD_UP)
 
-    GPIO.add_event_detect(test_knop, GPIO.FALLING, callback_knop, bouncetime = 100)
+    GPIO.add_event_detect(test_knop1, GPIO.FALLING, callback_knopu, bouncetime = 10)
+    GPIO.add_event_detect(test_knop2, GPIO.FALLING, callback_knopd, bouncetime = 10)
 
-def callback_knop(pin):
+def callback_knopu(pin):
     global teller
-    teller += 1
-    print("De TEST knop is {} keer ingedrukt\n".format(teller))
-    status_2()
+    if teller <= 3 or teller >= 0:
+        teller += 1
+        print("De TEST knop is {} keer ingedrukt\n".format(teller))
+    return teller
+
+def callback_knopd(pin):
+    global teller
+    if teller <= 3 or teller >= 0:
+        teller -= 1
+        print("De TEST knop is {} keer ingedrukt\n".format(teller))
     return teller
 
 def status_1():
@@ -60,55 +70,52 @@ try:
     setup()
     vorige = 0
     while True:
-        # with canvas(device, dither = False) as draw:
-        #     print("player 1")
-        #     draw.rectangle(device.bounding_box, outline="white", fill="black")
-        #     draw.text((30, 40), "__Eliah__", fill="white")
-        #     points = ((123, 32), (118, 37), (108, 37), (108, 27), (118, 27))
-        #     draw.polygon((points), fill="White")
-        # time.sleep(3)
-        # with canvas(device, dither = False) as draw:
-        #     print("player 2")
-        #     draw.rectangle(device.bounding_box, outline="white", fill="black")
-        #     draw.text((5, 2), "__ tot 1 spelen __", fill="white")
-        #     draw.text((5, 17), "__ tot 3 spelen __", fill="white")
-        #     draw.text((5, 32), "__ tot 5 spelen __", fill="white")
-        #     draw.text((5, 47), "__ tot 9 spelen __", fill="white")
-        #     points = ((5, 32), (10, 37), (20, 37), (20, 27), (10, 27))
-        #     # draw.polygon((points), fill="White")
-        # time.sleep(3)
-        with canvas(device, dither = False) as draw:
-            print("player 2")
-            draw.rectangle(device.bounding_box, outline="white", fill="black")
-            draw.text((5, 2), "__ tot 1 spelen __", fill="white")
-            draw.text((5, 17), "   tot 3 spelen", fill="red") # gekozen
-            draw.text((5, 32), "   tot 5 spelen", fill="white")
-            draw.text((5, 47), "   tot 9 spelen", fill="white")
-        time.sleep(3)
-        with canvas(device, dither = False) as draw:
-            print("player 2")
-            draw.rectangle(device.bounding_box, outline="white", fill="black")
-            draw.text((5, 2), "   tot 1 spelen", fill="white")
-            draw.text((5, 17), "__ tot 3 spelen __", fill="red") # gekozen
-            draw.text((5, 32), "   tot 5 spelen", fill="white")
-            draw.text((5, 47), "   tot 9 spelen", fill="white")
-        time.sleep(3)
-        with canvas(device, dither = False) as draw:
-            print("player 2")
-            draw.rectangle(device.bounding_box, outline="white", fill="black")
-            draw.text((5, 2), "   tot 1 spelen", fill="white")
-            draw.text((5, 17), "   tot 3 spelen", fill="red") # gekozen
-            draw.text((5, 32), "__ tot 5 spelen __", fill="white")
-            draw.text((5, 47), "   tot 9 spelen", fill="white")
-        time.sleep(3)
-        with canvas(device, dither = False) as draw:
-            print("player 2")
-            draw.rectangle(device.bounding_box, outline="white", fill="black")
-            draw.text((5, 2), "   tot 1 spelen", fill="white")
-            draw.text((5, 17), "   tot 3 spelen", fill="red") # gekozen
-            draw.text((5, 32), "   tot 5 spelen", fill="white")
-            draw.text((5, 47), "__ tot 9 spelen __", fill="white")
-        time.sleep(3)
+        # eerst controleren of je teller niet de range overschrijdt
+        if teller > 3:
+            print("groter dan 3!!")
+            teller = 3
+        elif teller < 0:
+            print("kleiner dan 0!!")
+            teller = 0
+        print(f"dit is de teller: {teller}")
+        if teller == 0:
+            with canvas(device, dither = False) as draw:
+                print("player 2")
+                draw.rectangle(device.bounding_box, outline="white", fill="black")
+                draw.text((5, 2), "__ tot 1 spelen __", fill="white")
+                draw.text((5, 17), "   tot 3 spelen", fill="red") # gekozen
+                draw.text((5, 32), "   tot 5 spelen", fill="white")
+                draw.text((5, 47), "   tot 9 spelen", fill="white")
+            # time.sleep(3)
+        elif teller == 1:
+            with canvas(device, dither = False) as draw:
+                print("player 2")
+                draw.rectangle(device.bounding_box, outline="white", fill="black")
+                draw.text((5, 2), "   tot 1 spelen", fill="white")
+                draw.text((5, 17), "__ tot 3 spelen __", fill="red") # gekozen
+                draw.text((5, 32), "   tot 5 spelen", fill="white")
+                draw.text((5, 47), "   tot 9 spelen", fill="white")
+            # time.sleep(3)
+        elif teller == 2:
+            with canvas(device, dither = False) as draw:
+                print("player 2")
+                draw.rectangle(device.bounding_box, outline="white", fill="black")
+                draw.text((5, 2), "   tot 1 spelen", fill="white")
+                draw.text((5, 17), "   tot 3 spelen", fill="red") # gekozen
+                draw.text((5, 32), "__ tot 5 spelen __", fill="white")
+                draw.text((5, 47), "   tot 9 spelen", fill="white")
+            # time.sleep(3)
+        elif teller == 3:
+            with canvas(device, dither = False) as draw:
+                print("player 2")
+                draw.rectangle(device.bounding_box, outline="white", fill="black")
+                draw.text((5, 2), "   tot 1 spelen", fill="white")
+                draw.text((5, 17), "   tot 3 spelen", fill="red") # gekozen
+                draw.text((5, 32), "   tot 5 spelen", fill="white")
+                draw.text((5, 47), "__ tot 9 spelen __", fill="white")
+        else:
+            print("KAN NIET")
+        time.sleep(0.5)
 
         # with canvas(device, dither = False) as draw:
         #     print("player 2")
