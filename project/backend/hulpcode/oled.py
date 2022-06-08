@@ -10,6 +10,8 @@ import time
 
 test_knop1 = 20
 test_knop2 = 21
+test_knop3 = 16
+test_knop4 = 12
 teller = 0
 vorige = 0
 
@@ -21,9 +23,13 @@ def setup():
     GPIO.setmode(GPIO.BCM)
     GPIO.setup(test_knop1, GPIO.IN, GPIO.PUD_UP)
     GPIO.setup(test_knop2, GPIO.IN, GPIO.PUD_UP)
+    GPIO.setup(test_knop3, GPIO.IN, GPIO.PUD_UP)
+    GPIO.setup(test_knop4, GPIO.IN, GPIO.PUD_UP)
 
     GPIO.add_event_detect(test_knop1, GPIO.FALLING, callback_knopu, bouncetime = 500)
     GPIO.add_event_detect(test_knop2, GPIO.FALLING, callback_knopd, bouncetime = 500)
+    GPIO.add_event_detect(test_knop3, GPIO.FALLING, callback_knopu, bouncetime = 500)
+    GPIO.add_event_detect(test_knop4, GPIO.FALLING, callback_knopd, bouncetime = 500)
 
 def callback_knopu(pin):
     global teller
