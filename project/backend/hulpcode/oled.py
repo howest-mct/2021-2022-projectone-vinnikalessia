@@ -8,10 +8,10 @@ from PIL import Image
 from RPi import GPIO
 import time
 
-test_knop1 = 20
-test_knop2 = 21
-test_knop3 = 16
-test_knop4 = 12
+test_knop1 = 12
+test_knop2 = 16
+test_knop3 = 20
+test_knop4 = 21
 teller = 0
 vorige = 0
 
