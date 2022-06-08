@@ -22,8 +22,8 @@ def setup():
     GPIO.setup(test_knop1, GPIO.IN, GPIO.PUD_UP)
     GPIO.setup(test_knop2, GPIO.IN, GPIO.PUD_UP)
 
-    GPIO.add_event_detect(test_knop1, GPIO.FALLING, callback_knopu, bouncetime = 10)
-    GPIO.add_event_detect(test_knop2, GPIO.FALLING, callback_knopd, bouncetime = 10)
+    GPIO.add_event_detect(test_knop1, GPIO.FALLING, callback_knopu, bouncetime = 500)
+    GPIO.add_event_detect(test_knop2, GPIO.FALLING, callback_knopd, bouncetime = 500)
 
 def callback_knopu(pin):
     global teller
