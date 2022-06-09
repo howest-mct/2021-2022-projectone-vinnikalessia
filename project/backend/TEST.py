@@ -64,7 +64,9 @@ hoek = 5
 tellerm1 = 0
 tellerm2 = 0
 
-tellerStap = 0
+tellerStapX = 0
+tellerStapY = 0
+tellerStapZ = 0
 
 ########### OLED ###########
 tellerOled = 0
@@ -92,16 +94,15 @@ down1 = 16
 up2 = 20
 down2 = 21
 
-# tellers
-tellerup1 = 0 # up1
-tellerdown1 = 0 # udown1
-tellerup2 = 0 # up2
-tellerdown2 = 0 # down2
+# teller
+tellerKeuze = 0
+
 
 # is de teller voordat het spel begint. Hiermee wordt er gekozen tot hoeveel er wordt gespeeld
-tellerKeuze = 0
 app_running = True
-
+keuzeSpel = None
+game_running = False
+choice_running = False
 ########### RGB ###########
 r = 23
 g = 24
@@ -209,29 +210,7 @@ def callback_down(pin):
     tellerKeuze -= 1
     print("1 DOWN")
     return tellerKeuze
-# def callback_up1(pin):
-#     global tellerup1
-#     tellerup1 += 1
-#     print("1 UP")
-#     return tellerup1
 
-# def callback_down1(pin):
-#     global tellerdown1
-#     tellerdown1 -= 1
-#     print("1 DOWN")
-#     return tellerdown1
-
-# def callback_up2(pin):
-#     global tellerup2
-#     tellerup2 += 1
-#     print("2 UP")
-#     return tellerup2
-
-# def callback_down2(pin):
-#     global tellerdown2
-#     tellerdown2 -= 1
-#     print("2 DOWN")
-#     return tellerdown2
 
 ##################### FUNCTIONS - JOYSTICK #####################
 def joysw_id(sw_id):
@@ -444,25 +423,95 @@ def start_thread():
     # thread2.start()
     # threading.Timer(1, joystick_uitlezen).start() # niet nodig want anders start je het 2 keer
 
-def joystick_uitlezen():
-    # while True: # uitgezet voor de start van het spel
-        print("\n***Joysticks uitlezen***")
-        for joy_id in [14, 15, 17, 18]:
-            waarde, commentaar = joystick_id(joy_id)
-            if waarde > 800 or waarde < 200:
-                DataRepository.create_historiek(joy_id, commentaar, waarde)
-                if waarde > 800:
-                    tellerStap -= 1
-                    return tellerStap
-                elif waarde < 200:
-                    tellerStap += 1
-                    return tellerStap
-        for joy_id in [16, 19]:
-            waarde, commentaar = joysw_id(joy_id)
-            if waarde == 1:
-                DataRepository.create_historiek(joy_id, commentaar, waarde)
+# def joystick_uitlezen():
+#     # while True: # uitgezet voor de start van het spel
+#         global tellerStap
+#         print("\n***Joysticks uitlezen***")
+#         for joy_id in [14, 15, 17, 18]:
+#             waarde, commentaar = joystick_id(joy_id)
+#             if waarde > 800 or waarde < 200:
+#                 DataRepository.create_historiek(joy_id, commentaar, waarde)
+#                 if waarde > 800:
+#                     tellerStap -= 1
+#                     return tellerStap
+#                 elif waarde < 200:
+#                     tellerStap += 1
+#                     return tellerStap
+#         for joy_id in [16, 19]:
+#             waarde, commentaar = joysw_id(joy_id)
+#             if waarde == 1:
+#                 DataRepository.create_historiek(joy_id, commentaar, waarde)
+#         time.sleep(0.7)
 
-        time.sleep(0.7)
+def joystick_uitlezen(speler):
+    global choice_running, tellerStapX, tellerStapY, tellerStapZ
+    while choice_running and True:
+        # als het speler 0 is, dan moet je alleen joy 1 uitlezen
+        if speler == 0:
+            # de x-as
+            for joy_id in [14, 15, 16]:
+                for joy_id in [14]:
+                    waarde, commentaar = joystick_id(joy_id)
+                    if waarde > 800 or waarde < 200:
+                        DataRepository.create_historiek(joy_id, commentaar, waarde)
+                        if waarde > 800:
+                            tellerStapX -= 1
+                        elif waarde < 200:
+                            tellerStapX += 1
+                        return tellerStapX
+                # de y-as
+                for joy_id in [15]:
+                    waarde, commentaar = joystick_id(joy_id)
+                    if waarde > 800 or waarde < 200:
+                        DataRepository.create_historiek(joy_id, commentaar, waarde)
+                        if waarde > 800:
+                            tellerStapY -= 1
+                        elif waarde < 200:
+                            tellerStapY += 1
+                        return tellerStapY
+                # de sw
+                for joy_id in [16]:
+                    waarde, commentaar = joysw_id(joy_id)
+                    if waarde == 1:
+                        DataRepository.create_historiek(joy_id, commentaar, waarde)
+                positie(tellerStapX, tellerStapY, tellerKeuze)
+                time.sleep(0.7)
+
+        # als het speler 1 is, dan moet je alleen joy 1 uitlezen
+        elif speler == 1:
+            for joy_id in [17, 18, 19]:
+                # de x-as
+                for joy_id in [17]:
+                    waarde, commentaar = joystick_id(joy_id)
+                    if waarde > 800 or waarde < 200:
+                        DataRepository.create_historiek(joy_id, commentaar, waarde)
+                        if waarde > 800:
+                            tellerStapX -= 1
+                        elif waarde < 200:
+                            tellerStapX += 1
+                        return tellerStapX
+                # de y-as
+                for joy_id in [18]:
+                    waarde, commentaar = joystick_id(joy_id)
+                    if waarde > 800 or waarde < 200:
+                        DataRepository.create_historiek(joy_id, commentaar, waarde)
+                        if waarde > 800:
+                            tellerStapY -= 1
+                        elif waarde < 200:
+                            tellerStapY += 1
+                        return tellerStapY
+                # de sw
+                for joy_id in [19]:
+                    waarde, commentaar = joysw_id(joy_id)
+                    if waarde == 1:
+                        DataRepository.create_historiek(joy_id, commentaar, waarde)
+                time.sleep(0.7)
+    if not choice_running:
+        print("done")
+
+
+def positie(x, y):
+    pass
 
 
 def keuzelijst():
@@ -519,44 +568,21 @@ def keuzelijst():
             time.sleep(0.2)
     if not app_running:
         print("done")
+        return tellerKeuze
 
 
 def spel_starten():
-    global tellerKeuze
-    keuzelijst()
+    global tellerKeuze, keuzeSpel
+    print(tellerKeuze)
+    keuzeSpel = keuzelijst()
     print("keuzelijst overlopen en gekozen")
-    # global app_running
-    # while app_running and True:
-    # print("Kies tot hoeveel er gespeeld wordt")
-    # if tellerKeuze > 3:
-    #         tellerKeuze = 3
-    # elif tellerKeuze < 0:
-    #     tellerKeuze = 0
-    # print(tellerKeuze)
-    # draw.rectangle((0, 0, oled.width, oled.height), outline=255, fill=255)
-    # draw.rectangle(
-    #     (BORDER, BORDER, oled.width - BORDER - 1, oled.height - BORDER - 1),
-    #     outline=0,
-    #     fill=0,
-    # )
-    # text = "HALLOOOO"
-    # (font_width, font_height) = font.getsize(text)
-    # draw.text(
-    #     (oled.width // 2 - font_width // 2, oled.height // 2 - font_height // 2),
-    #     text,
-    #     font=font,
-    #     fill=255,
-    # )
-    # oled.image(image)
-    # oled.show()
-    # print("we wachten even")
-    # time.sleep(3)
-
+    print(tellerKeuze)
     time.sleep(0.2)
     print(f"dit is wat er gekozen werd: ")
     time.sleep(0.2)
     print("LET'S START THE GAME!")
     start_game()
+    return "ok"
 
 
 def start_game():
@@ -578,6 +604,17 @@ def start_game():
         # rood
         print("Player 2 begint")
         GPIO.output(b, GPIO.HIGH)
+    game(randomPlayer)
+
+def game(beginner):
+    # het spel mag alleen joysticks uitlezen van de beginner nu, dan pas van de ander
+    # als beginner 0 is, dan alleen x_as1, y_as1, sw1, knop1, knop2
+    # als beginner 1 is, dan alleen x_as2, y_as2, sw2, knop3, knop4
+    while game_running and True:
+        joystick_uitlezen(beginner)
+    if not game_running:
+        print("THE END OF THE GAME")
+        # return????
 
 
 # def touch_uitlezen():
@@ -597,6 +634,7 @@ def start_game():
 
 if __name__ == "__main__":
     try:
+        global app_running
         # debug NIET op True zetten
         draw.text((5, 2), "__ tot 1 spelen __", font=font,     fill=255)# gekozen
         draw.text((5, 17), "   tot 3 spelen", font=font,     fill=255) 
