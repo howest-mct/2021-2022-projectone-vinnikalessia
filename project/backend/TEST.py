@@ -453,26 +453,27 @@ def joystick_uitlezen():
         time.sleep(0.7)
 
 
-def keuzelijst():
-    global tellerKeuze, app_running
-    # while app_running and True:
-    print("Kies tot hoeveel er gespeeld wordt")
-    if tellerKeuze > 3:
-            tellerKeuze = 3
-    elif tellerKeuze < 0:
-        tellerKeuze = 0
-    print(tellerKeuze)
-    draw.rectangle((0, 0, oled.width, oled.height), outline=255, fill=255)
-    draw.rectangle(
-        (BORDER, BORDER, oled.width - BORDER - 1, oled.height - BORDER - 1),
-        outline=0,
-        fill=0,
-    )
-    print("we wachten even")
-    time.sleep(3)
-    oled.image(image)
-    oled.show()
-    time.sleep(0.2)
+# def keuzelijst():
+#     global tellerKeuze, app_running
+#     # while app_running and True:
+#     print("Kies tot hoeveel er gespeeld wordt")
+#     if tellerKeuze > 3:
+#             tellerKeuze = 3
+#     elif tellerKeuze < 0:
+#         tellerKeuze = 0
+#     print(tellerKeuze)
+#     draw.rectangle((0, 0, oled.width, oled.height), outline=255, fill=255)
+#     draw.rectangle(
+#         (BORDER, BORDER, oled.width - BORDER - 1, oled.height - BORDER - 1),
+#         outline=0,
+#         fill=0,
+#     )
+#     print("we wachten even")
+#     time.sleep(3)
+#     oled.image(image)
+#     oled.show()
+#     time.sleep(0.2)
+    
     # if tellerKeuze == 0:
     #     print("keuze 1")
     #     draw.text((5, 2), "__ tot 1 spelen __", font=font, fill=255)# gekozen
@@ -509,22 +510,43 @@ def keuzelijst():
     # time.sleep(0.2)
 
     # als touchsensor aanraking ziet, dan start spel
-    if GPIO.input(t1) or GPIO.input(t2):
-        # dus als er input is van t1/t2
-        print('touchsensor aangeraakt => confirm de keuze')
-        return tellerKeuze
-    else:
-        time.sleep(0.2)
-        if not app_running:
-            print("done")
+    # if GPIO.input(t1) or GPIO.input(t2):
+    #     # dus als er input is van t1/t2
+    #     print('touchsensor aangeraakt => confirm de keuze')
+    #     return tellerKeuze
+    # else:
+    #     time.sleep(0.2)
+    #     if not app_running:
+    #         print("done")
+    # return "keuze 2"
 
 def spel_starten():
     global tellerKeuze
-    keuze = keuzelijst()
-    print(f"dit is wat er gekozen werd: {keuze}")
+    # keuzelijst()
+    # global app_running
+    # while app_running and True:
+    print("Kies tot hoeveel er gespeeld wordt")
+    if tellerKeuze > 3:
+            tellerKeuze = 3
+    elif tellerKeuze < 0:
+        tellerKeuze = 0
+    print(tellerKeuze)
+    draw.rectangle((0, 0, oled.width, oled.height), outline=255, fill=255)
+    draw.rectangle(
+        (BORDER, BORDER, oled.width - BORDER - 1, oled.height - BORDER - 1),
+        outline=0,
+        fill=0,
+    )
+    print("we wachten even")
+    time.sleep(3)
+    oled.image(image)
+    oled.show()
+    
+    time.sleep(0.2)
+    print(f"dit is wat er gekozen werd: {tellerKeuze}")
     time.sleep(0.2)
     print("LET'S START THE GAME!")
-    start_game()
+    # start_game()
 
 
 def start_game():
