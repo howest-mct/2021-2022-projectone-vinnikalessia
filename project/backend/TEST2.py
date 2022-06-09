@@ -85,7 +85,7 @@ pixels = neopixel.NeoPixel(
     pixel_pin, num_pixels, brightness=0.2, auto_write=False, pixel_order=ORDER
 )
 
-lijst = {
+neopixel_dict = {
         0:[1, 1, 1], 1:[2, 1, 1], 2:[3, 1, 1], 
         3:[3, 2, 1], 4:[2, 2, 1], 5:[1, 2, 1],
         6:[1, 3, 1], 7:[2, 3, 1], 8:[3, 3, 1],
@@ -99,28 +99,55 @@ lijst = {
         24:[1, 3, 3], 25:[2, 3, 3], 26:[3, 3, 3],
         }
 
-msg = [1, 1, 1]
+lijst = []
 
-# if msg == lijst[1]:
-# 	print("yes")
-# else:
-# 	print("nope")
+
 
 def get_key(val):
-    for key, value in lijst.items():
+    for key, value in neopixel_dict.items():
          if val == value:
              return key
     return "key doesn't exist"
  
-print(get_key(msg))
+
 
 # om eerste neopixel aan te steken met rood
-pixels[0] = (255, 0, 0)
+# pixels[0] = (255, 0, 0)
 
 try:
     while True:
-        keuze = input(f"Geef een nummer in van 0 tot 26: ")
-        pixels[keuze] = (255, 0, 0)
+        # msg = [1, 1, 1]
+        msg = int(input("getal: "))
+        lijst.append(msg)
+        msg = int(input("getal: "))
+        lijst.append(msg)
+        msg = int(input("getal: "))
+        lijst.append(msg)
+        print(lijst)
+        if lijst == neopixel_dict[0]:
+            print("yes")
+        else:
+            print("nope")
+        print(get_key(lijst))
+        # combinatie wordt dus gevonden in de dict en men weet op welke plaats het staat  (key)
+        pixels[get_key(lijst)]
+        # zou het onthouden of niet?
+
+        time.sleep(2)
+        lijst = []
+        # keuzex = int(input(f"Geef een eerste nummer in van 1 tot 3: "))
+        # lijst.append(keuzex)
+        # print(type(keuzex))
+        # keuzey = int(input(f"Geef een tweede nummer in van 1 tot 3: "))
+        # lijst.append(keuzey)
+        # keuzez = int(input(f"Geef een derde nummer in van 1 tot 3: "))
+        # lijst.append(keuzez)
+        # print(lijst)
+        # # pixels[lijst] = (255, 0, 0)
+        # if lijst in neopixel_dict:
+        #     print("yes")
+        # else:
+        #     print("nope")
 except KeyboardInterrupt as k:
     print(k)
 finally:
