@@ -183,6 +183,9 @@ def setup():
     GPIO.setup(r, GPIO.OUT)
     GPIO.setup(g, GPIO.OUT)
     GPIO.setup(b, GPIO.OUT)
+    GPIO.output(r, GPIO.LOW)
+    GPIO.output(g, GPIO.LOW)
+    GPIO.output(b, GPIO.LOW)
 
 ##################### CALLBACK #####################
 def callback_sw1(pin):
@@ -558,20 +561,24 @@ def spel_starten():
 
 
 def start_game():
+    print(f"DIT IS TELLERKEUZE: {tellerKeuze}")
     print('we starten het spel ☺ ')
     # alles uitzetten van de rgb
     GPIO.output(r, GPIO.LOW)
     GPIO.output(g, GPIO.LOW)
     GPIO.output(b, GPIO.LOW)
     randomPlayer = random.randint(0, 1)
+    print(f"DIT IS RANDOM: {randomPlayer}")
+    print("EN WIE MAG ER BEGINNEN?......")
+    time.sleep(2)
     if randomPlayer == 0:
         # blauw
         print("Player 1 begint")
-        GPIO.output(b, GPIO.HIGH)
+        GPIO.output(r, GPIO.HIGH)
     elif randomPlayer == 1:
         # rood
         print("Player 2 begint")
-        GPIO.output(r, GPIO.HIGH)
+        GPIO.output(b, GPIO.HIGH)
 
 
 # def touch_uitlezen():
