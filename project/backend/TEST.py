@@ -14,6 +14,7 @@ from RPi import GPIO
 import threading
 import multiprocessing
 import digitalio
+import neopixel
 import random
 import spidev
 import board
@@ -108,6 +109,32 @@ r = 23
 g = 24
 b = 25
 
+##################### NEOPIXEL #####################
+# Choose an open pin connected to the Data In of the NeoPixel strip, i.e. board.D18
+# NeoPixels must be connected to D10, D12, D18 or D21 to work.
+pixel_pin = board.D18
+num_pixels = 27 # ik heb 27 neopixels
+# The order of the pixel colors - RGB or GRB. Some NeoPixels have red and green reversed!
+# For RGBW NeoPixels, simply change the ORDER to RGBW or GRBW.
+ORDER = neopixel.GRB
+pixels = neopixel.NeoPixel(
+    pixel_pin, num_pixels, brightness=0.2, auto_write=False, pixel_order=ORDER
+)
+neopixel_dict = {
+        0:[1, 1, 1], 1:[2, 1, 1], 2:[3, 1, 1], 
+        3:[3, 2, 1], 4:[2, 2, 1], 5:[1, 2, 1],
+        6:[1, 3, 1], 7:[2, 3, 1], 8:[3, 3, 1],
+
+        9:[3, 3, 2], 10:[2, 3, 2], 11:[1, 3, 2], 
+        12:[1, 2, 2], 13:[2, 2, 2], 14:[3, 2, 2],
+        15:[3, 1, 2], 16:[2, 1, 2], 17:[1, 1, 2],
+
+        18:[1, 1, 3], 19:[2, 1, 3], 20:[3, 1, 3], 
+        21:[3, 2, 3], 22:[2, 2, 3], 23:[1, 2, 3],
+        24:[1, 3, 3], 25:[2, 3, 3], 26:[3, 3, 3],
+        }
+
+
 ########### SPELERS ###########
 player1 = True # zo?
 player2 = True # zo?
@@ -130,6 +157,8 @@ socketio = SocketIO(app, cors_allowed_origins="*",
 
 CORS(app)
 print("program started")
+
+
 
 
 ##################### SETUP #####################

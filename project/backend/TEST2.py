@@ -116,3 +116,12 @@ print(get_key(msg))
 
 # om eerste neopixel aan te steken met rood
 pixels[0] = (255, 0, 0)
+
+try:
+    while True:
+        keuze = input(f"Geef een nummer in van 0 tot 26: ")
+        pixels[keuze] = (255, 0, 0)
+except KeyboardInterrupt as k:
+    print(k)
+finally:
+    print("done")
