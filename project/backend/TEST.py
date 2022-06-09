@@ -160,16 +160,20 @@ def setup():
 
     # knoppen
     GPIO.setup(up1, GPIO.IN, GPIO.PUD_UP)
-    GPIO.add_event_detect(up1, GPIO.FALLING, callback_up1, bouncetime = 1000)
+    # GPIO.add_event_detect(up1, GPIO.FALLING, callback_up1, bouncetime = 1000)
+    GPIO.add_event_detect(up1, GPIO.FALLING, callback_up, bouncetime = 1000)
 
     GPIO.setup(down1, GPIO.IN, GPIO.PUD_UP)
-    GPIO.add_event_detect(down1, GPIO.FALLING, callback_down1, bouncetime = 1000)
+    # GPIO.add_event_detect(down1, GPIO.FALLING, callback_down1, bouncetime = 1000)
+    GPIO.add_event_detect(down1, GPIO.FALLING, callback_down, bouncetime = 1000)
 
     GPIO.setup(up2, GPIO.IN, GPIO.PUD_UP)
-    GPIO.add_event_detect(up2, GPIO.FALLING, callback_up2, bouncetime = 1000)
+    # GPIO.add_event_detect(up2, GPIO.FALLING, callback_up2, bouncetime = 1000)
+    GPIO.add_event_detect(up2, GPIO.FALLING, callback_up, bouncetime = 1000)
 
     GPIO.setup(down2, GPIO.IN, GPIO.PUD_UP)
-    GPIO.add_event_detect(down2, GPIO.FALLING, callback_down2, bouncetime = 1000)
+    # GPIO.add_event_detect(down2, GPIO.FALLING, callback_down2, bouncetime = 1000)
+    GPIO.add_event_detect(down2, GPIO.FALLING, callback_down, bouncetime = 1000)
 
     # RGB led
     GPIO.setup(r, GPIO.OUT)
@@ -194,29 +198,40 @@ def callback_sw2(pin):
     print("Knop joystick 2 is {} keer ingedrukt\n".format(teller19))
     return teller19
 
-def callback_up1(pin):
-    global tellerup1
-    tellerup1 += 1
+def callback_up(pin):
+    global tellerKeuze
+    tellerKeuze += 1
     print("1 UP")
-    return tellerup1
+    return tellerKeuze
 
-def callback_down1(pin):
-    global tellerdown1
-    tellerdown1 -= 1
+def callback_down(pin):
+    global tellerKeuze
+    tellerKeuze -= 1
     print("1 DOWN")
-    return tellerdown1
+    return tellerKeuze
+# def callback_up1(pin):
+#     global tellerup1
+#     tellerup1 += 1
+#     print("1 UP")
+#     return tellerup1
 
-def callback_up2(pin):
-    global tellerup2
-    tellerup2 += 1
-    print("2 UP")
-    return tellerup2
+# def callback_down1(pin):
+#     global tellerdown1
+#     tellerdown1 -= 1
+#     print("1 DOWN")
+#     return tellerdown1
 
-def callback_down2(pin):
-    global tellerdown2
-    tellerdown2 -= 1
-    print("2 DOWN")
-    return tellerdown2
+# def callback_up2(pin):
+#     global tellerup2
+#     tellerup2 += 1
+#     print("2 UP")
+#     return tellerup2
+
+# def callback_down2(pin):
+#     global tellerdown2
+#     tellerdown2 -= 1
+#     print("2 DOWN")
+#     return tellerdown2
 
 ##################### FUNCTIONS - JOYSTICK #####################
 def joysw_id(sw_id):
@@ -452,13 +467,12 @@ def joystick_uitlezen():
 
 def keuzelijst():
     global tellerKeuze, app_running
+    print("Kies tot hoeveel er gespeeld wordt")
     while app_running and True:
-        print("Kies tot hoeveel er gespeeld wordt")
         if tellerKeuze > 3:
                 tellerKeuze = 3
         elif tellerKeuze < 0:
             tellerKeuze = 0
-        print(tellerKeuze)
         draw.rectangle((0, 0, oled.width, oled.height), outline=255, fill=255)
         draw.rectangle(
             (BORDER, BORDER, oled.width - BORDER - 1, oled.height - BORDER - 1),
