@@ -537,11 +537,19 @@ def spel_starten():
         outline=0,
         fill=0,
     )
-    print("we wachten even")
-    time.sleep(3)
+    text = "HALLOOOO"
+    (font_width, font_height) = font.getsize(text)
+    draw.text(
+        (oled.width // 2 - font_width // 2, oled.height // 2 - font_height // 2),
+        text,
+        font=font,
+        fill=255,
+    )
     oled.image(image)
     oled.show()
-    
+    print("we wachten even")
+    time.sleep(3)
+
     time.sleep(0.2)
     print(f"dit is wat er gekozen werd: {tellerKeuze}")
     time.sleep(0.2)
