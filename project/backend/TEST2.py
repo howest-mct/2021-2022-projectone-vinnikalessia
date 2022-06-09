@@ -64,12 +64,25 @@
 #                           args=(), daemon=True)
 #     p1.start()
 #########################################################################
+# x (horizontaal), y (verticaal), z (hoogte)
+lijst = {
+        1:[1, 1, 1], 2:[2, 1, 1], 3:[3, 1, 1], 
+        4:[3, 2, 1], 5:[2, 2, 1], 6:[1, 2, 1],
+        7:[1, 3, 1], 8:[2, 3, 1], 9:[3, 3, 1],
 
-lijst = {1:[1, 1, 1], 2:[1, 1, 2], 3:[1, 1, 3]}
+        10:[1, 1, 2], 11:[2, 1, 2], 12:[3, 1, 2], 
+        13:[3, 2, 2], 14:[2, 2, 2], 15:[1, 2, 2],
+        16:[1, 3, 2], 17:[2, 3, 2], 18:[3, 3, 2],
+
+        19:[1, 1, 3], 20:[2, 1, 3], 21:[3, 1, 3], 
+        22:[3, 2, 3], 23:[2, 2, 3], 24:[1, 2, 3],
+        25:[1, 3, 3], 26:[2, 3, 3], 27:[3, 3, 3],
+        }
+
+
+
 print(lijst)
 msg = [1, 1, 1]
-
-pos = [1, 1, 1]
 
 print(lijst[1])
 
@@ -78,8 +91,11 @@ if msg == lijst[1]:
 else:
 	print("nope")
 
-if pos in lijst.values():
-	print(lijst.keys())
-else:
-	print("niet correct")
+def get_key(val):
+    for key, value in lijst.items():
+         if val == value:
+             return key
+    return "key doesn't exist"
+ 
+print(get_key(msg))
 
