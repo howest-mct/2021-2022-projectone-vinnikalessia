@@ -488,7 +488,7 @@ def keuzelijst():
         elif tellerKeuze == 1:
             print("keuze 2")
             draw.text((5, 2), "   tot 1 spelen", font=font, fill=255)# gekozen
-            draw.text((5, 17), "__  tot 3 spelen __", font=font, fill=255) 
+            draw.text((5, 17), "__ tot 3 spelen __", font=font, fill=255) 
             draw.text((5, 32), "   tot 5 spelen", font=font, fill=255)
             draw.text((5, 47), "   tot 9 spelen", font=font, fill=255)
 
