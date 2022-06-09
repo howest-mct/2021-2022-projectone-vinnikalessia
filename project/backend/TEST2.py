@@ -65,31 +65,46 @@
 #     p1.start()
 #########################################################################
 # x (horizontaal), y (verticaal), z (hoogte)
+import time
+import board
+import neopixel
+
+
+# Choose an open pin connected to the Data In of the NeoPixel strip, i.e. board.D18
+# NeoPixels must be connected to D10, D12, D18 or D21 to work.
+pixel_pin = board.D18
+
+# The number of NeoPixels
+num_pixels = 27 # ik heb 27 neopixels
+
+# The order of the pixel colors - RGB or GRB. Some NeoPixels have red and green reversed!
+# For RGBW NeoPixels, simply change the ORDER to RGBW or GRBW.
+ORDER = neopixel.GRB
+
+pixels = neopixel.NeoPixel(
+    pixel_pin, num_pixels, brightness=0.2, auto_write=False, pixel_order=ORDER
+)
+
 lijst = {
-        1:[1, 1, 1], 2:[2, 1, 1], 3:[3, 1, 1], 
-        4:[3, 2, 1], 5:[2, 2, 1], 6:[1, 2, 1],
-        7:[1, 3, 1], 8:[2, 3, 1], 9:[3, 3, 1],
+        0:[1, 1, 1], 1:[2, 1, 1], 2:[3, 1, 1], 
+        3:[3, 2, 1], 4:[2, 2, 1], 5:[1, 2, 1],
+        6:[1, 3, 1], 7:[2, 3, 1], 8:[3, 3, 1],
 
-        10:[3, 3, 2], 11:[2, 3, 2], 12:[1, 3, 2], 
-        13:[1, 2, 2], 14:[2, 2, 2], 15:[3, 2, 2],
-        16:[3, 1, 2], 17:[2, 1, 2], 18:[1, 1, 2],
+        9:[3, 3, 2], 10:[2, 3, 2], 11:[1, 3, 2], 
+        12:[1, 2, 2], 13:[2, 2, 2], 14:[3, 2, 2],
+        15:[3, 1, 2], 16:[2, 1, 2], 17:[1, 1, 2],
 
-        19:[1, 1, 3], 20:[2, 1, 3], 21:[3, 1, 3], 
-        22:[3, 2, 3], 23:[2, 2, 3], 24:[1, 2, 3],
-        25:[1, 3, 3], 26:[2, 3, 3], 27:[3, 3, 3],
+        18:[1, 1, 3], 19:[2, 1, 3], 20:[3, 1, 3], 
+        21:[3, 2, 3], 22:[2, 2, 3], 23:[1, 2, 3],
+        24:[1, 3, 3], 25:[2, 3, 3], 26:[3, 3, 3],
         }
 
-
-
-print(lijst)
 msg = [1, 1, 1]
 
-print(lijst[1])
-
-if msg == lijst[1]:
-	print("yes")
-else:
-	print("nope")
+# if msg == lijst[1]:
+# 	print("yes")
+# else:
+# 	print("nope")
 
 def get_key(val):
     for key, value in lijst.items():
@@ -99,3 +114,5 @@ def get_key(val):
  
 print(get_key(msg))
 
+# om eerste neopixel aan te steken met rood
+pixels[0] = (255, 0, 0)
