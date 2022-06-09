@@ -5,7 +5,7 @@
 from repositories.DataRepository import DataRepository
 # from luma.core.interface.parallel import bitbang_6800
 from flask_socketio import SocketIO, emit, send
-from PIL import Image, ImageDraw, ImageFont
+# from PIL import Image, ImageDraw, ImageFont
 from flask import Flask, jsonify, request
 # from luma.oled.device import ssd1306
 # from luma.core.render import canvas
@@ -14,14 +14,15 @@ from subprocess import check_output
 from selenium import webdriver
 from logging import exception
 from flask_cors import CORS
-from smbus import SMBus
-import adafruit_ssd1306
+# from smbus import SMBus
+# import adafruit_ssd1306
 from RPi import GPIO
 import threading
-import digitalio
+import multiprocessing
+# import digitalio
 import random
 import spidev
-import board
+# import board
 # import json
 import time
 
@@ -77,23 +78,23 @@ tellerOled = 0
 # serial = i2c(port = 1, address = 0x3C)
 # device = ssd1306(serial)
 
-oled_reset = digitalio.DigitalInOut(board.D4)
-WIDTH = 128
-HEIGHT = 64
-BORDER = 1
-i2c = board.I2C()
-oled = adafruit_ssd1306.SSD1306_I2C(WIDTH, HEIGHT, i2c, addr=0x3C, reset=oled_reset)
-oled.fill(0)
-oled.show()
-image = Image.new("1", (oled.width, oled.height))
-draw = ImageDraw.Draw(image)
-draw.rectangle((0, 0, oled.width, oled.height), outline=255, fill=255)
-draw.rectangle(
-    (BORDER, BORDER, oled.width - BORDER - 1, oled.height - BORDER - 1),
-    outline=0,
-    fill=0,
-)
-font = ImageFont.load_default()
+# oled_reset = digitalio.DigitalInOut(board.D4)
+# WIDTH = 128
+# HEIGHT = 64
+# BORDER = 1
+# i2c = board.I2C()
+# oled = adafruit_ssd1306.SSD1306_I2C(WIDTH, HEIGHT, i2c, addr=0x3C, reset=oled_reset)
+# oled.fill(0)
+# oled.show()
+# image = Image.new("1", (oled.width, oled.height))
+# draw = ImageDraw.Draw(image)
+# font = ImageFont.load_default()
+# draw.rectangle((0, 0, oled.width, oled.height), outline=255, fill=255)
+# draw.rectangle(
+#     (BORDER, BORDER, oled.width - BORDER - 1, oled.height - BORDER - 1),
+#     outline=0,
+#     fill=0,
+# )
 
 ########### KNOP ###########
 up1 = 12
@@ -110,10 +111,15 @@ tellerdown2 = 0 # down2
 # is de teller voordat het spel begint. Hiermee wordt er gekozen tot hoeveel er wordt gespeeld
 tellerKeuze = 0
 app_running = True
+
 ########### RGB ###########
 r = 23
 g = 24
 b = 25
+
+########### SPELERS ###########
+player1 = True # zo?
+player2 = True # zo?
 
 ##################### BUSSEN #####################
 # de spi-bus
@@ -124,14 +130,14 @@ spi.max_speed_hz = 10 ** 5
 
 ##################### FLASK #####################
 # start app
-app = Flask(__name__)
-app.config['SECRET_KEY'] = 'geheim!'
+# app = Flask(__name__)
+# app.config['SECRET_KEY'] = 'geheim!'
 
-socketio = SocketIO(app, cors_allowed_origins="*", 
-    logger=False, engineio_logger=False, ping_timeout=1)
+# socketio = SocketIO(app, cors_allowed_origins="*", 
+#     logger=False, engineio_logger=False, ping_timeout=1)
 
 
-CORS(app)
+# CORS(app)
 print("program started")
 
 
@@ -143,49 +149,51 @@ def setup():
 
     # joystick 1
     GPIO.setup(sw1, GPIO.IN, GPIO.PUD_UP)
-    GPIO.setup(x_as1, GPIO.IN)
-    GPIO.setup(y_as1, GPIO.IN)
+    # GPIO.setup(x_as1, GPIO.IN)
+    # GPIO.setup(y_as1, GPIO.IN)
     GPIO.add_event_detect(sw1, GPIO.FALLING, callback_sw1, bouncetime = 1000)
     
     # joystick 2
     GPIO.setup(sw2, GPIO.IN, GPIO.PUD_UP)
-    GPIO.setup(x_as2, GPIO.IN)
-    GPIO.setup(y_as2, GPIO.IN)
-    GPIO.add_event_detect(sw2, GPIO.FALLING, callback_sw2, bouncetime = 1000)
+    # GPIO.setup(x_as2, GPIO.IN)
+    # GPIO.setup(y_as2, GPIO.IN)
+    # GPIO.add_event_detect(sw2, GPIO.FALLING, callback_sw2, bouncetime = 1000)
 
-    # touchsensoren
-    GPIO.setup(t1, GPIO.IN, GPIO.PUD_UP)
-    GPIO.setup(t2, GPIO.IN, GPIO.PUD_UP)
+    # # touchsensoren
+    # GPIO.setup(t1, GPIO.IN, GPIO.PUD_UP)
+    # GPIO.setup(t2, GPIO.IN, GPIO.PUD_UP)
 
-    # motoren
-    global pwm_motor1, pwm_motor2
-    GPIO.setup(motor1, GPIO.OUT)
-    GPIO.setup(motor2, GPIO.OUT)
-    pwm_motor1 = GPIO.PWM(motor1, 1000)
-    pwm_motor2 = GPIO.PWM(motor2, 1000)
-    pwm_motor1.start(0)
-    pwm_motor2.start(0)
+    # # motoren
+    # global pwm_motor1, pwm_motor2
+    # GPIO.setup(motor1, GPIO.OUT)
+    # GPIO.setup(motor2, GPIO.OUT)
+    # pwm_motor1 = GPIO.PWM(motor1, 1000)
+    # pwm_motor2 = GPIO.PWM(motor2, 1000)
+    # pwm_motor1.start(0)
+    # pwm_motor2.start(0)
 
-    # knoppen
-    GPIO.setup(up1, GPIO.IN, GPIO.PUD_UP)
-    GPIO.add_event_detect(up1, GPIO.FALLING, callback_up1, bouncetime = 1000)
+    # # knoppen
+    # GPIO.setup(up1, GPIO.IN, GPIO.PUD_UP)
+    # # GPIO.add_event_detect(up1, GPIO.FALLING, callback_up1, bouncetime = 1000)
 
-    GPIO.setup(down1, GPIO.IN, GPIO.PUD_UP)
-    GPIO.add_event_detect(down1, GPIO.FALLING, callback_down1, bouncetime = 1000)
+    # GPIO.setup(down1, GPIO.IN, GPIO.PUD_UP)
+    # # GPIO.add_event_detect(down1, GPIO.FALLING, callback_down1, bouncetime = 1000)
 
-    GPIO.setup(up2, GPIO.IN, GPIO.PUD_UP)
-    GPIO.add_event_detect(up2, GPIO.FALLING, callback_up2, bouncetime = 1000)
+    # GPIO.setup(up2, GPIO.IN, GPIO.PUD_UP)
+    # # GPIO.add_event_detect(up2, GPIO.FALLING, callback_up2, bouncetime = 1000)
 
-    GPIO.setup(down2, GPIO.IN, GPIO.PUD_UP)
-    GPIO.add_event_detect(down2, GPIO.FALLING, callback_down2, bouncetime = 1000)
+    # GPIO.setup(down2, GPIO.IN, GPIO.PUD_UP)
+    # # GPIO.add_event_detect(down2, GPIO.FALLING, callback_down2, bouncetime = 1000)
 
-    # RGB led
-    GPIO.setup(r, GPIO.OUT)
-    GPIO.setup(g, GPIO.OUT)
-    GPIO.setup(b, GPIO.OUT)
-    GPIO.output(r, GPIO.LOW)
-    GPIO.output(g, GPIO.LOW)
-    GPIO.output(b, GPIO.LOW)
+    # # RGB led
+    # GPIO.setup(r, GPIO.OUT)
+    # GPIO.setup(g, GPIO.OUT)
+    # GPIO.setup(b, GPIO.OUT)
+    
+    # # rgb led uitzetten, anders geeft het licht in het begin, terwijl die dat niet moet doen
+    # GPIO.output(r, GPIO.LOW)
+    # GPIO.output(g, GPIO.HIGH) # mag eig wel aan om te laten tonen dat opgestart is
+    # GPIO.output(b, GPIO.LOW)
 
 ##################### CALLBACK #####################
 def callback_sw1(pin):
@@ -299,110 +307,110 @@ def hoek_tot_duty(getal):
 
 
 
-##################### SOCKETIO #####################
-@socketio.on_error()        # Handles the default namespace
-def error_handler(e):
-    print(e)
+# ##################### SOCKETIO #####################
+# @socketio.on_error()        # Handles the default namespace
+# def error_handler(e):
+#     print(e)
 
-@socketio.on('connect')
-def initial_connection():
-    print('A new client connect')
-    emit('B2F_connected', {'message': "hallo nieuwe user!"})
+# @socketio.on('connect')
+# def initial_connection():
+#     print('A new client connect')
+#     emit('B2F_connected', {'message': "hallo nieuwe user!"})
 
-@socketio.on('F2B_joystick')
-def joystick(data):
-    # data = json.loads(dictdata) # hoeft niet als je postman op JSON zet en niet op TEXT -_-
-    # while True:
-    joy_id = data["deviceid"]
-    if joy_id in [14, 15, 17, 18]:
-        # waarde, commentaar = joystick_id(joy_id)
-        waarde, commentaar = joystick_id(joy_id)
+# @socketio.on('F2B_joystick')
+# def joystick(data):
+#     # data = json.loads(dictdata) # hoeft niet als je postman op JSON zet en niet op TEXT -_-
+#     # while True:
+#     joy_id = data["deviceid"]
+#     if joy_id in [14, 15, 17, 18]:
+#         # waarde, commentaar = joystick_id(joy_id)
+#         waarde, commentaar = joystick_id(joy_id)
 
-    elif joy_id in [16, 19]:
-        waarde, commentaar = joysw_id(joy_id)
+#     elif joy_id in [16, 19]:
+#         waarde, commentaar = joysw_id(joy_id)
 
-    DataRepository.create_historiek(joy_id, commentaar, waarde)
+#     DataRepository.create_historiek(joy_id, commentaar, waarde)
 
-@socketio.on('F2B_touch')
-def touch(data):
-    touch_id = data['deviceid']
-    if touch_id == 7:
-        print(f"sensor 1: {touch_id}")
-        teller7, commentaar, waarde = Touch_klasse.touch1()
-        print(teller7)
+# @socketio.on('F2B_touch')
+# def touch(data):
+#     touch_id = data['deviceid']
+#     if touch_id == 7:
+#         print(f"sensor 1: {touch_id}")
+#         teller7, commentaar, waarde = Touch_klasse.touch1()
+#         print(teller7)
 
-    elif touch_id == 8:
-        print(f"sensor 2: {touch_id}")
-        teller8, commentaar, waarde = Touch_klasse.touch2()
-        print(teller8)
+#     elif touch_id == 8:
+#         print(f"sensor 2: {touch_id}")
+#         teller8, commentaar, waarde = Touch_klasse.touch2()
+#         print(teller8)
 
-    else:
-        print('IDK')
-    DataRepository.create_historiek(touch_id, commentaar, waarde)
+#     else:
+#         print('IDK')
+#     DataRepository.create_historiek(touch_id, commentaar, waarde)
 
 
 ##################### ENDPOINTS #####################
 endpoint = '/api/v1'
 
-@app.route('/')
-def info():
-    return jsonify(info = 'Please go to the endpoint ' + endpoint)
+# @app.route('/')
+# def info():
+#     return jsonify(info = 'Please go to the endpoint ' + endpoint)
 
-# devices
-@app.route(endpoint + '/devices/', methods = ['GET'])
-def get_devices():
-    if request.method == 'GET':
-        data = DataRepository.read_devices()
-        if data is not None:
-            return jsonify(devices = data), 200
-        else:
-            return jsonify(message = "error"), 404
+# # devices
+# @app.route(endpoint + '/devices/', methods = ['GET'])
+# def get_devices():
+#     if request.method == 'GET':
+#         data = DataRepository.read_devices()
+#         if data is not None:
+#             return jsonify(devices = data), 200
+#         else:
+#             return jsonify(message = "error"), 404
 
-@app.route(endpoint + '/devices/<deviceID>/', methods = ['GET'])
-def get_device(deviceID):
-    if request.method == "GET":
-        print(deviceID)
-        data = DataRepository.read_device_by_id(deviceID)
-        if data is not None:
-            return jsonify(device = data), 200
-        else:
-            return jsonify(message = "error"), 404
+# @app.route(endpoint + '/devices/<deviceID>/', methods = ['GET'])
+# def get_device(deviceID):
+#     if request.method == "GET":
+#         print(deviceID)
+#         data = DataRepository.read_device_by_id(deviceID)
+#         if data is not None:
+#             return jsonify(device = data), 200
+#         else:
+#             return jsonify(message = "error"), 404
 
-# spelers
-@app.route(endpoint + '/players/', methods = ['GET'])
-def get_players():
-    if request.method == "GET":
-        data = DataRepository.read_alle_spelers()
-        if data is not None:
-            return jsonify(spelers = data), 200
-        else:
-            return jsonify(message = "error"), 404
+# # spelers
+# @app.route(endpoint + '/players/', methods = ['GET'])
+# def get_players():
+#     if request.method == "GET":
+#         data = DataRepository.read_alle_spelers()
+#         if data is not None:
+#             return jsonify(spelers = data), 200
+#         else:
+#             return jsonify(message = "error"), 404
 
-@app.route(endpoint + '/players/<playerID>/', methods = ['GET'])
-def get_player(playerID):
-    if request.method == "GET":
-        print(playerID)
-        data = DataRepository.read_speler_by_id(playerID)
-        if data is not None:
-            return jsonify(speler = data), 200
-        else:
-            return jsonify(message = "error"), 404
+# @app.route(endpoint + '/players/<playerID>/', methods = ['GET'])
+# def get_player(playerID):
+#     if request.method == "GET":
+#         print(playerID)
+#         data = DataRepository.read_speler_by_id(playerID)
+#         if data is not None:
+#             return jsonify(speler = data), 200
+#         else:
+#             return jsonify(message = "error"), 404
 
-# historiek/waarden
-@app.route(endpoint + '/waarden/', methods = ['GET'])
-def get_waarden_joy():
-    if request.method == "GET":
-        data = DataRepository.read_alle_waarden()
-        if data is not None:
-            return jsonify(historiek = data), 200
-        else:
-            print("error")
-            return jsonify(message = "error"), 404
-    elif request.method == 'POST':
-        gegevens = DataRepository.json_or_formdata(request)
-        print(gegevens)
-        data = DataRepository.create_historiek(gegevens["deviceid"], gegevens["commentaar"], gegevens["waarde"], gegevens["actieid"])
-        return jsonify(volgnummer = data), 201
+# # historiek/waarden
+# @app.route(endpoint + '/waarden/', methods = ['GET'])
+# def get_waarden_joy():
+#     if request.method == "GET":
+#         data = DataRepository.read_alle_waarden()
+#         if data is not None:
+#             return jsonify(historiek = data), 200
+#         else:
+#             print("error")
+#             return jsonify(message = "error"), 404
+#     elif request.method == 'POST':
+#         gegevens = DataRepository.json_or_formdata(request)
+#         print(gegevens)
+#         data = DataRepository.create_historiek(gegevens["deviceid"], gegevens["commentaar"], gegevens["waarde"], gegevens["actieid"])
+#         return jsonify(volgnummer = data), 201
     
 ##################### THREADS #####################
 # START een thread op. Belangrijk!!! Debugging moet UIT staan op start van de server, anders start de thread dubbel op
@@ -429,9 +437,11 @@ def get_waarden_joy():
 # ALS JE DE ENE LEEST, KAN JE DE ANDER NIET UITLEZEN!!
 def start_thread():
     print("***** Starting THREAD *****")
-    thread1 = threading.Thread(target = spel_starten, args = (), daemon = True)
+    
+    # thread1 = threading.Thread(target = spel_starten, args = (), daemon = True)
+    # thread1 = multiprocessing.Process(target = spel_starten, args = (), daemon = True)
     # thread2 = threading.Thread(target = touch_uitlezen, args = (), daemon = True)
-    thread1.start()
+    # thread1.start()
     # thread2.start()
     # threading.Timer(1, joystick_uitlezen).start() # niet nodig want anders start je het 2 keer
 
@@ -457,75 +467,67 @@ def joystick_uitlezen():
 
 
 def keuzelijst():
+
     global tellerKeuze, app_running
-    # while app_running and True:
-    print("Kies tot hoeveel er gespeeld wordt")
-    if tellerKeuze > 3:
-            tellerKeuze = 3
-    elif tellerKeuze < 0:
-        tellerKeuze = 0
-    print(tellerKeuze)
-    draw.rectangle((0, 0, oled.width, oled.height), outline=255, fill=255)
-    draw.rectangle(
-        (BORDER, BORDER, oled.width - BORDER - 1, oled.height - BORDER - 1),
-        outline=0,
-        fill=0,
-    )
-    print("we wachten even")
-    time.sleep(3)
-    oled.image(image)
-    # oled.show()
-    time.sleep(0.2)
-    
-    if tellerKeuze == 0:
-        print("keuze 1")
-        draw.text((5, 2), "__ tot 1 spelen __", font=font, fill=255)# gekozen
-        draw.text((5, 17), "   tot 3 spelen", font=font, fill=255) 
-        draw.text((5, 32), "   tot 5 spelen", font=font, fill=255)
-        draw.text((5, 47), "   tot 9 spelen", font=font, fill=255)
-    elif tellerKeuze == 1:
-        print("keuze 2")
-        draw.text((5, 2), "   tot 1 spelen", font=font, fill=255)# gekozen
-        draw.text((5, 17), "__  tot 3 spelen __", font=font, fill=255) 
-        draw.text((5, 32), "   tot 5 spelen", font=font, fill=255)
-        draw.text((5, 47), "   tot 9 spelen", font=font, fill=255)
-    elif tellerKeuze == 2:
-        print("keuze 3")
-        draw.text((5, 2), "   tot 1 spelen", font=font, fill=255)# gekozen
-        draw.text((5, 17), "   tot 3 spelen", font=font, fill=255) 
-        draw.text((5, 32), "__ tot 5 spelen __", font=font, fill=255)
-        draw.text((5, 47), "   tot 9 spelen", font=font, fill=255)
-    elif tellerKeuze == 3:
-        print("keuze 4")
-        draw.text((5, 2), "   tot 1 spelen", font=font, fill=255)# gekozen
-        draw.text((5, 17), "   tot 3 spelen", font=font, fill=255) 
-        draw.text((5, 32), "   tot 5 spelen", font=font, fill=255)
-        draw.text((5, 47), "__ tot 9 spelen __", font=font, fill=255)
-    else:
-        print("KAN NIET")
-    draw.text((5, 2), "__ tot 1 spelen __", font=font,     fill=255)# gekozen
-    draw.text((5, 17), "   tot 3 spelen", font=font,     fill=255) 
-    draw.text((5, 32), "   tot 5 spelen", font=font,     fill=255)
-    draw.text((5, 47), "   tot 9 spelen", font=font,     fill=255)
+    while app_running and True:
+        print("Kies tot hoeveel er gespeeld wordt")
+        if tellerKeuze > 3:
+                tellerKeuze = 3
+        elif tellerKeuze < 0:
+            tellerKeuze = 0
+        print(tellerKeuze)
+        draw.rectangle((0, 0, oled.width, oled.height), outline=255, fill=255)
+        draw.rectangle(
+            (BORDER, BORDER, oled.width - BORDER - 1, oled.height - BORDER - 1),
+            outline=0,
+            fill=0,
+        )
+        if tellerKeuze == 0:
+            print("keuze 1")
+            draw.text((5, 2), "__ tot 1 spelen __", font=font, fill=255)# gekozen
+            draw.text((5, 17), "   tot 3 spelen", font=font, fill=255) 
+            draw.text((5, 32), "   tot 5 spelen", font=font, fill=255)
+            draw.text((5, 47), "   tot 9 spelen", font=font, fill=255)
+        elif tellerKeuze == 1:
+            print("keuze 2")
+            draw.text((5, 2), "   tot 1 spelen", font=font, fill=255)# gekozen
+            draw.text((5, 17), "__  tot 3 spelen __", font=font, fill=255) 
+            draw.text((5, 32), "   tot 5 spelen", font=font, fill=255)
+            draw.text((5, 47), "   tot 9 spelen", font=font, fill=255)
 
-    oled.image(image)
-    # oled.show()
-    time.sleep(0.2)
+        elif tellerKeuze == 2:
+            print("keuze 3")
+            draw.text((5, 2), "   tot 1 spelen", font=font, fill=255)# gekozen
+            draw.text((5, 17), "   tot 3 spelen", font=font, fill=255) 
+            draw.text((5, 32), "__ tot 5 spelen __", font=font, fill=255)
+            draw.text((5, 47), "   tot 9 spelen", font=font, fill=255)
 
-    # als touchsensor aanraking ziet, dan start spel
-    if GPIO.input(t1) or GPIO.input(t2):
-        # dus als er input is van t1/t2
-        print('touchsensor aangeraakt => confirm de keuze')
-        return tellerKeuze
-    else:
-        time.sleep(0.2)
-        if not app_running:
-            print("done")
-    return "keuze 2"
+        elif tellerKeuze == 3:
+            print("keuze 4")
+            draw.text((5, 2), "   tot 1 spelen", font=font, fill=255)# gekozen
+            draw.text((5, 17), "   tot 3 spelen", font=font, fill=255) 
+            draw.text((5, 32), "   tot 5 spelen", font=font, fill=255)
+            draw.text((5, 47), "__ tot 9 spelen __", font=font, fill=255)
+        else:
+            print("KAN NIET")
+        # als touchsensor aanraking ziet, dan start spel
+        oled.image(image)
+        oled.show()
+        if GPIO.input(t1) or GPIO.input(t2):
+            # dus als er input is van t1/t2
+            print('touchsensor aangeraakt => confirm de keuze')
+            print(f"dit is de tellerKeuze: {tellerKeuze}")
+            app_running = False
+        else:
+            time.sleep(0.2)
+    if not app_running:
+        print("done")
+
 
 def spel_starten():
     global tellerKeuze
-    keuze = keuzelijst()
+    keuzelijst()
+    print("keuzelijst overlopen en gekozen")
     # global app_running
     # while app_running and True:
     # print("Kies tot hoeveel er gespeeld wordt")
@@ -608,11 +610,13 @@ if __name__ == "__main__":
         # oled.show()
         time.sleep(1)
         setup()
-        start_thread()
+        # start_thread()
         # start_chrome_thread()
         # start_thread_teller()
-        print("**** Starting APP ****")
-        socketio.run(app,debug = False, host = '0.0.0.0')
+        while True:
+            time.sleep(1)
+        # print("**** Starting APP ****")
+        # socketio.run(app,debug = False, host = '0.0.0.0')
     except KeyboardInterrupt as e:
         print(e)
     finally:
