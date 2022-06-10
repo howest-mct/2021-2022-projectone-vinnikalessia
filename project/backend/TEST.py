@@ -193,20 +193,20 @@ def setup():
 
     # knoppen
     GPIO.setup(up1, GPIO.IN, GPIO.PUD_UP)
-    # GPIO.add_event_detect(up1, GPIO.FALLING, callback_up1, bouncetime = 1000)
-    GPIO.add_event_detect(up1, GPIO.FALLING, callback_up, bouncetime = 1000)
+    GPIO.add_event_detect(up1, GPIO.FALLING, callback_up, bouncetime = 50)
+    # GPIO.add_event_detect(up1, GPIO.FALLING, callback_up, bouncetime = 1000)
 
     GPIO.setup(down1, GPIO.IN, GPIO.PUD_UP)
-    # GPIO.add_event_detect(down1, GPIO.FALLING, callback_down1, bouncetime = 1000)
-    GPIO.add_event_detect(down1, GPIO.FALLING, callback_down, bouncetime = 1000)
+    GPIO.add_event_detect(down1, GPIO.FALLING, callback_down, bouncetime = 50)
+    # GPIO.add_event_detect(down1, GPIO.FALLING, callback_down, bouncetime = 1000)
 
     GPIO.setup(up2, GPIO.IN, GPIO.PUD_UP)
-    # GPIO.add_event_detect(up2, GPIO.FALLING, callback_up2, bouncetime = 1000)
-    GPIO.add_event_detect(up2, GPIO.FALLING, callback_up, bouncetime = 1000)
+    GPIO.add_event_detect(up2, GPIO.FALLING, callback_up, bouncetime = 50)
+    # GPIO.add_event_detect(up2, GPIO.FALLING, callback_up, bouncetime = 1000)
 
     GPIO.setup(down2, GPIO.IN, GPIO.PUD_UP)
-    # GPIO.add_event_detect(down2, GPIO.FALLING, callback_down2, bouncetime = 1000)
-    GPIO.add_event_detect(down2, GPIO.FALLING, callback_down, bouncetime = 1000)
+    GPIO.add_event_detect(down2, GPIO.FALLING, callback_down, bouncetime = 50)
+    # GPIO.add_event_detect(down2, GPIO.FALLING, callback_down, bouncetime = 1000)
 
     # RGB led
     GPIO.setup(r, GPIO.OUT)
