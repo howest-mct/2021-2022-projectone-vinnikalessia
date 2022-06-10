@@ -479,6 +479,7 @@ def joystick_uitlezen(speler):
     global choice_running, tellerStapX, tellerStapY, tellerStapZ
     while choice_running and True:
         # als het speler 0 is, dan moet je alleen joy 1 uitlezen
+        # ROOD
         if speler == 0:
             # de x-as
             for joy_id in [14, 15, 16]:
@@ -627,15 +628,27 @@ def start_game():
     randomPlayer = random.randint(0, 1)
     print(f"DIT IS RANDOM: {randomPlayer}")
     print("EN WIE MAG ER BEGINNEN?......")
-    time.sleep(2)
+    draw.rectangle((0, 0, oled.width, oled.height), outline=255, fill=255)
+    draw.rectangle(
+        (BORDER, BORDER, oled.width - BORDER - 1, oled.height - BORDER - 1),
+        outline=0,
+        fill=0,
+    )
+    oled.image(image)
+    oled.show()
+    time.sleep(0.5)
     if randomPlayer == 0:
         # blauw
+        draw.text((25, 25), "    ROOD", font=font, fill=255)
         print("Player 1 begint")
         GPIO.output(r, GPIO.HIGH)
     elif randomPlayer == 1:
         # rood
+        draw.text((25, 25), "    BLAUW", font=font, fill=255)
         print("Player 2 begint")
         GPIO.output(b, GPIO.HIGH)
+    oled.image(image)
+    oled.show()
     game(randomPlayer)
 
 def game(beginner):
