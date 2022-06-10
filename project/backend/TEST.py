@@ -107,6 +107,7 @@ app_running = True
 keuzeSpel = None
 game_running = True
 choice_running = True
+
 ########### RGB ###########
 r = 23
 g = 24
@@ -524,9 +525,13 @@ def joystick_uitlezen(speler):
                 elif down1:
                     tellerStapZ -= 1
                 positie_lijst.append(tellerStapZ)
-                print(f"dit is de gekozen positie{positie_lijst}")
+                
+                if t1:
+                    print("opslaan!")
+                    get_key(positie_lijst)
+                    print(f"dit is de gekozen positie{positie_lijst}")
+                    choice_running = False
                 ############################################
-                get_key(positie_lijst)
                 # positie(tellerStapX, tellerStapY, tellerKeuze)
                 time.sleep(0.7)
 
@@ -542,7 +547,8 @@ def joystick_uitlezen(speler):
                             tellerStapX -= 1
                         elif waarde < 200:
                             tellerStapX += 1
-                        return tellerStapX
+                        # return tellerStapX
+                        positie_lijst.append(tellerStapX)
                 # de y-as
                 for joy_id in [18]:
                     waarde, commentaar = joystick_id(joy_id)
@@ -552,12 +558,24 @@ def joystick_uitlezen(speler):
                             tellerStapY -= 1
                         elif waarde < 200:
                             tellerStapY += 1
-                        return tellerStapY
+                        # return tellerStapY
+                        positie_lijst.append(tellerStapY)
                 # de sw
-                for joy_id in [19]:
-                    waarde, commentaar = joysw_id(joy_id)
-                    if waarde == 1:
-                        DataRepository.create_historiek(joy_id, commentaar, waarde)
+                # for joy_id in [19]:
+                #     waarde, commentaar = joysw_id(joy_id)
+                #     if waarde == 1:
+                #         DataRepository.create_historiek(joy_id, commentaar, waarde)
+                if up1:
+                    tellerStapZ += 1
+                elif down1:
+                    tellerStapZ -= 1
+                positie_lijst.append(tellerStapZ)
+                if t1:
+                    print("opslaan!")
+                    get_key(positie_lijst)
+                    print(f"dit is de gekozen positie{positie_lijst}")
+                    print(positie_lijst)
+                    choice_running = False
                 time.sleep(0.7)
     if not choice_running:
         print("done")
