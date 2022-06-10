@@ -95,6 +95,9 @@ down1 = 16
 up2 = 20
 down2 = 21
 
+# aan/uit knop
+onoff = 26
+
 # teller
 tellerKeuze = 0
 
@@ -663,7 +666,7 @@ def game(beginner):
 
 if __name__ == "__main__":
     try:
-        global app_running
+        # global app_running
         # debug NIET op True zetten
         draw.text((5, 2), "__ tot 1 spelen __", font=font,     fill=255)# gekozen
         draw.text((5, 17), "   tot 3 spelen", font=font,     fill=255) 

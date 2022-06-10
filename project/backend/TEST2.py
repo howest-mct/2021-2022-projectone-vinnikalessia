@@ -68,6 +68,7 @@
 import time
 import board
 import neopixel
+from RPi import GPIO
 
 
 # Choose an open pin connected to the Data In of the NeoPixel strip, i.e. board.D18
@@ -75,7 +76,8 @@ import neopixel
 pixel_pin = board.D18
 
 # The number of NeoPixels
-num_pixels = 27 # ik heb 27 neopixels
+# num_pixels = 27 # ik heb 27 neopixels
+num_pixels = 3
 
 # The order of the pixel colors - RGB or GRB. Some NeoPixels have red and green reversed!
 # For RGBW NeoPixels, simply change the ORDER to RGBW or GRBW.
@@ -127,25 +129,31 @@ win_combinaties = {
 
 try:
     while True:
-        # msg = [1, 1, 1]
-        msg = int(input("getal: "))
-        lijst.append(msg)
-        msg = int(input("getal: "))
-        lijst.append(msg)
-        msg = int(input("getal: "))
-        lijst.append(msg)
-        print(lijst)
-        if lijst == neopixel_dict[0]:
-            print("yes")
-        else:
-            print("nope")
-        print(get_key(lijst))
-        # combinatie wordt dus gevonden in de dict en men weet op welke plaats het staat  (key)
-        pixels[get_key(lijst)]
-        # zou het onthouden of niet?
+        # # msg = [1, 1, 1]
+        # msg = int(input("getal: "))
+        # lijst.append(msg)
+        # msg = int(input("getal: "))
+        # lijst.append(msg)
+        # msg = int(input("getal: "))
+        # lijst.append(msg)
+        # print(lijst)
+        # if lijst == neopixel_dict[0]:
+        #     print("yes")
+        # else:
+        #     print("nope")
+        # print(get_key(lijst))
+        # # combinatie wordt dus gevonden in de dict en men weet op welke plaats het staat  (key)
+        # pixels[get_key(lijst)]
+        # # zou het onthouden of niet?
 
-        time.sleep(2)
-        lijst = []
+        ##########################################################################################
+        pixels[0] = (255, 0, 0)
+        pixels[0] = (0, 0, 0)
+        print("licht!")
+        time.sleep(1)
+        ##########################################################################################
+        # time.sleep(2)
+        # lijst = []
         # keuzex = int(input(f"Geef een eerste nummer in van 1 tot 3: "))
         # lijst.append(keuzex)
         # print(type(keuzex))
@@ -162,4 +170,5 @@ try:
 except KeyboardInterrupt as k:
     print(k)
 finally:
+    GPIO.cleanup()
     print("done")
