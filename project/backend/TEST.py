@@ -105,8 +105,8 @@ tellerKeuze = 0
 # is de teller voordat het spel begint. Hiermee wordt er gekozen tot hoeveel er wordt gespeeld
 app_running = True
 keuzeSpel = None
-game_running = False
-choice_running = False
+game_running = True
+choice_running = True
 ########### RGB ###########
 r = 23
 g = 24
@@ -475,8 +475,16 @@ def start_thread():
 #                 DataRepository.create_historiek(joy_id, commentaar, waarde)
 #         time.sleep(0.7)
 
+def get_key(val):
+    for key, value in neopixel_dict.items():
+         if val == value:
+             print("key exists")
+             return key
+    return "key doesn't exist"
+
 def joystick_uitlezen(speler):
     global choice_running, tellerStapX, tellerStapY, tellerStapZ
+    positie_lijst = []
     while choice_running and True:
         # als het speler 0 is, dan moet je alleen joy 1 uitlezen
         # ROOD
@@ -486,28 +494,40 @@ def joystick_uitlezen(speler):
                 for joy_id in [14]:
                     waarde, commentaar = joystick_id(joy_id)
                     if waarde > 800 or waarde < 200:
+                        print(waarde)
                         DataRepository.create_historiek(joy_id, commentaar, waarde)
                         if waarde > 800:
                             tellerStapX -= 1
                         elif waarde < 200:
                             tellerStapX += 1
-                        return tellerStapX
+                        # return tellerStapX
+                        positie_lijst.append(tellerStapX)
                 # de y-as
                 for joy_id in [15]:
                     waarde, commentaar = joystick_id(joy_id)
                     if waarde > 800 or waarde < 200:
+                        print(waarde)
                         DataRepository.create_historiek(joy_id, commentaar, waarde)
                         if waarde > 800:
                             tellerStapY -= 1
                         elif waarde < 200:
                             tellerStapY += 1
-                        return tellerStapY
-                # de sw
-                for joy_id in [16]:
-                    waarde, commentaar = joysw_id(joy_id)
-                    if waarde == 1:
-                        DataRepository.create_historiek(joy_id, commentaar, waarde)
-                positie(tellerStapX, tellerStapY, tellerKeuze)
+                        # return tellerStapY
+                        positie_lijst.append(tellerStapY)
+                # # de sw
+                # for joy_id in [16]:
+                #     waarde, commentaar = joysw_id(joy_id)
+                #     if waarde == 1:
+                #         DataRepository.create_historiek(joy_id, commentaar, waarde)
+                if up1:
+                    tellerStapZ += 1
+                elif down1:
+                    tellerStapZ -= 1
+                positie_lijst.append(tellerStapZ)
+                print(f"dit is de gekozen positie{positie_lijst}")
+                ############################################
+                get_key(positie_lijst)
+                # positie(tellerStapX, tellerStapY, tellerKeuze)
                 time.sleep(0.7)
 
         # als het speler 1 is, dan moet je alleen joy 1 uitlezen
@@ -600,7 +620,7 @@ def keuzelijst():
         else:
             time.sleep(0.2)
     if not app_running:
-        print("done")
+        print("done :P")
         return tellerKeuze
 
 
