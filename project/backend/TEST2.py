@@ -275,6 +275,6 @@ while True:
     time.sleep(1)
     pixels[2] = (0, 0, 0)
     pixels.show()
-    time.sleep(1)
+    # time.sleep(1)
 
     rainbow_cycle(0.001)  # rainbow cycle with 1ms delay per step
