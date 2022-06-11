@@ -1,23 +1,22 @@
 ##################### IMPORT #####################
-from luma.core.virtual import viewport, snapshot, range_overlap
-from luma.core.interface.serial import i2c, spi, pcf8574
 from repositories.DataRepository import DataRepository
-from luma.core.interface.parallel import bitbang_6800
 from flask_socketio import SocketIO, emit, send
+from PIL import Image, ImageDraw, ImageFont
 from flask import Flask, jsonify, request
-from luma.oled.device import ssd1306
 from numpy import False_, broadcast
 from subprocess import check_output
 from selenium import webdriver
 from logging import exception
 from flask_cors import CORS
-from luma.core.render import canvas
-from smbus import SMBus
+import adafruit_ssd1306
 from PIL import Image
 from RPi import GPIO
 import threading
+import digitalio
+import neopixel
+import random
 import spidev
-import json
+import board
 import time
 
 ##################### MY IMPORT #####################
