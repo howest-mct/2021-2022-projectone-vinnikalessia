@@ -188,7 +188,7 @@ import neopixel
 pixel_pin = board.D18
 
 # The number of NeoPixels
-num_pixels = 3
+num_pixels = 9
 
 # The order of the pixel colors - RGB or GRB. Some NeoPixels have red and green reversed!
 # For RGBW NeoPixels, simply change the ORDER to RGBW or GRBW.
@@ -235,45 +235,45 @@ while True:
     # pixels.fill((255, 0, 0))
     # Uncomment this line if you have RGBW/GRBW NeoPixels
     # pixels.fill((255, 0, 0, 0))
-    pixels[0] = (255, 0, 0)
-    pixels.show()
-    print("licht 1!")
-    time.sleep(1)
-    pixels[0] = (0, 0, 0)
-    pixels.show()
-    time.sleep(1)
+    # pixels[0] = (255, 0, 0)
+    # pixels.show()
+    # print("licht 1!")
+    # time.sleep(1)
+    # pixels[0] = (0, 0, 0)
+    # pixels.show()
+    # time.sleep(1)
 
     # Comment this line out if you have RGBW/GRBW NeoPixels
     # pixels.fill((0, 255, 0))
     # Uncomment this line if you have RGBW/GRBW NeoPixels
     # pixels.fill((0, 255, 0, 0))
-    pixels[1] = (0, 0, 255)
-    pixels.show()
-    print("licht 2!")
-    time.sleep(1)
-    pixels[1] = (0, 0, 0)
-    pixels.show()
-    time.sleep(1)
+    # pixels[1] = (0, 0, 255)
+    # pixels.show()
+    # print("licht 2!")
+    # time.sleep(1)
+    # pixels[1] = (0, 0, 0)
+    # pixels.show()
+    # time.sleep(1)
 
     # Comment this line out if you have RGBW/GRBW NeoPixels
     # pixels.fill((0, 0, 255))
     # Uncomment this line if you have RGBW/GRBW NeoPixels
     # pixels.fill((0, 0, 255, 0))
-    pixels[2] = (0, 255, 0)
-    pixels.show()
-    print("licht 3!")
-    time.sleep(1)
-    pixels[2] = (0, 0, 0)
-    pixels.show()
-    time.sleep(1)
+    # pixels[2] = (0, 255, 0)
+    # pixels.show()
+    # print("licht 3!")
+    # time.sleep(1)
+    # pixels[2] = (0, 0, 0)
+    # pixels.show()
+    # time.sleep(1)
 
-    pixels[0] = (255, 0, 0)
-    pixels[1] = (0, 255, 0)
-    pixels[2] = (0, 0, 255)
-    pixels.show()
-    print("licht!")
-    time.sleep(1)
-    pixels[2] = (0, 0, 0)
+    # pixels[0] = (255, 0, 0)
+    # pixels[1] = (0, 255, 0)
+    # pixels[2] = (0, 0, 255)
+    # pixels.show()
+    # print("licht!")
+    # time.sleep(1)
+    # pixels[2] = (0, 0, 0)
     # pixels.show()
     # time.sleep(1)
 
