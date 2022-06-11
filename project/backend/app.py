@@ -22,12 +22,10 @@ import time
 ##################### MY IMPORT #####################
 from hulpcode.joystick import Joy_klasse
 from hulpcode.touch import Touch_klasse
-# from hulpcode.oled import oled
-# from hulpcode.motor import motor_klasse
+from hulpcode.oled import Oled_klasse
+from hulpcode.motor import Motor_klasse
+from hulpcode.neopixel import Neos_klasse
 
-
-##################### GLOBALE VARIABELEN ######################
-global sw_val, x_val, y_val
 
 ########### JOYSTICK ###########
 # deze hangen aan de mcp
@@ -53,24 +51,98 @@ prev_teller19 = 0
 t1 = 13
 t2 = 19
 
-# teller aantal keer getouched
+# teller aantal keer aangeraakt
 teller7 = 0 # t1
 teller8 = 0 # t2
 
 ########### MOTOR ###########
 motor1 = 17
-# motor2 = 27
+motor2 = 22
 hoek = 5
 
 # teller
 tellerm1 = 0
-# tellerm2 = 0
+tellerm2 = 0
 
 ########### OLED ###########
 tellerOled = 0
-serial = i2c(port = 1, address = 0x3C)
-device = ssd1306(serial)
+oled_reset = digitalio.DigitalInOut(board.D4)
+WIDTH = 128
+HEIGHT = 64
+BORDER = 1
+i2c = board.I2C()
+oled = adafruit_ssd1306.SSD1306_I2C(WIDTH, HEIGHT, i2c, addr=0x3C, reset=oled_reset)
+oled.fill(0)
+oled.show()
+image = Image.new("1", (oled.width, oled.height))
+draw = ImageDraw.Draw(image)
+font = ImageFont.load_default()
+draw.rectangle((0, 0, oled.width, oled.height), outline=255, fill=255)
+draw.rectangle(
+    (BORDER, BORDER, oled.width - BORDER - 1, oled.height - BORDER - 1),
+    outline=0,
+    fill=0,
+)
 
+########### KNOP ###########
+up1 = 12
+down1 = 16
+up2 = 20
+down2 = 21
+
+# aan/uit knop pi
+onoff = 26
+
+# teller => keuze tot hoeveel er gespeeld wordt
+tellerKeuze = 0
+
+
+# is de teller voordat het spel begint. Hiermee wordt er gekozen tot hoeveel er wordt gespeeld
+app_running = True
+keuzeSpel = None
+game_running = True
+choice_running = True
+
+########### RGB ###########
+r = 23
+g = 24
+b = 25
+
+##################### NEOPIXEL #####################
+pixel_pin = board.D18 # pin 18
+num_pixels = 27 # ik heb 27 neopixels
+ORDER = neopixel.GRB
+pixels = neopixel.NeoPixel(
+    pixel_pin, num_pixels, brightness=0.2, auto_write=False, pixel_order=ORDER
+)
+
+# lednummer:[x-as, y-as, z-as] 
+neopixel_dict = {
+        0:[1, 1, 1], 1:[2, 1, 1], 2:[3, 1, 1], 
+        3:[3, 2, 1], 4:[2, 2, 1], 5:[1, 2, 1],
+        6:[1, 3, 1], 7:[2, 3, 1], 8:[3, 3, 1],
+
+        9:[3, 3, 2], 10:[2, 3, 2], 11:[1, 3, 2], 
+        12:[1, 2, 2], 13:[2, 2, 2], 14:[3, 2, 2],
+        15:[3, 1, 2], 16:[2, 1, 2], 17:[1, 1, 2],
+
+        18:[1, 1, 3], 19:[2, 1, 3], 20:[3, 1, 3], 
+        21:[3, 2, 3], 22:[2, 2, 3], 23:[1, 2, 3],
+        24:[1, 3, 3], 25:[2, 3, 3], 26:[3, 3, 3],
+        }
+
+# nummer_winnende_combinatie:[lednummer1, lednummer2, lednummer3] => klein naar groot
+win_combinaties = {
+    1:[0,1,2], 2:[3,4,5], 3:[6,7,8], 4:[0,5,6], 5:[1,4,7], 6:[2,3,8], 
+    7:[0,4,8], 8:[2,4,6], 9:[15,16,17], 10:[12,13,14], 11:[9,10,11], 
+    12:[11,12,17], 13:[10,13,16], 14:[9,14,15], 15:[9,13,17], 16:[11,13,15],
+    17:[18,19,20], 18:[21,22,23], 19:[24,25,26], 20:[18,23,24], 21:[19,22,25], 
+    22:[20,21,26], 23:[18,22,26], 24:[20,22,24], 25:[0,17,18], 26:[1,16,19], 
+    27:[2,15,20], 28:[0,16,20], 29:[2,16,18], 30:[1,13,25], 31:[5,12,23], 
+    32:[6,11,24], 33:[0,12,14], 34:[6,12,18], 35:[7,13,19], 36:[3,14,21], 
+    37:[8,9,26], 38:[2,14,26], 39:[8,14,20], 40:[3,13,23], 41:[7,10,25], 
+    42:[5,13,21], 43:[6,10,26], 44:[8,10,24], 45:[4,13,22], 46:[0,6,8], 
+    47:[6,13,20], 48:[2,13,24], 49:[0,13,26], 50:[8,12,18]}
 
 ##################### BUSSEN #####################
 # de spi-bus
@@ -78,9 +150,6 @@ spi = spidev.SpiDev()
 spi.open(0,0)
 spi.open(0,1)
 spi.max_speed_hz = 10 ** 5
-
-i2c = SMBus()
-i2c.open(1)
 
 ##################### FLASK #####################
 # start app
@@ -117,9 +186,37 @@ def setup():
     GPIO.setup(t1, GPIO.IN, GPIO.PUD_UP)
     GPIO.setup(t2, GPIO.IN, GPIO.PUD_UP)
 
-    # touchsensoren
+    # motoren
+    global pwm_motor1, pwm_motor2
     GPIO.setup(motor1, GPIO.OUT)
-    # GPIO.setup(motor2, GPIO.OUT)
+    GPIO.setup(motor2, GPIO.OUT)
+    pwm_motor1 = GPIO.PWM(motor1, 1000)
+    pwm_motor2 = GPIO.PWM(motor2, 1000)
+    pwm_motor1.start(0)
+    pwm_motor2.start(0)
+
+    # knoppen
+    GPIO.setup(up1, GPIO.IN, GPIO.PUD_UP)
+    GPIO.add_event_detect(up1, GPIO.FALLING, callback_up, bouncetime = 50)
+
+    GPIO.setup(down1, GPIO.IN, GPIO.PUD_UP)
+    GPIO.add_event_detect(down1, GPIO.FALLING, callback_down, bouncetime = 50)
+
+    GPIO.setup(up2, GPIO.IN, GPIO.PUD_UP)
+    GPIO.add_event_detect(up2, GPIO.FALLING, callback_up, bouncetime = 50)
+
+    GPIO.setup(down2, GPIO.IN, GPIO.PUD_UP)
+    GPIO.add_event_detect(down2, GPIO.FALLING, callback_down, bouncetime = 50)
+
+    # RGB led
+    GPIO.setup(r, GPIO.OUT)
+    GPIO.setup(g, GPIO.OUT)
+    GPIO.setup(b, GPIO.OUT)
+    
+    # rgb led uitzetten, anders geeft het licht in het begin, terwijl die dat niet moet doen
+    GPIO.output(r, GPIO.LOW)
+    GPIO.output(g, GPIO.HIGH)
+    GPIO.output(b, GPIO.LOW)
 
 
 ##################### CALLBACK #####################
@@ -137,15 +234,21 @@ def callback_sw2(pin):
     print("Knop joystick 1 is {} keer ingedrukt\n".format(teller19))
     return teller19
 
-##################### FUNCTIONS - JOYSTICK #####################
-# def readChannel(channel):
-#     val = spi.xfer2([1,(8|channel)<<4,0])
-#     data = (((val[1] & 3) << 8) | val[2])
-#     return data
+def callback_up(pin):
+    global tellerKeuze
+    tellerKeuze += 1
+    print("1 UP")
+    return tellerKeuze
 
+def callback_down(pin):
+    global tellerKeuze
+    tellerKeuze -= 1
+    print("1 DOWN")
+    return tellerKeuze
+
+##################### FUNCTIONS - JOYSTICK #####################
 def joysw_id(sw_id):
     global teller16, prev_teller16, teller19, prev_teller19
-    # 1 teller voor 2 sw's
     waarde = 0 # als de callback gecalled is, dan 1, anders 0
     if sw_id == 16:
         commentaar = "joystick 1 is niet ingedrukt"
@@ -192,19 +295,19 @@ def joystick_id(deviceID):
     return waarde, commentaar
 
 ##################### FUNCTIONS - TOUCHSENSOR #####################
-# def touch1():
-#     global teller7
-#     teller7 += 1
-#     print("AHA! Gezien!")
-#     print(f"\t je bent {teller7} keer gezien geweest!")
-#     return teller7
+def touch1():
+    global teller7
+    teller7 += 1
+    print("AHA! aangeraakt!")
+    print(f"\t je hebt {teller7} keer t1 aangeraakt!")
+    return teller7
 
-# def touch2():
-#     global teller8
-#     teller8 += 1
-#     print("AHA! Gezien!")
-#     print(f"\t je bent {teller8} keer gezien geweest!")
-#     return teller8
+def touch2():
+    global teller8
+    teller8 += 1
+    print("AHA! aangeraakt!")
+    print(f"\t je hebt {teller8} keer t2 aangeraakt!")
+    return teller8
 
 ##################### FUNCTIONS - MOTOR #####################
 def hoek_tot_duty(getal):
@@ -213,9 +316,177 @@ def hoek_tot_duty(getal):
     print(f"Dit is de hoek in pwm: {pwm}")
     return pwm
 
-##################### FUNCTIONS - OLED #####################
+##################### ANDERE FUNCTIONS #####################
+##### kijken of combinatie klopt #####
+def get_key(val):
+    for key, value in neopixel_dict.items():
+         if val == value:
+             print("key exists")
+             return key
+    return "key doesn't exist"
 
+##### joystick uitlezen tijdens spel #####
+def joystick_uitlezen(speler):
+    global choice_running, tellerStapX, tellerStapY, tellerStapZ
+    positie_lijst = []
+    while choice_running and True:
+        # als het speler 0 is, dan moet je alleen joy 1 uitlezen
+        # ROOD
+        if speler == 0:
+            # de x-as
+            for joy_id in [14, 15, 16]:
+                for joy_id in [14]:
+                    waarde, commentaar = joystick_id(joy_id)
+                    if waarde > 800 or waarde < 200:
+                        print(waarde)
+                        DataRepository.create_historiek(joy_id, commentaar, waarde)
+                        if waarde > 800:
+                            tellerStapX -= 1
+                        elif waarde < 200:
+                            tellerStapX += 1
+                        # return tellerStapX
+                        positie_lijst.append(tellerStapX)
+                # de y-as
+                for joy_id in [15]:
+                    waarde, commentaar = joystick_id(joy_id)
+                    if waarde > 800 or waarde < 200:
+                        print(waarde)
+                        DataRepository.create_historiek(joy_id, commentaar, waarde)
+                        if waarde > 800:
+                            tellerStapY -= 1
+                        elif waarde < 200:
+                            tellerStapY += 1
+                        # return tellerStapY
+                        positie_lijst.append(tellerStapY)
+                # # de sw
+                # for joy_id in [16]:
+                #     waarde, commentaar = joysw_id(joy_id)
+                #     if waarde == 1:
+                #         DataRepository.create_historiek(joy_id, commentaar, waarde)
+                if up1:
+                    tellerStapZ += 1
+                elif down1:
+                    tellerStapZ -= 1
+                positie_lijst.append(tellerStapZ)
+                
+                if t1:
+                    print("opslaan!")
+                    get_key(positie_lijst)
+                    print(f"dit is de gekozen positie{positie_lijst}")
+                    choice_running = False
+                ############################################
+                # positie(tellerStapX, tellerStapY, tellerKeuze)
+                time.sleep(0.7)
 
+        # als het speler 1 is, dan moet je alleen joy 1 uitlezen
+        elif speler == 1:
+            for joy_id in [17, 18, 19]:
+                # de x-as
+                for joy_id in [17]:
+                    waarde, commentaar = joystick_id(joy_id)
+                    if waarde > 800 or waarde < 200:
+                        DataRepository.create_historiek(joy_id, commentaar, waarde)
+                        if waarde > 800:
+                            tellerStapX -= 1
+                        elif waarde < 200:
+                            tellerStapX += 1
+                        # return tellerStapX
+                        positie_lijst.append(tellerStapX)
+                # de y-as
+                for joy_id in [18]:
+                    waarde, commentaar = joystick_id(joy_id)
+                    if waarde > 800 or waarde < 200:
+                        DataRepository.create_historiek(joy_id, commentaar, waarde)
+                        if waarde > 800:
+                            tellerStapY -= 1
+                        elif waarde < 200:
+                            tellerStapY += 1
+                        # return tellerStapY
+                        positie_lijst.append(tellerStapY)
+                # de sw
+                # for joy_id in [19]:
+                #     waarde, commentaar = joysw_id(joy_id)
+                #     if waarde == 1:
+                #         DataRepository.create_historiek(joy_id, commentaar, waarde)
+                if up1:
+                    tellerStapZ += 1
+                elif down1:
+                    tellerStapZ -= 1
+                positie_lijst.append(tellerStapZ)
+                if t1:
+                    print("opslaan!")
+                    get_key(positie_lijst)
+                    print(f"dit is de gekozen positie{positie_lijst}")
+                    print(positie_lijst)
+                    choice_running = False
+                time.sleep(0.7)
+    if not choice_running:
+        print("done")
+
+def positie(x, y):
+    pass
+
+def keuzelijst():
+    global tellerKeuze, app_running
+    print("Kies tot hoeveel er gespeeld wordt")
+    while app_running and True:
+        if tellerKeuze > 3:
+                tellerKeuze = 3
+        elif tellerKeuze < 0:
+            tellerKeuze = 0
+        Oled_klasse.lijst(tellerKeuze)
+
+        if GPIO.input(t1) or GPIO.input(t2):
+            # dus als er input is van t1/t2
+            print('touchsensor aangeraakt => confirm de keuze')
+            print(f"dit is de tellerKeuze: {tellerKeuze}")
+            app_running = False
+        else:
+            time.sleep(0.2)
+    if not app_running:
+        print("done :P")
+        return tellerKeuze
+
+def spel_starten():
+    global tellerKeuze, keuzeSpel
+    print(tellerKeuze)
+    keuzeSpel = keuzelijst() # => in oled ook 
+    print("keuzelijst overlopen en gekozen")
+    print(tellerKeuze)
+    print(f"dit is wat er gekozen werd: ")
+    time.sleep(0.2)
+    print("LET'S START THE GAME!")
+    start_game()
+
+def start_game():
+    print(f"DIT IS TELLERKEUZE: {tellerKeuze}")
+    print('we starten het spel ☺ ')
+    # alles uitzetten van de rgb
+    GPIO.output(r, GPIO.LOW)
+    GPIO.output(g, GPIO.LOW)
+    GPIO.output(b, GPIO.LOW)
+    randomPlayer = random.randint(0, 1)
+    print(f"DIT IS RANDOM: {randomPlayer}")
+    print("EN WIE MAG ER BEGINNEN?......")
+    Oled_klasse.display_player(randomPlayer)
+    if randomPlayer == 0:
+        print("Player 1 begint")
+        GPIO.output(r, GPIO.HIGH)
+    elif randomPlayer == 1:
+        print("Player 2 begint")
+        GPIO.output(b, GPIO.HIGH)
+    time.sleep(0.2)
+    game(randomPlayer)
+
+def game(beginner):
+    # het spel mag alleen joysticks uitlezen van de beginner nu, dan pas van de ander
+    # als beginner 0 is, dan alleen x_as1, y_as1, sw1, knop1, knop2
+    # als beginner 1 is, dan alleen x_as2, y_as2, sw2, knop3, knop4
+    while game_running and True:
+        joystick_uitlezen(beginner)
+    if not game_running:
+        print("THE END OF THE GAME")
+        # return????
 
 ##################### SOCKETIO #####################
 @socketio.on_error()        # Handles the default namespace
@@ -347,26 +618,26 @@ def get_waarden_joy():
 # ALS JE DE ENE LEEST, KAN JE DE ANDER NIET UITLEZEN!!
 def start_thread():
     print("***** Starting THREAD *****")
-    thread1 = threading.Thread(target = joystick_uitlezen, args = (), daemon = True)
+    thread1 = threading.Thread(target = spel_starten, args = (), daemon = True)
     # thread2 = threading.Thread(target = touch_uitlezen, args = (), daemon = True)
     thread1.start()
     # thread2.start()
     # threading.Timer(1, joystick_uitlezen).start() # niet nodig want anders start je het 2 keer
 
 
-def joystick_uitlezen():
-    while True:
-        print("\n***Joysticks uitlezen***")
-        for joy_id in [14, 15, 17, 18]:
-            waarde, commentaar = joystick_id(joy_id)
-            if waarde > 800 or waarde < 200:
-                DataRepository.create_historiek(joy_id, commentaar, waarde)
-        for joy_id in [16, 19]:
-            waarde, commentaar = joysw_id(joy_id)
-            if waarde == 1:
-                DataRepository.create_historiek(joy_id, commentaar, waarde)
+# def joystick_uitlezen():
+#     while True:
+#         print("\n***Joysticks uitlezen***")
+#         for joy_id in [14, 15, 17, 18]:
+#             waarde, commentaar = joystick_id(joy_id)
+#             if waarde > 800 or waarde < 200:
+#                 DataRepository.create_historiek(joy_id, commentaar, waarde)
+#         for joy_id in [16, 19]:
+#             waarde, commentaar = joysw_id(joy_id)
+#             if waarde == 1:
+#                 DataRepository.create_historiek(joy_id, commentaar, waarde)
 
-        time.sleep(0.7)
+#         time.sleep(0.7)
 
 # def touch_uitlezen():
 #     while True:
@@ -385,7 +656,16 @@ def joystick_uitlezen():
 
 if __name__ == "__main__":
     try:
+        # global app_running
         # debug NIET op True zetten
+        draw.text((5, 2), "__ tot 1 spelen __", font=font,     fill=255)# gekozen
+        draw.text((5, 17), "   tot 3 spelen", font=font,     fill=255) 
+        draw.text((5, 32), "   tot 5 spelen", font=font,     fill=255)
+        draw.text((5, 47), "   tot 9 spelen", font=font,     fill=255)
+        
+        oled.image(image)
+        oled.show()
+        time.sleep(1)
         setup()
         start_thread()
         # start_chrome_thread()
@@ -396,9 +676,15 @@ if __name__ == "__main__":
         print(e)
     finally:
         print("cleanup pi")
+        app_running = False
+        pwm_motor1.stop()
+        pwm_motor2.stop()
+        # serial.cleanup()
         spi.close()
-        GPIO.cleanup()
 
+        # i2c.close()
+        # i2c.cleanup()
+        GPIO.cleanup()
 
 
 
