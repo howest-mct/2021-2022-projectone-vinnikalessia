@@ -56,7 +56,7 @@ class Joy_klasse:
         elif deviceID == 15:
             commentaar = 'joystick 1 registreerde beweging op y-as'
             waarde = Joy_klasse.readChannel(y_as1)
-            print(f"dit is y van joystick 1: {waarde}")
+            print(f"dit is y van joystick 1: {waarde}\n")
 
         elif deviceID == 17:
             commentaar = 'joystick 2 registreerde beweging op x-as'

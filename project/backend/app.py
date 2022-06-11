@@ -70,7 +70,6 @@ tellerm1 = 0
 tellerm2 = 0
 
 
-
 ########### OLED ###########
 tellerOled = 0
 oled_reset = digitalio.DigitalInOut(board.D4)
@@ -151,6 +150,14 @@ win_combinaties = {
     42:[5,13,21], 43:[6,10,26], 44:[8,10,24], 45:[4,13,22], 46:[0,6,8], 
     47:[6,13,20], 48:[2,13,24], 49:[0,13,26], 50:[8,12,18]}
 
+########### SPELERS ###########
+# player1 = True # zo?
+# player2 = True # zo?
+# posities dat de tegenspeler koos mogen niet meer gekozen worden
+led_pos1 = [] # posities dat speler 1 had gekozen
+led_pos2 = [] # posities dat speler 2 had gekozen
+
+
 ##################### BUSSEN #####################
 # de spi-bus
 spi = spidev.SpiDev()
@@ -180,14 +187,10 @@ def setup():
 
     # joystick 1
     GPIO.setup(sw1, GPIO.IN, GPIO.PUD_UP)
-    # GPIO.setup(x_as1, GPIO.IN)
-    # GPIO.setup(y_as1, GPIO.IN)
     GPIO.add_event_detect(sw1, GPIO.FALLING, callback_sw1, bouncetime = 1000)
     
     # joystick 2
     GPIO.setup(sw2, GPIO.IN, GPIO.PUD_UP)
-    # GPIO.setup(x_as2, GPIO.IN)
-    # GPIO.setup(y_as2, GPIO.IN)
     GPIO.add_event_detect(sw2, GPIO.FALLING, callback_sw2, bouncetime = 1000)
 
     # touchsensoren
@@ -242,16 +245,20 @@ def callback_sw2(pin):
     return teller19
 
 def callback_up(pin):
-    global tellerKeuze
+    global tellerKeuze, tellerStapZ
     tellerKeuze += 1
+    if tellerStapZ < 3:
+        tellerStapZ += 1
     print("1 UP")
-    return tellerKeuze
+    return tellerKeuze, tellerStapZ
 
 def callback_down(pin):
-    global tellerKeuze
+    global tellerKeuze, tellerStapZ
     tellerKeuze -= 1
+    if tellerStapZ > 1:
+        tellerStapZ -= 1
     print("1 DOWN")
-    return tellerKeuze
+    return tellerKeuze, tellerStapZ
 
 ##################### FUNCTIONS - JOYSTICK #####################
 def joysw_id(sw_id):
@@ -342,57 +349,85 @@ def get_key(val):
 
 ##### joystick uitlezen tijdens spel #####
 def joystick_uitlezen(speler):
-    global choice_running, tellerStapX, tellerStapY, tellerStapZ
+    global choice_running, tellerStapX, tellerStapY, tellerStapZ, led_pos1, led_pos2
     positie_lijst = []
+    # standaard staan ze op 1
+    tellerStapX = 1
+    tellerStapY = 1
+    tellerStapZ = 1
     while choice_running and True:
-        # als het speler 0 is, dan moet je alleen joy 1 uitlezen
+        ########################################################
+        draw.rectangle((0, 0, oled.width, oled.height), outline=255, fill=255)
+        draw.rectangle(
+            (BORDER, BORDER, oled.width - BORDER - 1, oled.height - BORDER - 1),
+            outline=0,
+            fill=0,
+        )
+        draw.rectangle( [(0,0), (oled.width, oled.height)], fill=0)
+        oled.image(image)
+        oled.show()
         # ROOD
         if speler == 0:
-            # de x-as
             for joy_id in [14, 15, 16]:
+                # de x-as
                 for joy_id in [14]:
                     waarde, commentaar = joystick_id(joy_id)
                     if waarde > 800 or waarde < 200:
                         print(waarde)
                         DataRepository.create_historiek(joy_id, commentaar, waarde)
-                        if waarde > 800:
-                            tellerStapX -= 1
-                        elif waarde < 200:
+                        if waarde > 800 and tellerStapX < 3:
+                            print(f"TELLER X {tellerStapX}")
                             tellerStapX += 1
-                        # return tellerStapX
-                        positie_lijst.append(tellerStapX)
+                        elif waarde < 200 and tellerStapX > 1:
+                            print(f"TELLER X {tellerStapX}")
+                            tellerStapX -= 1
                 # de y-as
                 for joy_id in [15]:
                     waarde, commentaar = joystick_id(joy_id)
                     if waarde > 800 or waarde < 200:
                         print(waarde)
                         DataRepository.create_historiek(joy_id, commentaar, waarde)
-                        if waarde > 800:
-                            tellerStapY -= 1
-                        elif waarde < 200:
+                        if waarde > 800 and tellerStapY < 3:
+                            print(f"TELLER X {tellerStapY}")
                             tellerStapY += 1
-                        # return tellerStapY
-                        positie_lijst.append(tellerStapY)
+                        elif waarde < 200 and tellerStapY > 1:
+                            print(f"TELLER X {tellerStapY}")
+                            tellerStapY -= 1
                 # # de sw
                 # for joy_id in [16]:
                 #     waarde, commentaar = joysw_id(joy_id)
                 #     if waarde == 1:
                 #         DataRepository.create_historiek(joy_id, commentaar, waarde)
-                if up1:
-                    tellerStapZ += 1
-                elif down1:
-                    tellerStapZ -= 1
-                positie_lijst.append(tellerStapZ)
+                # if up1 and tellerStapZ < 3:
+                #     # DataRepository.create_historiek(joy_id, commentaar, waarde) # ?
+                #     print(f"TELLER Z: {tellerStapZ}")
+                #     tellerStapZ += 1
+                # elif down1 and tellerStapZ > 1:
+                #     print(f"TELLER Z: {tellerStapZ}")
+                #     # DataRepository.create_historiek(joy_id, commentaar, waarde) # ?
+                #     tellerStapZ -= 1
                 
-                if t1:
-                    print("opslaan!")
-                    get_key(positie_lijst)
-                    print(f"dit is de gekozen positie{positie_lijst}")
-                    choice_running = False
-                ############################################
+                draw.text((5, 17), str(tellerStapX), font=font, fill=255) 
+                draw.text((5, 32), str(tellerStapY), font=font, fill=255)
+                draw.text((5, 47), str(tellerStapZ), font=font, fill=255)
+                oled.image(image)
+                oled.show()
+                
+                if GPIO.input(t1):
+                    if (tellerStapX, tellerStapY, tellerStapZ) not in led_pos2:
+                        positie_lijst.append(tellerStapX)
+                        positie_lijst.append(tellerStapY)
+                        positie_lijst.append(tellerStapZ)
+                        print("opgeslaan!")
+                        get_key(positie_lijst)
+                        print(f"dit is de gekozen positie{positie_lijst}")
+                        choice_running = False
+                    else:
+                        draw.text((5, 2), "Deze led kan je niet kiezen!\nkies een andere led", font=font, fill=255)# gekozen
                 # positie(tellerStapX, tellerStapY, tellerKeuze)
-                time.sleep(0.7)
+                time.sleep(0.2)
 
+        ########################################################
         # als het speler 1 is, dan moet je alleen joy 1 uitlezen
         elif speler == 1:
             for joy_id in [17, 18, 19]:
@@ -401,42 +436,58 @@ def joystick_uitlezen(speler):
                     waarde, commentaar = joystick_id(joy_id)
                     if waarde > 800 or waarde < 200:
                         DataRepository.create_historiek(joy_id, commentaar, waarde)
-                        if waarde > 800:
-                            tellerStapX -= 1
-                        elif waarde < 200:
+                        if waarde > 800 and tellerStapX < 3:
                             tellerStapX += 1
+                            print(f"TELLER X {tellerStapX}")
+                        elif waarde < 200 and tellerStapX > 1:
+                            print(f"TELLER X {tellerStapX}")
+                            tellerStapX -= 1
                         # return tellerStapX
-                        positie_lijst.append(tellerStapX)
+                        # positie_lijst.append(tellerStapX)
                 # de y-as
                 for joy_id in [18]:
                     waarde, commentaar = joystick_id(joy_id)
                     if waarde > 800 or waarde < 200:
                         DataRepository.create_historiek(joy_id, commentaar, waarde)
-                        if waarde > 800:
-                            tellerStapY -= 1
-                        elif waarde < 200:
+                        if waarde > 800 and tellerStapY < 3:
+                            print(f"TELLER X {tellerStapY}")
                             tellerStapY += 1
-                        # return tellerStapY
-                        positie_lijst.append(tellerStapY)
+                        elif waarde < 200 and tellerStapY > 1:
+                            print(f"TELLER X {tellerStapY}")
+                            tellerStapY -= 1
                 # de sw
                 # for joy_id in [19]:
                 #     waarde, commentaar = joysw_id(joy_id)
                 #     if waarde == 1:
                 #         DataRepository.create_historiek(joy_id, commentaar, waarde)
-                if up1:
-                    tellerStapZ += 1
-                elif down1:
-                    tellerStapZ -= 1
-                positie_lijst.append(tellerStapZ)
-                if t1:
-                    print("opslaan!")
-                    get_key(positie_lijst)
-                    print(f"dit is de gekozen positie{positie_lijst}")
-                    print(positie_lijst)
-                    choice_running = False
-                time.sleep(0.7)
+                # if up1 and tellerStapZ < 3:
+                #     print(f"TELLER Z: {tellerStapZ}")
+                #     tellerStapZ += 1
+                # elif down1 and tellerStapZ > 1:
+                #     print(f"TELLER Z: {tellerStapZ}")
+                #     tellerStapZ -= 1
+                
+                draw.text((5, 17), str(tellerStapX), font=font, fill=255) 
+                draw.text((5, 32), str(tellerStapY), font=font, fill=255)
+                draw.text((5, 47), str(tellerStapZ), font=font, fill=255)
+                oled.image(image)
+                oled.show()
+
+                if GPIO.input(t2):
+                    if (tellerStapX, tellerStapY, tellerStapZ) not in led_pos1:
+                        positie_lijst.append(tellerStapX)
+                        positie_lijst.append(tellerStapY)
+                        positie_lijst.append(tellerStapZ)
+                        print("opgeslaan!")
+                        get_key(positie_lijst)
+                        print(f"dit is de gekozen positie{positie_lijst}")
+                        print(positie_lijst)
+                        choice_running = False
+                    else:
+                        draw.text((5, 2), "Deze led kan je niet kiezen!\nkies een andere led", font=font, fill=255)# gekozen
+                time.sleep(0.2)
     if not choice_running:
-        time.sleep(5)
+        time.sleep(1)
         print("done")
 
 def positie(x, y):
@@ -499,6 +550,7 @@ def game(beginner):
     # als beginner 0 is, dan alleen x_as1, y_as1, sw1, knop1, knop2
     # als beginner 1 is, dan alleen x_as2, y_as2, sw2, knop3, knop4
     while game_running and True:
+        time.sleep(2)
         joystick_uitlezen(beginner)
     if not game_running:
         print("THE END OF THE GAME")
@@ -693,16 +745,10 @@ if __name__ == "__main__":
     finally:
         print("cleanup pi")
         app_running = False
-        pwm = Motor_klasse.hoek_tot_duty(0)
-        motor1.ChangeDutyCycle(pwm)
-        motor2.ChangeDutyCycle(pwm)
-        # pwm_motor1.stop()
-        # pwm_motor2.stop()
-        # serial.cleanup()
+        pwm_motor1.stop()
+        pwm_motor2.stop()
         spi.close()
-
-        # i2c.close()
-        # i2c.cleanup()
+        time.sleep(0.2)
         GPIO.cleanup()
 
 
