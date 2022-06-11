@@ -124,17 +124,17 @@ pixels = neopixel.NeoPixel(
 
 # lednummer:[x-as, y-as, z-as] 
 neopixel_dict = {
-        0:[1, 1, 1], 1:[2, 1, 1], 2:[3, 1, 1], 
-        3:[3, 2, 1], 4:[2, 2, 1], 5:[1, 2, 1],
-        6:[1, 3, 1], 7:[2, 3, 1], 8:[3, 3, 1],
+        1:[1, 1, 1], 2:[2, 1, 1], 3:[3, 1, 1], 
+        4:[3, 2, 1], 5:[2, 2, 1], 6:[1, 2, 1],
+        7:[1, 3, 1], 8:[2, 3, 1], 9:[3, 3, 1],
 
-        9:[3, 3, 2], 10:[2, 3, 2], 11:[1, 3, 2], 
-        12:[1, 2, 2], 13:[2, 2, 2], 14:[3, 2, 2],
-        15:[3, 1, 2], 16:[2, 1, 2], 17:[1, 1, 2],
+        10:[3, 3, 2], 11:[2, 3, 2], 12:[1, 3, 2], 
+        13:[1, 2, 2], 14:[2, 2, 2], 15:[3, 2, 2],
+        16:[3, 1, 2], 17:[2, 1, 2], 18:[1, 1, 2],
 
-        18:[1, 1, 3], 19:[2, 1, 3], 20:[3, 1, 3], 
-        21:[3, 2, 3], 22:[2, 2, 3], 23:[1, 2, 3],
-        24:[1, 3, 3], 25:[2, 3, 3], 26:[3, 3, 3],
+        19:[1, 1, 3], 20:[2, 1, 3], 21:[3, 1, 3], 
+        22:[3, 2, 3], 23:[2, 2, 3], 24:[1, 2, 3],
+        25:[1, 3, 3], 26:[2, 3, 3], 27:[3, 3, 3],
         }
 
 # nummer_winnende_combinatie:[lednummer1, lednummer2, lednummer3] => klein naar groot
@@ -421,7 +421,10 @@ def joystick_uitlezen(speler):
                         print("opgeslaan!")
                         get_key(positie_lijst)
                         print(f"dit is de gekozen positie{positie_lijst}")
-                        choice_running = False
+                        # choice_running = False
+                        positie(positie_lijst, 0)
+                        time.sleep(0.2) # anders dubbel positie in lijst
+                        positie_lijst = []
                     else:
                         draw.text((5, 2), "Deze led kan je niet kiezen!\nkies een andere led", font=font, fill=255)# gekozen
                 # positie(tellerStapX, tellerStapY, tellerKeuze)
@@ -482,7 +485,12 @@ def joystick_uitlezen(speler):
                         get_key(positie_lijst)
                         print(f"dit is de gekozen positie{positie_lijst}")
                         print(positie_lijst)
-                        choice_running = False
+                        # choice_running = False
+                        # omzetten
+                        positie(positie_lijst, 1)
+                        time.sleep(0.2) # anders dubbel positie in lijst
+                        # lijst leeg maken voor de volgende keer
+                        positie_lijst = []
                     else:
                         draw.text((5, 2), "Deze led kan je niet kiezen!\nkies een andere led", font=font, fill=255)# gekozen
                 time.sleep(0.2)
@@ -490,8 +498,21 @@ def joystick_uitlezen(speler):
         time.sleep(1)
         print("done")
 
-def positie(x, y):
-    pass
+def positie(lijst_posities, player):
+    print(lijst_posities)
+    if lijst_posities in neopixel_dict.values():
+        neonummer = get_key(lijst_posities)
+        print(f"dit is de key ervan: {neonummer}")
+        print("JA, HIJ STAAT ERIN")
+        if player == 0:
+            led_pos1.append(neonummer)
+            return led_pos1
+        if player == 1:
+            led_pos2.append(neonummer)
+            return led_pos2
+    else:
+        print("Dit kan niet!")
+        
 
 def keuzelijst():
     global tellerKeuze, app_running
@@ -743,6 +764,16 @@ if __name__ == "__main__":
     except KeyboardInterrupt as e:
         print(e)
     finally:
+        draw.rectangle((0, 0, oled.width, oled.height), outline=255, fill=255)
+        draw.rectangle(
+            (BORDER, BORDER, oled.width - BORDER - 1, oled.height - BORDER - 1),
+            outline=0,
+            fill=0,
+        )
+        draw.rectangle( [(0,0), (oled.width, oled.height)], fill=0)
+        oled.image(image)
+        oled.show()
+        time.sleep(1)
         print("cleanup pi")
         app_running = False
         pwm_motor1.stop()
