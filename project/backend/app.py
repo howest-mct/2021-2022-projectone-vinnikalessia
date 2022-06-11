@@ -47,6 +47,10 @@ teller19 = 0
 last_val19 = 0
 prev_teller19 = 0
 
+tellerStapX = 0
+tellerStapY = 0
+tellerStapZ = 0
+
 ########### TOUCHSENSOR ###########
 t1 = 13
 t2 = 19
@@ -58,11 +62,14 @@ teller8 = 0 # t2
 ########### MOTOR ###########
 motor1 = 17
 motor2 = 22
-hoek = 5
+hoek1 = 5
+hoek2 = 5
 
 # teller
 tellerm1 = 0
 tellerm2 = 0
+
+
 
 ########### OLED ###########
 tellerOled = 0
@@ -166,20 +173,21 @@ print("program started")
 
 ##################### SETUP #####################
 def setup():
+    global pwm_motor1, pwm_motor2
     print("setup")
     GPIO.setwarnings(False)
     GPIO.setmode(GPIO.BCM)
 
     # joystick 1
     GPIO.setup(sw1, GPIO.IN, GPIO.PUD_UP)
-    GPIO.setup(x_as1, GPIO.IN)
-    GPIO.setup(y_as1, GPIO.IN)
+    # GPIO.setup(x_as1, GPIO.IN)
+    # GPIO.setup(y_as1, GPIO.IN)
     GPIO.add_event_detect(sw1, GPIO.FALLING, callback_sw1, bouncetime = 1000)
     
     # joystick 2
     GPIO.setup(sw2, GPIO.IN, GPIO.PUD_UP)
-    GPIO.setup(x_as2, GPIO.IN)
-    GPIO.setup(y_as2, GPIO.IN)
+    # GPIO.setup(x_as2, GPIO.IN)
+    # GPIO.setup(y_as2, GPIO.IN)
     GPIO.add_event_detect(sw2, GPIO.FALLING, callback_sw2, bouncetime = 1000)
 
     # touchsensoren
@@ -187,7 +195,6 @@ def setup():
     GPIO.setup(t2, GPIO.IN, GPIO.PUD_UP)
 
     # motoren
-    global pwm_motor1, pwm_motor2
     GPIO.setup(motor1, GPIO.OUT)
     GPIO.setup(motor2, GPIO.OUT)
     pwm_motor1 = GPIO.PWM(motor1, 1000)
@@ -296,25 +303,33 @@ def joystick_id(deviceID):
 
 ##################### FUNCTIONS - TOUCHSENSOR #####################
 def touch1():
-    global teller7
+    global teller7, hoek1, pwm_motor1
     teller7 += 1
     print("AHA! aangeraakt!")
     print(f"\t je hebt {teller7} keer t1 aangeraakt!")
+    hoek1 += 9
+    pwm = Motor_klasse.hoek_tot_duty(hoek1)
+    pwm_motor1.changeDutyCycle(pwm)
+    print("een punt bij?")
     return teller7
 
 def touch2():
-    global teller8
+    global teller8, hoek2
     teller8 += 1
     print("AHA! aangeraakt!")
     print(f"\t je hebt {teller8} keer t2 aangeraakt!")
+    hoek2 += 9
+    pwm = Motor_klasse.hoek_tot_duty(hoek2)
+    pwm_motor2.changeDutyCycle(pwm)
+    print("een punt bij?")
     return teller8
 
 ##################### FUNCTIONS - MOTOR #####################
-def hoek_tot_duty(getal):
-    print(f"Dit is de hoek: {getal}")
-    pwm = int(getal * 0.555555)
-    print(f"Dit is de hoek in pwm: {pwm}")
-    return pwm
+# def hoek_tot_duty(getal):
+#     print(f"Dit is de hoek: {getal}")
+#     pwm = int(getal * 0.555555)
+#     print(f"Dit is de hoek in pwm: {pwm}")
+#     return pwm
 
 ##################### ANDERE FUNCTIONS #####################
 ##### kijken of combinatie klopt #####
@@ -421,6 +436,7 @@ def joystick_uitlezen(speler):
                     choice_running = False
                 time.sleep(0.7)
     if not choice_running:
+        time.sleep(5)
         print("done")
 
 def positie(x, y):
@@ -677,8 +693,11 @@ if __name__ == "__main__":
     finally:
         print("cleanup pi")
         app_running = False
-        pwm_motor1.stop()
-        pwm_motor2.stop()
+        pwm = Motor_klasse.hoek_tot_duty(0)
+        motor1.ChangeDutyCycle(pwm)
+        motor2.ChangeDutyCycle(pwm)
+        # pwm_motor1.stop()
+        # pwm_motor2.stop()
         # serial.cleanup()
         spi.close()
 
