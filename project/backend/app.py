@@ -122,6 +122,8 @@ pixels = neopixel.NeoPixel(
     pixel_pin, num_pixels, brightness=0.2, auto_write=False, pixel_order=ORDER
 )
 
+vorige_pix = 0
+
 # lednummer:[x-as, y-as, z-as] 
 neopixel_dict = {
         1:[1, 1, 1], 2:[2, 1, 1], 3:[3, 1, 1], 
@@ -471,7 +473,7 @@ def joystick_uitlezen(speler):
                             oled.show()
                             draw.text((5, 2), "Deze led kan je niet kiezen!\nkies een andere led", font=font, fill=255)# gekozen
                     # positie(tellerStapX, tellerStapY, tellerKeuze)
-                time.sleep(0.2)
+                # time.sleep(0.2)
                 # pixels[gekozen_positie] = (0,0,0)
                 # pixels[0] = (255,0,0)
                 # pixels.show()
@@ -579,7 +581,7 @@ def joystick_uitlezen(speler):
                             oled.image(image)
                             oled.show() 
                             draw.text((5, 2), "Deze led kan je niet kiezen!\nkies een andere led", font=font, fill=255)# gekozen
-                time.sleep(0.2)
+                # time.sleep(0.2)
                 # pixels[gekozen_positie] = (0,0,0)
                 # pixels[0] = (255,0,0)
                 # pixels.show()
@@ -591,7 +593,9 @@ def joystick_uitlezen(speler):
 # def positie(lijst_posities, player):
 def positie(x, y, z, player):
     neonummer = Neos_klasse.get_key(x, y, z)
-    type(neonummer)
+    print(vorige_pix)
+    print(neonummer)
+    pixels[vorige_pix] = (0,0,0)
     print(f"dit zijn de coordinaten {neonummer}")
     print(led_pos1, led_pos2)
     if neonummer not in led_pos1 and neonummer not in led_pos2:
@@ -602,19 +606,25 @@ def positie(x, y, z, player):
             # led_pos1.append(neonummer)
             # pixels[16] = (255,0,255)
             pixels.show()
-            time.sleep(0.2)
+            # time.sleep(0.2)
             print(led_pos1)
-            return neonummer
+            # vorige_pix = led_pos1
         else:
             print("98687576")
             # led_pos2.append(neonummer)
             # pixels[26] = (255,0,255)
             pixels.show()
-            time.sleep(0.2)
+            # time.sleep(0.2)
             print(led_pos2)
-            return neonummer
+            # vorige_pix = led_pos2
+        return neonummer
     else:
         print("kies een andere led")
+
+    print(f"DIT IS VORIGE PIXEL: {vorige_pix}")
+    print(f"DIT IS NEONUMMER: {neonummer}")
+    time.sleep(0.3)
+    pixels[gekozen_positie] = (0,0,0)
     #     return "back"
     # print(lijst_posities)
     # if lijst_posities in neopixel_dict.values():
