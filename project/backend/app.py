@@ -339,16 +339,17 @@ def touch2():
 #     return pwm
 
 ##################### ANDERE FUNCTIONS #####################
-##### kijken of combinatie klopt #####
-def get_key(val):
-    for key, value in neopixel_dict.items():
-         if val == value:
-             print("key exists")
-             return key
-    return "key doesn't exist"
+# ##### kijken of combinatie klopt #####
+# def get_key(val):
+#     for key, value in neopixel_dict.items():
+#          if val == value:
+#              print("key exists")
+#              return key
+#     return "key doesn't exist"
 
 ##### joystick uitlezen tijdens spel #####
 def joystick_uitlezen(speler):
+    Neos_klasse.alles_uit()
     global choice_running, tellerStapX, tellerStapY, tellerStapZ, led_pos1, led_pos2
     positie_lijst = []
     # standaard staan ze op 1
@@ -368,6 +369,8 @@ def joystick_uitlezen(speler):
         oled.show()
         # ROOD
         if speler == 0:
+            GPIO.output(b, GPIO.LOW)
+            GPIO.output(r, GPIO.HIGH)
             for joy_id in [14, 15, 16]:
                 # de x-as
                 for joy_id in [14]:
@@ -419,12 +422,14 @@ def joystick_uitlezen(speler):
                         positie_lijst.append(tellerStapY)
                         positie_lijst.append(tellerStapZ)
                         print("opgeslaan!")
-                        get_key(positie_lijst)
+                        Neos_klasse.get_key(positie_lijst)
                         print(f"dit is de gekozen positie{positie_lijst}")
                         # choice_running = False
                         positie(positie_lijst, 0)
                         time.sleep(0.2) # anders dubbel positie in lijst
                         positie_lijst = []
+                        # nu is het aan de ander
+                        speler = 1
                     else:
                         draw.text((5, 2), "Deze led kan je niet kiezen!\nkies een andere led", font=font, fill=255)# gekozen
                 # positie(tellerStapX, tellerStapY, tellerKeuze)
@@ -433,6 +438,8 @@ def joystick_uitlezen(speler):
         ########################################################
         # als het speler 1 is, dan moet je alleen joy 1 uitlezen
         elif speler == 1:
+            GPIO.output(r, GPIO.LOW)
+            GPIO.output(b, GPIO.HIGH)
             for joy_id in [17, 18, 19]:
                 # de x-as
                 for joy_id in [17]:
@@ -482,7 +489,7 @@ def joystick_uitlezen(speler):
                         positie_lijst.append(tellerStapY)
                         positie_lijst.append(tellerStapZ)
                         print("opgeslaan!")
-                        get_key(positie_lijst)
+                        Neos_klasse.get_key(positie_lijst)
                         print(f"dit is de gekozen positie{positie_lijst}")
                         print(positie_lijst)
                         # choice_running = False
@@ -491,6 +498,8 @@ def joystick_uitlezen(speler):
                         time.sleep(0.2) # anders dubbel positie in lijst
                         # lijst leeg maken voor de volgende keer
                         positie_lijst = []
+                        # nu is het aan de ander
+                        speler = 0
                     else:
                         draw.text((5, 2), "Deze led kan je niet kiezen!\nkies een andere led", font=font, fill=255)# gekozen
                 time.sleep(0.2)
@@ -501,9 +510,10 @@ def joystick_uitlezen(speler):
 def positie(lijst_posities, player):
     print(lijst_posities)
     if lijst_posities in neopixel_dict.values():
-        neonummer = get_key(lijst_posities)
+        neonummer = Neos_klasse.get_key(lijst_posities)
         print(f"dit is de key ervan: {neonummer}")
         print("JA, HIJ STAAT ERIN")
+        Neos_klasse.chosen_one(neonummer, player)
         if player == 0:
             led_pos1.append(neonummer)
             return led_pos1

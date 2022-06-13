@@ -4,12 +4,26 @@ import neopixel
 
 
 pixel_pin = board.D18
-num_pixels = 9
+num_pixels = 27
 ORDER = neopixel.GRB
 
 pixels = neopixel.NeoPixel(
     pixel_pin, num_pixels, brightness=0.2, auto_write=False, pixel_order=ORDER
 )
+
+neopixel_dict = {
+        0:[1, 1, 1], 1:[2, 1, 1], 2:[3, 1, 1], 
+        3:[3, 2, 1], 4:[2, 2, 1], 5:[1, 2, 1],
+        6:[1, 3, 1], 7:[2, 3, 1], 8:[3, 3, 1],
+
+        9:[3, 3, 2], 10:[2, 3, 2], 11:[1, 3, 2], 
+        12:[1, 2, 2], 13:[2, 2, 2], 14:[3, 2, 2],
+        15:[3, 1, 2], 16:[2, 1, 2], 17:[1, 1, 2],
+
+        18:[1, 1, 3], 19:[2, 1, 3], 20:[3, 1, 3], 
+        21:[3, 2, 3], 22:[2, 2, 3], 23:[1, 2, 3],
+        24:[1, 3, 3], 25:[2, 3, 3], 26:[3, 3, 3],
+        }
 
 class Neos_klasse():
     def wheel(pos):
@@ -41,10 +55,33 @@ class Neos_klasse():
             time.sleep(wait)
 
     
-    def chosen_one():
-        pass
+    def chosen_one(getal, speler):
+        print(f"dit is de player: {speler} {getal}")
+        if speler == 0:
+            # rood
+            pixels[getal] = (255,0,0)
+        else:
+            # blauw
+            pixels[getal] = (0,0,255)
+        pixels.show()
+        time.sleep(0.2)
 
 
+    ##### kijken of combinatie klopt #####
+    def get_key(val):
+        for key, value in neopixel_dict.items():
+            if val == value:
+                print("key exists JIPPY")
+                return key
+        return "key doesn't exist"
+
+    def alles_uit():
+        pixels.fill((0, 255, 0))
+        pixels.show()
+        print("ALLES MOET GROEN ZIJN")
+        time.sleep(2)
+        pixels.fill((0, 0, 0))
+        pixels.show()
 
     # while True:
         
