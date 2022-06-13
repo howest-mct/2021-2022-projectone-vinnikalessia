@@ -26,7 +26,10 @@ neopixel_dict = {
         }
 
 class Neos_klasse():
-    def wheel(pos):
+    def clear_pixel(self, i): 
+        pixels[i] = (0,0,0)
+        pixels.show()
+    def wheel(self, pos):
         if pos < 0 or pos > 255:
             r = g = b = 0
         elif pos < 85:
@@ -46,7 +49,7 @@ class Neos_klasse():
         return (r, g, b) if ORDER in (neopixel.RGB, neopixel.GRB) else (r, g, b, 0)
 
 
-    def rainbow_cycle(wait):
+    def rainbow_cycle(self, wait):
         for j in range(255):
             for i in range(num_pixels):
                 pixel_index = (i * 256 // num_pixels) + j
@@ -55,7 +58,7 @@ class Neos_klasse():
             time.sleep(wait)
 
     
-    def chosen_one(getal, speler):
+    def chosen_one(self, getal, speler):
         print(f"dit is de player: {speler} {getal}")
         if speler == 0:
             # rood
@@ -69,7 +72,7 @@ class Neos_klasse():
 
     ##### kijken of combinatie klopt #####
     # def get_key(val):
-    def get_key(x, y, z):
+    def get_key(self, x, y, z):
         val = []
         val.append(x)
         val.append(y)
@@ -81,7 +84,7 @@ class Neos_klasse():
                 return key
         return "key doesn't exist"
 
-    def start_kleur():
+    def start_kleur(self):
         pixels.fill((0, 255, 0))
         pixels.show()
         print("ALLES MOET GROEN ZIJN")
@@ -89,11 +92,11 @@ class Neos_klasse():
         pixels.fill((0, 0, 0))
         pixels.show()
 
-    def alles_uit():
+    def alles_uit(self):
         pixels.fill((0, 0, 0))
         pixels.show()
 
-    def player_color(player, coordinaten):
+    def player_color(self, player, coordinaten):
         if player == 0:
             pixels[coordinaten] = (255,0,0)
         else:
