@@ -59,31 +59,31 @@ while True:
     # pixels.fill((255, 0, 0))
     # Uncomment this line if you have RGBW/GRBW NeoPixels
     # pixels.fill((255, 0, 0, 0))
-    pixels[0] = (255,0,0)
+    pixels[0] = (255,0,0) # rood
     pixels.show()
     time.sleep(0.2)
     pixels[0] = (0,0,0)
     pixels.show()
     time.sleep(0.2)
     
-    pixels[1] = (255,0,0)
+    pixels[1] = (255,255,0) # 
     pixels.show()
     time.sleep(0.2)
     pixels[1] = (0,0,0)
     pixels.show()
     time.sleep(0.2)
     
-    pixels[2] = (255,0,0)
+    pixels[2] = (255,255,255) #
     pixels.show()
     time.sleep(0.2)
     pixels[2] = (0,0,0)
     pixels.show()
     time.sleep(0.2)
     
-    pixels[3] = (255,0,0)
+    pixels[3] = (0,255,0)
     pixels.show()
     time.sleep(0.2)
-    pixels[3] = (0,0,0)
+    pixels[3] = (0,255,255)
     pixels.show()
     time.sleep(0.2)
     
@@ -129,7 +129,7 @@ while True:
     pixels.show()
     time.sleep(0.2)
     
-    pixels[10] = (255,0,0)
+    pixels[10] = (255,255,0)
     pixels.show()
     time.sleep(0.2)
     pixels[10] = (0,0,0)
@@ -263,3 +263,5 @@ while True:
     rainbow_cycle(0.001)  # rainbow cycle with 1ms delay per step
     pixels.show()
     time.sleep(1)
+    pixels.fill(0,0,0)  # rainbow cycle with 1ms delay per step
+    pixels.show()

@@ -68,14 +68,20 @@ class Neos_klasse():
 
 
     ##### kijken of combinatie klopt #####
-    def get_key(val):
+    # def get_key(val):
+    def get_key(x, y, z):
+        val = []
+        val.append(x)
+        val.append(y)
+        val.append(z)
         for key, value in neopixel_dict.items():
             if val == value:
                 print("key exists JIPPY")
+                print(val)
                 return key
         return "key doesn't exist"
 
-    def alles_uit():
+    def start_kleur():
         pixels.fill((0, 255, 0))
         pixels.show()
         print("ALLES MOET GROEN ZIJN")
@@ -83,7 +89,22 @@ class Neos_klasse():
         pixels.fill((0, 0, 0))
         pixels.show()
 
-    # while True:
-        
+    def alles_uit():
+        pixels.fill((0, 0, 0))
+        pixels.show()
+
+    def player_color(player, coordinaten):
+        if player == 0:
+            pixels[coordinaten] = (255,0,0)
+        else:
+            pixels[coordinaten] = (0,0,255)
+        pixels.show()
+    
+# pixels[0] = (255,0,0)
+#     pixels.show()
+#     time.sleep(0.2)
+#     pixels[0] = (0,0,0)
+#     pixels.show()
+#     time.sleep(0.2)
 
     #     rainbow_cycle(0.001)
