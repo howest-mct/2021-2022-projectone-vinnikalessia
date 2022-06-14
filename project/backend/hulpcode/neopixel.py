@@ -29,6 +29,7 @@ class Neos_klasse():
     def clear_pixel(self, i): 
         pixels[i] = (0,0,0)
         pixels.show()
+    
     def wheel(self, pos):
         if pos < 0 or pos > 255:
             r = g = b = 0
@@ -88,7 +89,7 @@ class Neos_klasse():
         pixels.fill((0, 255, 0))
         pixels.show()
         print("ALLES MOET GROEN ZIJN")
-        time.sleep(2)
+        time.sleep(1)
         pixels.fill((0, 0, 0))
         pixels.show()
 
@@ -103,6 +104,31 @@ class Neos_klasse():
             pixels[coordinaten] = (0,0,255)
         pixels.show()
     
+    def testkleur(self, pixel):
+        pixels[pixel] = (45,90,255)
+        pixels.show()
+    
+    def kleurtje(self, pixel):
+        pixels[pixel] = (255,90,45)
+        pixels.show()
+
+    def bezet(self, player, pixel):
+        pixels[pixel] = (255,255,0)
+        # if player == 0:
+        #     pixels[pixel] = (255,0,0)
+        # else:
+        #     pixels[pixel] = (0,0,255)
+        pixels.show()
+
+    def led_onthouden(self, player, ledpos):
+        if player == 0:
+            for i in ledpos:
+                pixels[i] = (255,0,0)
+                pixels.show()
+        else:
+            for i in ledpos:
+                pixels[i] = (0,0,255)
+                pixels.show()
     
 # pixels[0] = (255,0,0)
 #     pixels.show()
