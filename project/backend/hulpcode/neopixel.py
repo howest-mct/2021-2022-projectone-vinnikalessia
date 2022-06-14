@@ -51,6 +51,7 @@ class Neos_klasse():
 
 
     def rainbow_cycle(self, wait):
+        global num_pixels
         for j in range(255):
             for i in range(num_pixels):
                 pixel_index = (i * 256 // num_pixels) + j
