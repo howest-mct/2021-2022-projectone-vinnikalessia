@@ -612,26 +612,53 @@ def joystick_uitlezen(speler, max_punten):
         #     elif len(set(led_pos2) & set(value)) == 3:
         #         print(key)
         #         print("yess")
+
         for key, value in win_combinaties.items():
             print("🐾")
             # als 3 pixels overeenkomen met een winnende combinatie EN het staat nog neit in de al getelde punten (oud_gekozen)
+            
             if (len(set(led_pos1) & set(value)) == 3) and (key not in oud_gekozen_pixelsR and key not in oud_gekozen_pixelsB):
-                print(key)
-                print("punt voor rood")
+                print(f"de key R: {key}")
                 puntenR = motor_klasse_obj.puntentelling(0, puntenR)
-                print(puntenR)
-                # zorgt ervoor dat je geen 3 keer zelfde combinatie telt
+                print(f"punt voor rood {puntenR}")
                 oud_gekozen_pixelsR.append(key)
-                print(oud_gekozen_pixelsR)
-            elif len(set(led_pos2) & set(value)) == 3:
-                print(key)
-                print("punt voor blauw")
+                print(f"winnende combi R: {oud_gekozen_pixelsR}")
+            elif len(set(led_pos2) & set(value)) == 3 and (key not in oud_gekozen_pixelsR and key not in oud_gekozen_pixelsB):
+                print(f"de key B: {key}")
                 puntenB = motor_klasse_obj.puntentelling(1, puntenB)
-                print(puntenB)
-                # zorgt ervoor dat je geen 3 keer zelfde combinatie telt
+                print(f"punt voor blauw {puntenB}")
                 oud_gekozen_pixelsB.append(key)
-                print(oud_gekozen_pixelsB)
+                print(f"winnende combi B: {oud_gekozen_pixelsB}")
+        if max_punten == puntenR or max_punten == puntenB:
             print(max_punten, puntenR, puntenB)
+            break
+        print(f"max: {max_punten}, R: {puntenR}, B:{puntenB}")
+        print("hello")
+        time.sleep(1)
+
+        # for key, value in win_combinaties.items():
+        #     print("🐾")
+        #     # als 3 pixels overeenkomen met een winnende combinatie EN het staat nog neit in de al getelde punten (oud_gekozen)
+        #     if (len(set(led_pos1) & set(value)) == 3) and (key not in oud_gekozen_pixelsR and key not in oud_gekozen_pixelsB):
+        #         print(key)
+        #         print("punt voor rood")
+        #         puntenR = motor_klasse_obj.puntentelling(0, puntenR)
+        #         print(puntenR)
+        #         # zorgt ervoor dat je geen 3 keer zelfde combinatie telt
+        #         oud_gekozen_pixelsR.append(key)
+        #         print(oud_gekozen_pixelsR)
+        #     elif len(set(led_pos2) & set(value)) == 3:
+        #         print(key)
+        #         print("punt voor blauw")
+        #         puntenB = motor_klasse_obj.puntentelling(1, puntenB)
+        #         print(puntenB)
+        #         # zorgt ervoor dat je geen 3 keer zelfde combinatie telt
+        #         oud_gekozen_pixelsB.append(key)
+        #         print(oud_gekozen_pixelsB)
+        #     print(max_punten, puntenR, puntenB)
+
+
+
         # for key, value in win_combinaties.items():
         #     print("🐾")
         #     if len(set(led_pos1) & set(value)) == 3:
