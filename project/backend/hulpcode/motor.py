@@ -3,12 +3,20 @@ from smbus import SMBus
 from RPi import GPIO
 import time
 
-motor = 17
-t1 = 21
-teller = 0
+motor1 = 17
+motor2 = 27
+
 
 # dit is de beginhoek => 0 punten
 hoek = 5
+GPIO.setup(motor1, GPIO.OUT)
+GPIO.setup(motor2, GPIO.OUT)
+GPIO.setmode(GPIO.BCM)
+pwm_motor1 = GPIO.PWM(motor1, 1000)
+pwm_motor2 = GPIO.PWM(motor2, 1000)
+pwm_motor1.start(0)
+pwm_motor2.start(0)
+
 
 class Motor_klasse():
     def hoek_tot_duty(self, getal):
@@ -26,6 +34,12 @@ class Motor_klasse():
             # blauw
             punten += 1
         return punten
+    
+    def punt_bij(self, pwmmotor):
+        global hoek
+        hoek += 9
+        pwm = self.hoek_tot_duty(hoek)
+        pwmmotor.changeDutyCycle(pwm)
 
     # try:
     #     motorpwm = GPIO.PWM(motor, 40)

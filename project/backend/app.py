@@ -72,7 +72,6 @@ hoek2 = 5
 tellerm1 = 0
 tellerm2 = 0
 
-
 ########### OLED ###########
 tellerOled = 0
 oled_reset = digitalio.DigitalInOut(board.D4)
@@ -104,7 +103,6 @@ onoff = 26
 
 # teller => keuze tot hoeveel er gespeeld wordt
 tellerKeuze = 0
-
 
 # is de teller voordat het spel begint. Hiermee wordt er gekozen tot hoeveel er wordt gespeeld
 app_running = True
@@ -314,27 +312,27 @@ def joystick_id(deviceID):
     return waarde, commentaar
 
 ##################### FUNCTIONS - TOUCHSENSOR #####################
-def touch1():
-    global teller7, hoek1, pwm_motor1
-    teller7 += 1
-    print("AHA! aangeraakt!")
-    print(f"\t je hebt {teller7} keer t1 aangeraakt!")
-    hoek1 += 9
-    pwm = motor_klasse_obj.hoek_tot_duty(hoek1)
-    pwm_motor1.changeDutyCycle(pwm)
-    print("een punt bij?")
-    return teller7
+# def touch1():
+#     global teller7, hoek1, pwm_motor1
+#     teller7 += 1
+#     print("AHA! aangeraakt!")
+#     print(f"\t je hebt {teller7} keer t1 aangeraakt!")
+#     hoek1 += 9
+#     pwm = motor_klasse_obj.hoek_tot_duty(hoek1)
+#     pwm_motor1.changeDutyCycle(pwm)
+#     print("een punt bij?")
+#     return teller7
 
-def touch2():
-    global teller8, hoek2
-    teller8 += 1
-    print("AHA! aangeraakt!")
-    print(f"\t je hebt {teller8} keer t2 aangeraakt!")
-    hoek2 += 9
-    pwm = motor_klasse_obj.hoek_tot_duty(hoek2)
-    pwm_motor2.changeDutyCycle(pwm)
-    print("een punt bij?")
-    return teller8
+# def touch2():
+#     global teller8, hoek2
+#     teller8 += 1
+#     print("AHA! aangeraakt!")
+#     print(f"\t je hebt {teller8} keer t2 aangeraakt!")
+#     hoek2 += 9
+#     pwm = motor_klasse_obj.hoek_tot_duty(hoek2)
+#     pwm_motor2.changeDutyCycle(pwm)
+#     print("een punt bij?")
+#     return teller8
 
 ##################### FUNCTIONS - MOTOR #####################
 # def hoek_tot_duty(getal):
@@ -611,12 +609,15 @@ def joystick_uitlezen(speler, max_punten):
                 print(f"de key R: {key}")
                 puntenR = motor_klasse_obj.puntentelling(0, puntenR)
                 print(f"punt voor rood {puntenR}")
+                motor_klasse_obj.punt_bij(pwm_motor1)
                 oud_gekozen_pixelsR.append(key)
                 print(f"winnende combi R: {oud_gekozen_pixelsR}")
+
             elif len(set(led_pos2) & set(value)) == 3 and (key not in oud_gekozen_pixelsR and key not in oud_gekozen_pixelsB):
                 print(f"de key B: {key}")
                 puntenB = motor_klasse_obj.puntentelling(1, puntenB)
                 print(f"punt voor blauw {puntenB}")
+                motor_klasse_obj.punt_bij(pwm_motor2)
                 oud_gekozen_pixelsB.append(key)
                 print(f"winnende combi B: {oud_gekozen_pixelsB}")
         if max_punten == puntenR or max_punten == puntenB:
@@ -658,7 +659,6 @@ def positie(x, y, z, player, vorige_pos):
     time.sleep(0.3)
     return neonummer
 
-
 def keuzelijst():
     global tellerKeuze, app_running
     print("Kies tot hoeveel er gespeeld wordt")
@@ -668,9 +668,7 @@ def keuzelijst():
         elif tellerKeuze < 0:
             tellerKeuze = 0
         oled_klasse_obj.lijst(tellerKeuze)
-
         if GPIO.input(t1) or GPIO.input(t2):
-            # dus als er input is van t1/t2
             print('touchsensor aangeraakt => confirm de keuze')
             print(f"dit is de tellerKeuze: {tellerKeuze}")
             app_running = False
@@ -766,22 +764,22 @@ def joystick(data):
 
     DataRepository.create_historiek(joy_id, commentaar, waarde)
 
-@socketio.on('F2B_touch')
-def touch(data):
-    touch_id = data['deviceid']
-    if touch_id == 7:
-        print(f"sensor 1: {touch_id}")
-        teller7, commentaar, waarde = Touch_klasse.touch1()
-        print(teller7)
+# @socketio.on('F2B_touch')
+# def touch(data):
+#     touch_id = data['deviceid']
+#     if touch_id == 7:
+#         print(f"sensor 1: {touch_id}")
+#         teller7, commentaar, waarde = Touch_klasse.touch1()
+#         print(teller7)
 
-    elif touch_id == 8:
-        print(f"sensor 2: {touch_id}")
-        teller8, commentaar, waarde = Touch_klasse.touch2()
-        print(teller8)
+#     elif touch_id == 8:
+#         print(f"sensor 2: {touch_id}")
+#         teller8, commentaar, waarde = Touch_klasse.touch2()
+#         print(teller8)
 
-    else:
-        print('IDK')
-    DataRepository.create_historiek(touch_id, commentaar, waarde)
+#     else:
+#         print('IDK')
+#     DataRepository.create_historiek(touch_id, commentaar, waarde)
 
 
 ##################### ENDPOINTS #####################
@@ -910,7 +908,6 @@ def start_thread():
 
 if __name__ == "__main__":
     try:
-        # global app_running
         # debug NIET op True zetten
         draw.text((5, 2), "__ tot 1 spelen __", font=font,     fill=255)# gekozen
         draw.text((5, 17), "   tot 3 spelen", font=font,     fill=255) 
