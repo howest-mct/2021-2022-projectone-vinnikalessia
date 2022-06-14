@@ -620,8 +620,10 @@ def joystick_uitlezen(speler, max_punten):
             print(f"blauw heeft gewonnen met {puntenB}")
             choice_running = False
     if not choice_running:
-        time.sleep(1)
-        print("done😺😺😺😺😺😺")
+        for x in range(3):
+            time.sleep(1)
+            print("done😺😺😺😺😺😺")
+        print("DOOOONNNNNEEEE")
 
 
 def positie(x, y, z, player, vorige_pos):
