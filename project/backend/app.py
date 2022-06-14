@@ -484,9 +484,7 @@ def joystick_uitlezen(speler):
                         draw.rectangle( [(0,0), (oled.width, oled.height)], fill=0)
                         oled.image(image)
                         oled.show()
-                        print(led_pos1)    
-                        # keuze_spelers(speler, gekozen_positie)
-                        neo_klasse_obj.led_onthouden(speler, led_pos1)
+                        print(led_pos1)
                         positie_lijst = []
                         speler = 1
                     else:
@@ -510,9 +508,9 @@ def joystick_uitlezen(speler):
                 # pixels[0] = (255,0,0)
                 vorige_pos = gekozen_positie
                 # pixels.show()
-                time.sleep(0.2)
             # neo_klasse_obj.player_color(0, gekozen_positie)
-                neo_klasse_obj.led_onthouden(0, led_pos1)  
+            # neo_klasse_obj.led_onthouden(0, led_pos1)
+            # time.sleep(0.2)
         ########################################################
         # als het speler 1 is, dan moet je alleen joy 1 uitlezen
         elif speler == 1:
@@ -618,7 +616,6 @@ def joystick_uitlezen(speler):
                         oled.image(image)
                         oled.show()
                         print(led_pos2)
-                        neo_klasse_obj.led_onthouden(speler, led_pos1)
                         positie_lijst = []
                         speler = 0
                     else:
@@ -637,8 +634,9 @@ def joystick_uitlezen(speler):
                         draw.text((5, 2), "Deze led kan je niet kiezen!\nkies een andere led", font=font, fill=255)# gekozen
                         oled.show()
                 vorige_pos = gekozen_positie
-                neo_klasse_obj.led_onthouden(1, led_pos2)
-                time.sleep(0.2)
+        neo_klasse_obj.led_onthouden(0, led_pos1)
+        neo_klasse_obj.led_onthouden(1, led_pos2)
+        time.sleep(0.2)
     if not choice_running:
         time.sleep(1)
         print("done")
