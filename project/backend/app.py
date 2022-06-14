@@ -28,6 +28,7 @@ from hulpcode.neopixel import Neos_klasse
 
 motor_klasse_obj = Motor_klasse()
 neo_klasse_obj =  Neos_klasse()
+oled_klasse_obj = Oled_klasse()
 
 ########### JOYSTICK ###########
 # deze hangen aan de mcp
@@ -603,20 +604,9 @@ def joystick_uitlezen(speler, max_punten):
         neo_klasse_obj.led_onthouden(0, led_pos1)
         neo_klasse_obj.led_onthouden(1, led_pos2)
         time.sleep(0.2)
-        print(led_pos1)
-        print(led_pos2)
-        # for key, value in win_combinaties.items():
-        #     if len(set(led_pos1) & set(value)) == 3:
-        #         print(key)
-        #         print("yess")
-        #     elif len(set(led_pos2) & set(value)) == 3:
-        #         print(key)
-        #         print("yess")
 
         for key, value in win_combinaties.items():
-            print("🐾")
             # als 3 pixels overeenkomen met een winnende combinatie EN het staat nog neit in de al getelde punten (oud_gekozen)
-            
             if (len(set(led_pos1) & set(value)) == 3) and (key not in oud_gekozen_pixelsR and key not in oud_gekozen_pixelsB):
                 print(f"de key R: {key}")
                 puntenR = motor_klasse_obj.puntentelling(0, puntenR)
@@ -631,8 +621,6 @@ def joystick_uitlezen(speler, max_punten):
                 print(f"winnende combi B: {oud_gekozen_pixelsB}")
         if max_punten == puntenR or max_punten == puntenB:
             print(f"max: {max_punten}, R: {puntenR}, B:{puntenB}")
-
-        print("🦑")
         if puntenR == max_punten:
             print(f"rood heeft gewonnen met {puntenR}")
             choice_running = False
@@ -645,7 +633,7 @@ def joystick_uitlezen(speler, max_punten):
         print("done😺😺😺😺😺😺")
         print("DOOOONNNNNEEEE")
         neo_klasse_obj.eind_kleur(winnaar)
-
+        return winnaar
 
 def positie(x, y, z, player, vorige_pos):
     neonummer = neo_klasse_obj.get_key(x, y, z)
@@ -679,7 +667,7 @@ def keuzelijst():
                 tellerKeuze = 3
         elif tellerKeuze < 0:
             tellerKeuze = 0
-        Oled_klasse.lijst(tellerKeuze)
+        oled_klasse_obj.lijst(tellerKeuze)
 
         if GPIO.input(t1) or GPIO.input(t2):
             # dus als er input is van t1/t2
@@ -693,7 +681,9 @@ def keuzelijst():
         return tellerKeuze
 
 def spel_starten():
-    global tellerKeuze, keuzeSpel
+    global tellerKeuze, keuzeSpel, app_running
+    app_running = True
+    tellerKeuze = 0
     print(tellerKeuze)
     keuzeSpel = keuzelijst() # => in oled ook 
     print("keuzelijst overlopen en gekozen")
@@ -713,7 +703,7 @@ def start_game():
     randomPlayer = random.randint(0, 1)
     print(f"DIT IS RANDOM: {randomPlayer}")
     print("EN WIE MAG ER BEGINNEN?......")
-    Oled_klasse.display_player(randomPlayer)
+    oled_klasse_obj.display_player(randomPlayer)
     if randomPlayer == 0:
         print("Player 1 begint")
         GPIO.output(r, GPIO.HIGH)
@@ -723,6 +713,7 @@ def start_game():
     game(randomPlayer, tellerKeuze)
 
 def game(beginner, tellerKeuze):
+    global game_running
     # het spel mag alleen joysticks uitlezen van de beginner nu, dan pas van de ander
     # als beginner 0 is, dan alleen x_as1, y_as1, sw1, knop1, knop2
     # als beginner 1 is, dan alleen x_as2, y_as2, sw2, knop3, knop4
@@ -741,9 +732,14 @@ def game(beginner, tellerKeuze):
     while game_running and True:
         time.sleep(2)
         neo_klasse_obj.start_kleur()
-        joystick_uitlezen(beginner, max_punten)
+        winnaar = joystick_uitlezen(beginner, max_punten)
+        print(winnaar)
+        game_running = False
     if not game_running:
         print("THE END OF THE GAME")
+        game_running = True
+        tellerKeuze = 0
+        spel_starten()
         # return????
 
 ##################### SOCKETIO #####################

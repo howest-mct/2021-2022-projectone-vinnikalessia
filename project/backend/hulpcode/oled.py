@@ -28,7 +28,7 @@ draw.rectangle(
 )
 
 class Oled_klasse():
-    def lijst(tellerKeuze):
+    def lijst(self, tellerKeuze):
         draw.rectangle((0, 0, oled.width, oled.height), outline=255, fill=255)
         draw.rectangle(
             (BORDER, BORDER, oled.width - BORDER - 1, oled.height - BORDER - 1),
@@ -64,7 +64,7 @@ class Oled_klasse():
         oled.image(image)
         oled.show()
 
-    def display_player(randomPlayer):
+    def display_player(self, randomPlayer):
         draw.rectangle((0, 0, oled.width, oled.height), outline=255, fill=255)
         draw.rectangle(
             (BORDER, BORDER, oled.width - BORDER - 1, oled.height - BORDER - 1),
@@ -83,7 +83,7 @@ class Oled_klasse():
         oled.show()
 
 
-    def ip_adressen():
+    def ip_adressen(self):
         print("in status 1")
         ips = str(check_output(['hostname', '--all-ip-addresses']))
         ip = ips.decode(encoding='utf-8').strip()
