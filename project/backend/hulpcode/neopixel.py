@@ -103,14 +103,6 @@ class Neos_klasse():
         else:
             pixels[coordinaten] = (0,0,255)
         pixels.show()
-    
-    def testkleur(self, pixel):
-        pixels[pixel] = (45,90,255)
-        pixels.show()
-    
-    def kleurtje(self, pixel):
-        pixels[pixel] = (255,90,45)
-        pixels.show()
 
     def bezet(self, player, pixel):
         pixels[pixel] = (255,255,0)

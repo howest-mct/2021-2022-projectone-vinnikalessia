@@ -380,7 +380,6 @@ def joystick_uitlezen(speler):
         oled.show()
         # ROOD
         if speler == 0:
-            neo_klasse_obj.testkleur(25)
             GPIO.output(b, GPIO.LOW)
             GPIO.output(r, GPIO.HIGH)
             for joy_id in [14, 15, 16]:
@@ -475,9 +474,7 @@ def joystick_uitlezen(speler):
                         # choice_running = False
                         # positie(positie_lijst, 0)
                         time.sleep(0.2) # anders dubbel positie in lijst
-                        positie_lijst = []
                         # nu is het aan de ander
-                        speler = 1
                         draw.rectangle((0, 0, oled.width, oled.height), outline=255, fill=255)
                         draw.rectangle(
                             (BORDER, BORDER, oled.width - BORDER - 1, oled.height - BORDER - 1),
@@ -487,9 +484,11 @@ def joystick_uitlezen(speler):
                         draw.rectangle( [(0,0), (oled.width, oled.height)], fill=0)
                         oled.image(image)
                         oled.show()
-                        # led_pos1.append(gekozen_positie)
                         print(led_pos1)    
-                        keuze_spelers(speler, gekozen_positie)
+                        # keuze_spelers(speler, gekozen_positie)
+                        neo_klasse_obj.led_onthouden(speler, led_pos1)
+                        positie_lijst = []
+                        speler = 1
                     else:
                         print("OZODNCOSAPOPOD   ALQSK?C%    Z")
                         # neo_klasse_obj.bezet()
@@ -513,11 +512,10 @@ def joystick_uitlezen(speler):
                 # pixels.show()
                 time.sleep(0.2)
             # neo_klasse_obj.player_color(0, gekozen_positie)
-
+                neo_klasse_obj.led_onthouden(0, led_pos1)  
         ########################################################
         # als het speler 1 is, dan moet je alleen joy 1 uitlezen
         elif speler == 1:
-            neo_klasse_obj.kleurtje(22)
             # Oled_klasse.clear_oled()
             GPIO.output(r, GPIO.LOW)
             GPIO.output(b, GPIO.HIGH)
@@ -609,9 +607,7 @@ def joystick_uitlezen(speler):
                         # choice_running = False
                         time.sleep(0.2) # anders dubbel positie in lijst
                         # lijst leeg maken voor de volgende keer
-                        positie_lijst = []
                         # nu is het aan de ander
-                        speler = 0
                         draw.rectangle((0, 0, oled.width, oled.height), outline=255, fill=255)
                         draw.rectangle(
                             (BORDER, BORDER, oled.width - BORDER - 1, oled.height - BORDER - 1),
@@ -621,9 +617,10 @@ def joystick_uitlezen(speler):
                         draw.rectangle( [(0,0), (oled.width, oled.height)], fill=0)
                         oled.image(image)
                         oled.show()
-                        # led_pos2.append(gekozen_positie)
                         print(led_pos2)
-                        keuze_spelers(speler, gekozen_positie)
+                        neo_klasse_obj.led_onthouden(speler, led_pos1)
+                        positie_lijst = []
+                        speler = 0
                     else:
                         # neo_klasse_obj.bezet()
                         print("OZODNCOSAPOPOD   ALQSK?C%    Z")
@@ -639,13 +636,9 @@ def joystick_uitlezen(speler):
                         time.sleep(0.2)
                         draw.text((5, 2), "Deze led kan je niet kiezen!\nkies een andere led", font=font, fill=255)# gekozen
                         oled.show()
-                # time.sleep(0.2)
-                # pixels[gekozen_positie] = (0,0,0)
-                # pixels[0] = (255,0,0)
-                # pixels.show() # zet het weer uit
                 vorige_pos = gekozen_positie
+                neo_klasse_obj.led_onthouden(1, led_pos2)
                 time.sleep(0.2)
-            # neo_klasse_obj.player_color(1, gekozen_positie)
     if not choice_running:
         time.sleep(1)
         print("done")
