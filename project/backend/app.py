@@ -373,6 +373,8 @@ def joystick_uitlezen(speler, max_punten):
     puntenR = 0
     puntenB = 0
     winnaar = None
+    oud_gekozen_pixelsR = []
+    oud_gekozen_pixelsB = []
     while choice_running and True:
         ########################################################
         oled_clear()
@@ -612,30 +614,51 @@ def joystick_uitlezen(speler, max_punten):
         #         print("yess")
         for key, value in win_combinaties.items():
             print("🐾")
-            if len(set(led_pos1) & set(value)) == 3:
+            # als 3 pixels overeenkomen met een winnende combinatie EN het staat nog neit in de al getelde punten (oud_gekozen)
+            if (len(set(led_pos1) & set(value)) == 3) and (key not in oud_gekozen_pixelsR and key not in oud_gekozen_pixelsB):
                 print(key)
                 print("punt voor rood")
                 puntenR = motor_klasse_obj.puntentelling(0, puntenR)
                 print(puntenR)
+                # zorgt ervoor dat je geen 3 keer zelfde combinatie telt
+                oud_gekozen_pixelsR.append(key)
+                print(oud_gekozen_pixelsR)
             elif len(set(led_pos2) & set(value)) == 3:
                 print(key)
                 print("punt voor blauw")
                 puntenB = motor_klasse_obj.puntentelling(1, puntenB)
                 print(puntenB)
-                print(max_punten, puntenR, puntenB)
+                # zorgt ervoor dat je geen 3 keer zelfde combinatie telt
+                oud_gekozen_pixelsB.append(key)
+                print(oud_gekozen_pixelsB)
+            print(max_punten, puntenR, puntenB)
+        # for key, value in win_combinaties.items():
+        #     print("🐾")
+        #     if len(set(led_pos1) & set(value)) == 3:
+        #         # als men dat al eens heeft geteld, mag het niet nog eens geteld worden
+        #         print(key)
+        #         print("punt voor rood")
+        #         puntenR = motor_klasse_obj.puntentelling(0, puntenR)
+        #         print(puntenR)
+        #     elif len(set(led_pos2) & set(value)) == 3:
+        #         print(key)
+        #         print("punt voor blauw")
+        #         puntenB = motor_klasse_obj.puntentelling(1, puntenB)
+        #         print(puntenB)
+        #         print(max_punten, puntenR, puntenB)
         print("🦑")
-        if puntenR >= max_punten:
+        if puntenR == max_punten:
             print(f"rood heeft gewonnen met {puntenR}")
             choice_running = False
             winnaar = "rood"
-        elif puntenB >= max_punten:
+        elif puntenB == max_punten:
             print(f"blauw heeft gewonnen met {puntenB}")
             choice_running = False
             winnaar = "blauw"
     if not choice_running:
         print("done😺😺😺😺😺😺")
         print("DOOOONNNNNEEEE")
-        neo_klasse_obj.eind_kleur("rood")
+        neo_klasse_obj.eind_kleur(winnaar)
 
 
 def positie(x, y, z, player, vorige_pos):

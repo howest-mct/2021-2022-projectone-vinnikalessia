@@ -244,8 +244,7 @@ win_combinaties = {
 
 
 lijst = [12, 18, 8, 1, 13, 4, 7, 0]
-
-while True:
+def win():
     for key, value in win_combinaties.items():
         # if set(lijst).intersection(value):
         if len(set(lijst) & set(value)) == 2:
@@ -254,10 +253,51 @@ while True:
             print(len(set(lijst) & set(value)))
         else:
             print("nope")
-    
-    print("einde")
-    time.sleep(0.5)
-    
+
+# print("einde")
+# time.sleep(0.5)
+
+def punten(speler, punten):
+    if speler == 0:
+        punten += 1
+    else:
+        punten += 1
+    return punten
+
+max_punten = 3
+led_pos1 = [12,13,14]
+# led_pos2 = [20,9,6,16,24,19,12,11,1,2,4,8]
+led_pos2 = [20,9,6,16]
+
+oud_gekozen_pixelsR = []
+oud_gekozen_pixelsB = []
+
+puntenR = 0
+puntenB = 0
+
+while True:
+    for key, value in win_combinaties.items():
+        print("🐾")
+        # als 3 pixels overeenkomen met een winnende combinatie EN het staat nog neit in de al getelde punten (oud_gekozen)
+        
+        if (len(set(led_pos1) & set(value)) == 3) and (key not in oud_gekozen_pixelsR and key not in oud_gekozen_pixelsB):
+            print(f"de key R: {key}")
+            puntenR = punten(0, puntenR)
+            print(f"punt voor rood {puntenR}")
+            oud_gekozen_pixelsR.append(key)
+            print(f"winnende combi R: {oud_gekozen_pixelsR}")
+        elif len(set(led_pos2) & set(value)) == 3:
+            print(f"de key B: {key}")
+            puntenB = punten(1, puntenB)
+            print(f"punt voor blauw {puntenB}")
+            oud_gekozen_pixelsB.append(key)
+            print(f"winnende combi B: {oud_gekozen_pixelsB}")
+    if max_punten == puntenR or max_punten == puntenB:
+        print(max_punten, puntenR, puntenB)
+        break
+    print(f"max: {max_punten}, R: {puntenR}, B:{puntenB}")
+    print("hello")
+    time.sleep(1)
     
     
     
