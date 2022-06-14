@@ -26,6 +26,7 @@ from hulpcode.oled import Oled_klasse
 from hulpcode.motor import Motor_klasse
 from hulpcode.neopixel import Neos_klasse
 
+motor_klasse_obj = Motor_klasse()
 neo_klasse_obj =  Neos_klasse()
 
 ########### JOYSTICK ###########
@@ -318,7 +319,7 @@ def touch1():
     print("AHA! aangeraakt!")
     print(f"\t je hebt {teller7} keer t1 aangeraakt!")
     hoek1 += 9
-    pwm = Motor_klasse.hoek_tot_duty(hoek1)
+    pwm = motor_klasse_obj.hoek_tot_duty(hoek1)
     pwm_motor1.changeDutyCycle(pwm)
     print("een punt bij?")
     return teller7
@@ -329,7 +330,7 @@ def touch2():
     print("AHA! aangeraakt!")
     print(f"\t je hebt {teller8} keer t2 aangeraakt!")
     hoek2 += 9
-    pwm = Motor_klasse.hoek_tot_duty(hoek2)
+    pwm = motor_klasse_obj.hoek_tot_duty(hoek2)
     pwm_motor2.changeDutyCycle(pwm)
     print("een punt bij?")
     return teller8
@@ -361,16 +362,16 @@ def oled_clear():
 
 
 ##### joystick uitlezen tijdens spel #####
-def joystick_uitlezen(speler):
-    global vorige_pos
-    # print("joystick_uitlezen", pixels)
+def joystick_uitlezen(speler, max_punten):
+    global choice_running, tellerStapX, tellerStapY, tellerStapZ, led_pos1, led_pos2, vorige_pos
     neo_klasse_obj.start_kleur()
-    global choice_running, tellerStapX, tellerStapY, tellerStapZ, led_pos1, led_pos2
     positie_lijst = []
     tellerStapX = 1
     tellerStapY = 1
     tellerStapZ = 1
     vorige_pos = 0
+    puntenR = 0
+    puntenB = 0
     while choice_running and True:
         ########################################################
         oled_clear()
@@ -409,18 +410,14 @@ def joystick_uitlezen(speler):
                             tellerStapY -= 1
                 
                 gekozen_positie = int(positie(tellerStapX, tellerStapY, tellerStapZ, 0, vorige_pos))
-                # gekozen_positie = int(positie(tellerStapX, tellerStapY, tellerStapZ, 0))
-
+                
                 if vorige_pos != gekozen_positie and (vorige_pos not in led_pos2 and vorige_pos not in led_pos1):
                     # dan moet vorige led uit en volgende aan
                     print(vorige_pos)
                     print(gekozen_positie)
-                    # pixels[vorige_pos] = (241,196,15)
-                    
                     print("😮")
                     pixels.show()
-                    # pixels[vorige_pos] = (0,0,0)
-                    # pixels.show()
+
                     neo_klasse_obj.clear_pixel(vorige_pos)
                     vorige_pos = gekozen_positie
                     print(vorige_pos)
@@ -447,16 +444,6 @@ def joystick_uitlezen(speler):
                 oled.image(image)
                 oled.show()
 
-                # gekozen_positie = int(positie(tellerStapX, tellerStapY, tellerStapZ, 0))
-                # print(f"dit is de gekozen positie: {gekozen_positie}") # vb. 0
-                # if gekozen_positie not in led_pos1 and gekozen_positie not in led_pos2:
-                #     pixels[gekozen_positie] = (255,0,0)
-                #     pixels.show()
-                # else:
-                #     pixels[gekozen_positie] = (255,255,0) # geel
-                #     pixels.show()
-                # time.sleep(0.2)
-                # print("LICHT")
                 # bij het bevestigen
                 if gekozen_positie in led_pos2 or gekozen_positie in led_pos1:
                     neo_klasse_obj.bezet(speler, gekozen_positie)
@@ -503,17 +490,10 @@ def joystick_uitlezen(speler):
                         draw.text((5, 2), "Deze led kan je niet kiezen!\nkies een andere led", font=font, fill=255)# gekozen
                         oled.show()
                         time.sleep(0.2)
-                    # positie(tellerStapX, tellerStapY, tellerKeuze)
-                # pixels[gekozen_positie] = (0,0,0)
-                # pixels[0] = (255,0,0)
                 vorige_pos = gekozen_positie
-                # pixels.show()
-            # neo_klasse_obj.player_color(0, gekozen_positie)
-            # neo_klasse_obj.led_onthouden(0, led_pos1)
         ########################################################
         # als het speler 1 is, dan moet je alleen joy 1 uitlezen
         elif speler == 1:
-            # Oled_klasse.clear_oled()
             GPIO.output(r, GPIO.LOW)
             GPIO.output(b, GPIO.HIGH)
             for joy_id in [17, 18, 19]:
@@ -528,8 +508,6 @@ def joystick_uitlezen(speler):
                         elif waarde < 200 and tellerStapX > 1:
                             print(f"TELLER X {tellerStapX}")
                             tellerStapX -= 1
-                        # return tellerStapX
-                        # positie_lijst.append(tellerStapX)
                 # de y-as
                 for joy_id in [18]:
                     waarde, commentaar = joystick_id(joy_id)
@@ -543,17 +521,13 @@ def joystick_uitlezen(speler):
                             tellerStapY -= 1
                 
                 gekozen_positie = int(positie(tellerStapX, tellerStapY, tellerStapZ, 1, vorige_pos))
-                # gekozen_positie = int(positie(tellerStapX, tellerStapY, tellerStapZ, 1))
 
                 if vorige_pos != gekozen_positie and (vorige_pos not in led_pos2 and vorige_pos not in led_pos1):
                     # dan moet vorige led uit en volgende aan
                     print("🤢")
                     print(vorige_pos)
                     print(gekozen_positie)
-                    # pixels[vorige_pos] = (241,196,15)
                     pixels.show()
-                    # pixels[vorige_pos] = (0,0,0)
-                    # pixels.show()
                     
                     neo_klasse_obj.clear_pixel(vorige_pos)
                     vorige_pos = gekozen_positie
@@ -578,14 +552,6 @@ def joystick_uitlezen(speler):
                 oled.image(image)
                 oled.show()
 
-                # print(led_pos1)
-                # print(led_pos2)
-
-                # gekozen_positie = positie(tellerStapX, tellerStapY, tellerStapZ, 1)
-                # print(f"dit is de gekozen positie: {gekozen_positie}")
-                # # pixels[gekozen_positie] = (255,255,255)
-                # # pixels[0] = (255,255,0)
-                # # pixels.show()
                 # bij het bevestigen
                 if gekozen_positie in led_pos2 or gekozen_positie in led_pos1:
                     neo_klasse_obj.bezet(speler, gekozen_positie)
@@ -617,7 +583,6 @@ def joystick_uitlezen(speler):
                         positie_lijst = []
                         speler = 0
                     else:
-                        # neo_klasse_obj.bezet(speler, gekozen_positie)
                         print("OZODNCOSAPOPOD   ALQSK?C%    Z")
                         draw.rectangle((0, 0, oled.width, oled.height), outline=255, fill=255)
                         draw.rectangle(
@@ -639,25 +604,31 @@ def joystick_uitlezen(speler):
             if len(set(led_pos1) & set(value)) == 3:
                 print(key)
                 print("punt voor rood")
+                puntenR = motor_klasse_obj.puntentelling(0, puntenR)
+                print(puntenR)
             elif len(set(led_pos2) & set(value)) == 3:
                 print(key)
                 print("punt voor blauw")
-            else:
-                print("nope")
+                puntenB = motor_klasse_obj.puntentelling(1, puntenB)
+                print(puntenB)
+                # print(max_punten, puntenR, puntenB)
+        print("🦑")
+        if puntenR >= max_punten:
+            print(f"rood heeft gewonnen met {puntenR}")
+            choice_running = False
+        elif puntenB >= max_punten:
+            print(f"blauw heeft gewonnen met {puntenB}")
+            choice_running = False
     if not choice_running:
         time.sleep(1)
-        print("done")
-
-
+        print("done😺😺😺😺😺😺")
 
 
 def positie(x, y, z, player, vorige_pos):
-# def positie(x, y, z, player):
     neonummer = neo_klasse_obj.get_key(x, y, z)
     print(neonummer)
     pixels[vorige_pos] = (0,0,0)
-    
-    # neo_klasse_obj.clear_pixel(vorige_pos)
+
     print(f"dit zijn de coordinaten {neonummer}")
     print(led_pos1, led_pos2)
 
@@ -665,21 +636,10 @@ def positie(x, y, z, player, vorige_pos):
         neo_klasse_obj.player_color(player, neonummer)
         print("deze led mag je gebruiken")
         if player == 0:
-            print("123344")
-            # led_pos1.append(neonummer)
-            # pixels[16] = (255,0,255)
-            # pixels.show()
-            # time.sleep(0.2)
             print(led_pos1)
-            # vorige_pix = led_pos1
         else:
             print("98687576")
-            # led_pos2.append(neonummer)
-            # pixels[26] = (255,0,255)
-            # pixels.show()
-            # time.sleep(0.2)
             print(led_pos2)
-            # vorige_pix = led_pos2
     else:
         print("kies een andere led")
     print(f"DIT IS VORIGE PIXEL: {vorige_pos}")
@@ -687,7 +647,6 @@ def positie(x, y, z, player, vorige_pos):
     time.sleep(0.3)
     return neonummer
 
-        
 
 def keuzelijst():
     global tellerKeuze, app_running
@@ -738,15 +697,27 @@ def start_game():
     elif randomPlayer == 1:
         print("Player 2 begint")
         GPIO.output(b, GPIO.HIGH)
-    game(randomPlayer)
+    game(randomPlayer, tellerKeuze)
 
-def game(beginner):
+def game(beginner, tellerKeuze):
     # het spel mag alleen joysticks uitlezen van de beginner nu, dan pas van de ander
     # als beginner 0 is, dan alleen x_as1, y_as1, sw1, knop1, knop2
     # als beginner 1 is, dan alleen x_as2, y_as2, sw2, knop3, knop4
+    if tellerKeuze == 0:
+        # dan wordt er gespeeld tot 1
+        max_punten = 1
+    elif tellerKeuze == 1:
+        # dan wordt er gespeeld tot 3
+        max_punten = 3
+    elif tellerKeuze == 2:
+        # dan wordt er gespeeld tot 5
+        max_punten = 5
+    elif tellerKeuze == 3:
+        # dan wordt er gespeeld tot 9
+        max_punten = 9
     while game_running and True:
         time.sleep(2)
-        joystick_uitlezen(beginner)
+        joystick_uitlezen(beginner, max_punten)
     if not game_running:
         print("THE END OF THE GAME")
         # return????

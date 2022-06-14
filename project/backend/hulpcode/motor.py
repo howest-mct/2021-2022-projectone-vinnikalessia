@@ -11,12 +11,21 @@ teller = 0
 hoek = 5
 
 class Motor_klasse():
-    def hoek_tot_duty(getal):
+    def hoek_tot_duty(self, getal):
         # pwm = int((0.6 + ((getal/90)*0.9)*1000))
         print(f"Dit is de hoek: {getal}")
         pwm = int(getal * 0.555555555555)
         print(f"Dit is de hoek in pwm: {pwm}")
         return pwm
+    
+    def puntentelling(self, speler, punten):
+        if speler == 0:
+            # rood
+            punten += 1
+        else:
+            # blauw
+            punten += 1
+        return punten
 
     # try:
     #     motorpwm = GPIO.PWM(motor, 40)
