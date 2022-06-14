@@ -635,10 +635,15 @@ def joystick_uitlezen(speler):
         neo_klasse_obj.led_onthouden(0, led_pos1)
         neo_klasse_obj.led_onthouden(1, led_pos2)
         time.sleep(0.2)
-        if led_pos1 in win_combinaties.values():
-            print("een match gevonden! 👾")
-        else:
-            print("geen punten....🐸")
+        for key, value in win_combinaties.items():
+            if len(set(led_pos1) & set(value)) == 3:
+                print(key)
+                print("punt voor rood")
+            elif len(set(led_pos2) & set(value)) == 3:
+                print(key)
+                print("punt voor blauw")
+            else:
+                print("nope")
     if not choice_running:
         time.sleep(1)
         print("done")
