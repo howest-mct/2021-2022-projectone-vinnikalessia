@@ -149,7 +149,7 @@ win_combinaties = {
     17:[18,19,20], 18:[21,22,23], 19:[24,25,26], 20:[18,23,24], 21:[19,22,25], 
     22:[20,21,26], 23:[18,22,26], 24:[20,22,24], 25:[0,17,18], 26:[1,16,19], 
     27:[2,15,20], 28:[0,16,20], 29:[2,16,18], 30:[1,13,25], 31:[5,12,23], 
-    32:[6,11,24], 33:[0,12,14], 34:[6,12,18], 35:[7,13,19], 36:[3,14,21], 
+    32:[6,11,24], 33:[0,12,24], 34:[6,12,18], 35:[7,13,19], 36:[3,14,21], 
     37:[8,9,26], 38:[2,14,26], 39:[8,14,20], 40:[3,13,23], 41:[7,10,25], 
     42:[5,13,21], 43:[6,10,26], 44:[8,10,24], 45:[4,13,22], 46:[0,6,8], 
     47:[6,13,20], 48:[2,13,24], 49:[0,13,26], 50:[8,12,18]}
@@ -372,6 +372,7 @@ def joystick_uitlezen(speler, max_punten):
     vorige_pos = 0
     puntenR = 0
     puntenB = 0
+    winnaar = None
     while choice_running and True:
         ########################################################
         oled_clear()
@@ -600,7 +601,17 @@ def joystick_uitlezen(speler, max_punten):
         neo_klasse_obj.led_onthouden(0, led_pos1)
         neo_klasse_obj.led_onthouden(1, led_pos2)
         time.sleep(0.2)
+        print(led_pos1)
+        print(led_pos2)
+        # for key, value in win_combinaties.items():
+        #     if len(set(led_pos1) & set(value)) == 3:
+        #         print(key)
+        #         print("yess")
+        #     elif len(set(led_pos2) & set(value)) == 3:
+        #         print(key)
+        #         print("yess")
         for key, value in win_combinaties.items():
+            print("🐾")
             if len(set(led_pos1) & set(value)) == 3:
                 print(key)
                 print("punt voor rood")
@@ -611,19 +622,20 @@ def joystick_uitlezen(speler, max_punten):
                 print("punt voor blauw")
                 puntenB = motor_klasse_obj.puntentelling(1, puntenB)
                 print(puntenB)
-                # print(max_punten, puntenR, puntenB)
+                print(max_punten, puntenR, puntenB)
         print("🦑")
         if puntenR >= max_punten:
             print(f"rood heeft gewonnen met {puntenR}")
             choice_running = False
+            winnaar = "rood"
         elif puntenB >= max_punten:
             print(f"blauw heeft gewonnen met {puntenB}")
             choice_running = False
+            winnaar = "blauw"
     if not choice_running:
-        for x in range(3):
-            time.sleep(1)
-            print("done😺😺😺😺😺😺")
+        print("done😺😺😺😺😺😺")
         print("DOOOONNNNNEEEE")
+        neo_klasse_obj.eind_kleur("rood")
 
 
 def positie(x, y, z, player, vorige_pos):

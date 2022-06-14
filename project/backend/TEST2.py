@@ -243,14 +243,15 @@ win_combinaties = {
     47:[6,13,20], 48:[2,13,24], 49:[0,13,26], 50:[8,12,18]}
 
 
-lijst = [12,18,8]
+lijst = [12, 18, 8, 1, 13, 4, 7, 0]
 
 while True:
     for key, value in win_combinaties.items():
         # if set(lijst).intersection(value):
-        if len(set(lijst) & set(value)) == 3:
+        if len(set(lijst) & set(value)) == 2:
             print(key)
             print("yess")
+            print(len(set(lijst) & set(value)))
         else:
             print("nope")
     

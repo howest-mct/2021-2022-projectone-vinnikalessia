@@ -89,7 +89,18 @@ class Neos_klasse():
     def start_kleur(self):
         pixels.fill((0, 255, 0))
         pixels.show()
-        print("ALLES MOET GROEN ZIJN")
+        time.sleep(1)
+        pixels.fill((0, 0, 0))
+        pixels.show()
+    
+    def eind_kleur(self, winnaar):
+        if winnaar == "rood":
+            pixels.fill((255, 0, 0))
+            print("rood heeft gewonnen")
+        elif winnaar == "blauw":
+            pixels.fill((0, 0, 255))
+            print("blauw heeft gewonnen")
+        pixels.show()
         time.sleep(1)
         pixels.fill((0, 0, 0))
         pixels.show()
