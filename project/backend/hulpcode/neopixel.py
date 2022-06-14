@@ -94,16 +94,18 @@ class Neos_klasse():
         pixels.show()
     
     def eind_kleur(self, winnaar):
-        if winnaar == "rood":
-            pixels.fill((255, 0, 0))
-            print("rood heeft gewonnen")
-        elif winnaar == "blauw":
-            pixels.fill((0, 0, 255))
-            print("blauw heeft gewonnen")
-        pixels.show()
-        time.sleep(1)
-        pixels.fill((0, 0, 0))
-        pixels.show()
+        for i in range(3):
+            if winnaar == "rood":
+                pixels.fill((255, 0, 0))
+                print("rood heeft gewonnen")
+            elif winnaar == "blauw":
+                pixels.fill((0, 0, 255))
+                print("blauw heeft gewonnen")
+            pixels.show()
+            time.sleep(1)
+            pixels.fill((0, 0, 0))
+            pixels.show()
+            time.sleep(1)
 
     def alles_uit(self):
         pixels.fill((0, 0, 0))

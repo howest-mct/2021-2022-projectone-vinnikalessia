@@ -364,7 +364,7 @@ def oled_clear():
 ##### joystick uitlezen tijdens spel #####
 def joystick_uitlezen(speler, max_punten):
     global choice_running, tellerStapX, tellerStapY, tellerStapZ, led_pos1, led_pos2, vorige_pos
-    neo_klasse_obj.start_kleur()
+    # neo_klasse_obj.start_kleur()
     positie_lijst = []
     tellerStapX = 1
     tellerStapY = 1
@@ -630,49 +630,8 @@ def joystick_uitlezen(speler, max_punten):
                 oud_gekozen_pixelsB.append(key)
                 print(f"winnende combi B: {oud_gekozen_pixelsB}")
         if max_punten == puntenR or max_punten == puntenB:
-            print(max_punten, puntenR, puntenB)
-            break
-        print(f"max: {max_punten}, R: {puntenR}, B:{puntenB}")
-        print("hello")
-        time.sleep(1)
+            print(f"max: {max_punten}, R: {puntenR}, B:{puntenB}")
 
-        # for key, value in win_combinaties.items():
-        #     print("🐾")
-        #     # als 3 pixels overeenkomen met een winnende combinatie EN het staat nog neit in de al getelde punten (oud_gekozen)
-        #     if (len(set(led_pos1) & set(value)) == 3) and (key not in oud_gekozen_pixelsR and key not in oud_gekozen_pixelsB):
-        #         print(key)
-        #         print("punt voor rood")
-        #         puntenR = motor_klasse_obj.puntentelling(0, puntenR)
-        #         print(puntenR)
-        #         # zorgt ervoor dat je geen 3 keer zelfde combinatie telt
-        #         oud_gekozen_pixelsR.append(key)
-        #         print(oud_gekozen_pixelsR)
-        #     elif len(set(led_pos2) & set(value)) == 3:
-        #         print(key)
-        #         print("punt voor blauw")
-        #         puntenB = motor_klasse_obj.puntentelling(1, puntenB)
-        #         print(puntenB)
-        #         # zorgt ervoor dat je geen 3 keer zelfde combinatie telt
-        #         oud_gekozen_pixelsB.append(key)
-        #         print(oud_gekozen_pixelsB)
-        #     print(max_punten, puntenR, puntenB)
-
-
-
-        # for key, value in win_combinaties.items():
-        #     print("🐾")
-        #     if len(set(led_pos1) & set(value)) == 3:
-        #         # als men dat al eens heeft geteld, mag het niet nog eens geteld worden
-        #         print(key)
-        #         print("punt voor rood")
-        #         puntenR = motor_klasse_obj.puntentelling(0, puntenR)
-        #         print(puntenR)
-        #     elif len(set(led_pos2) & set(value)) == 3:
-        #         print(key)
-        #         print("punt voor blauw")
-        #         puntenB = motor_klasse_obj.puntentelling(1, puntenB)
-        #         print(puntenB)
-        #         print(max_punten, puntenR, puntenB)
         print("🦑")
         if puntenR == max_punten:
             print(f"rood heeft gewonnen met {puntenR}")
@@ -781,6 +740,7 @@ def game(beginner, tellerKeuze):
         max_punten = 9
     while game_running and True:
         time.sleep(2)
+        neo_klasse_obj.start_kleur()
         joystick_uitlezen(beginner, max_punten)
     if not game_running:
         print("THE END OF THE GAME")
