@@ -411,7 +411,7 @@ def joystick_uitlezen(speler):
                 gekozen_positie = int(positie(tellerStapX, tellerStapY, tellerStapZ, 0, vorige_pos))
                 # gekozen_positie = int(positie(tellerStapX, tellerStapY, tellerStapZ, 0))
 
-                if vorige_pos != gekozen_positie and (vorige_pos not in led_pos2 or vorige_pos not in led_pos1):
+                if vorige_pos != gekozen_positie and (vorige_pos not in led_pos2 and vorige_pos not in led_pos1):
                     # dan moet vorige led uit en volgende aan
                     print(vorige_pos)
                     print(gekozen_positie)
@@ -419,7 +419,6 @@ def joystick_uitlezen(speler):
                     
                     print("😮")
                     pixels.show()
-                    time.sleep(0.2)
                     # pixels[vorige_pos] = (0,0,0)
                     # pixels.show()
                     neo_klasse_obj.clear_pixel(vorige_pos)
@@ -427,7 +426,6 @@ def joystick_uitlezen(speler):
                     print(vorige_pos)
                 else:
                     print("😡")
-                time.sleep(0.5)
                 # # de sw
                 # for joy_id in [16]:
                 #     waarde, commentaar = joysw_id(joy_id)
@@ -460,9 +458,12 @@ def joystick_uitlezen(speler):
                 # time.sleep(0.2)
                 # print("LICHT")
                 # bij het bevestigen
+                if gekozen_positie in led_pos2 or gekozen_positie in led_pos1:
+                    neo_klasse_obj.bezet(speler, gekozen_positie)
+                
                 if GPIO.input(t1):
                     print("🐑")
-                    if gekozen_positie not in led_pos2 or gekozen_positie not in led_pos1:
+                    if gekozen_positie not in led_pos2 and gekozen_positie not in led_pos1:
                         positie_lijst.append(tellerStapX)
                         positie_lijst.append(tellerStapY)
                         positie_lijst.append(tellerStapZ)
@@ -489,7 +490,7 @@ def joystick_uitlezen(speler):
                         speler = 1
                     else:
                         print("OZODNCOSAPOPOD   ALQSK?C%    Z")
-                        # neo_klasse_obj.bezet()
+                        neo_klasse_obj.bezet(speler, gekozen_positie)
                         draw.rectangle((0, 0, oled.width, oled.height), outline=255, fill=255)
                         draw.rectangle(
                             (BORDER, BORDER, oled.width - BORDER - 1, oled.height - BORDER - 1),
@@ -503,14 +504,12 @@ def joystick_uitlezen(speler):
                         oled.show()
                         time.sleep(0.2)
                     # positie(tellerStapX, tellerStapY, tellerKeuze)
-                # time.sleep(0.2)
                 # pixels[gekozen_positie] = (0,0,0)
                 # pixels[0] = (255,0,0)
                 vorige_pos = gekozen_positie
                 # pixels.show()
             # neo_klasse_obj.player_color(0, gekozen_positie)
             # neo_klasse_obj.led_onthouden(0, led_pos1)
-            # time.sleep(0.2)
         ########################################################
         # als het speler 1 is, dan moet je alleen joy 1 uitlezen
         elif speler == 1:
@@ -546,14 +545,13 @@ def joystick_uitlezen(speler):
                 gekozen_positie = int(positie(tellerStapX, tellerStapY, tellerStapZ, 1, vorige_pos))
                 # gekozen_positie = int(positie(tellerStapX, tellerStapY, tellerStapZ, 1))
 
-                if vorige_pos != gekozen_positie and (vorige_pos not in led_pos2 or vorige_pos not in led_pos1):
+                if vorige_pos != gekozen_positie and (vorige_pos not in led_pos2 and vorige_pos not in led_pos1):
                     # dan moet vorige led uit en volgende aan
                     print("🤢")
                     print(vorige_pos)
                     print(gekozen_positie)
                     # pixels[vorige_pos] = (241,196,15)
                     pixels.show()
-                    time.sleep(0.2)
                     # pixels[vorige_pos] = (0,0,0)
                     # pixels.show()
                     
@@ -562,8 +560,6 @@ def joystick_uitlezen(speler):
                     print(vorige_pos)
                 else:
                     print("😆")
-
-                time.sleep(0.5)
                 # de sw
                 # for joy_id in [19]:
                 #     waarde, commentaar = joysw_id(joy_id)
@@ -590,11 +586,13 @@ def joystick_uitlezen(speler):
                 # # pixels[gekozen_positie] = (255,255,255)
                 # # pixels[0] = (255,255,0)
                 # # pixels.show()
-                # time.sleep(0.2)
                 # bij het bevestigen
+                if gekozen_positie in led_pos2 or gekozen_positie in led_pos1:
+                    neo_klasse_obj.bezet(speler, gekozen_positie)
+
                 if GPIO.input(t2):
                     print("🐑")
-                    if gekozen_positie not in led_pos1 or gekozen_positie not in led_pos2:
+                    if gekozen_positie not in led_pos1 and gekozen_positie not in led_pos2:
                         positie_lijst.append(tellerStapX)
                         positie_lijst.append(tellerStapY)
                         positie_lijst.append(tellerStapZ)
@@ -619,7 +617,7 @@ def joystick_uitlezen(speler):
                         positie_lijst = []
                         speler = 0
                     else:
-                        # neo_klasse_obj.bezet()
+                        # neo_klasse_obj.bezet(speler, gekozen_positie)
                         print("OZODNCOSAPOPOD   ALQSK?C%    Z")
                         draw.rectangle((0, 0, oled.width, oled.height), outline=255, fill=255)
                         draw.rectangle(
@@ -654,7 +652,7 @@ def positie(x, y, z, player, vorige_pos):
     print(f"dit zijn de coordinaten {neonummer}")
     print(led_pos1, led_pos2)
 
-    if neonummer not in led_pos1 or neonummer not in led_pos2:
+    if neonummer not in led_pos1 and neonummer not in led_pos2:
         neo_klasse_obj.player_color(player, neonummer)
         print("deze led mag je gebruiken")
         if player == 0:

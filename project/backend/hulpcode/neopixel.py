@@ -111,6 +111,7 @@ class Neos_klasse():
         # else:
         #     pixels[pixel] = (0,0,255)
         pixels.show()
+        time.sleep(0.2)
 
     def led_onthouden(self, player, ledpos):
         if player == 0:
