@@ -117,15 +117,6 @@ g = 24
 b = 25
 
 ##################### NEOPIXEL #####################
-pixel_pin = board.D18 # pin 18
-num_pixels = 27 # ik heb 27 neopixels
-ORDER = neopixel.GRB
-pixels = neopixel.NeoPixel(
-    pixel_pin, num_pixels, brightness=0.2, auto_write=False, pixel_order=ORDER
-)
-
-vorige_pix = 0
-
 # lednummer:[x-as, y-as, z-as] 
 neopixel_dict = {
         1:[1, 1, 1], 2:[2, 1, 1], 3:[3, 1, 1], 
@@ -155,9 +146,6 @@ win_combinaties = {
     47:[6,13,20], 48:[2,13,24], 49:[0,13,26], 50:[8,12,18]}
 
 ########### SPELERS ###########
-# player1 = True # zo?
-# player2 = True # zo?
-# posities dat de tegenspeler koos mogen niet meer gekozen worden
 led_pos1 = [] # posities dat speler 1 had gekozen
 led_pos2 = [] # posities dat speler 2 had gekozen
 
@@ -176,7 +164,6 @@ app.config['SECRET_KEY'] = 'geheim!'
 
 socketio = SocketIO(app, cors_allowed_origins="*", 
     logger=False, engineio_logger=False, ping_timeout=1)
-
 
 CORS(app)
 print("program started")
@@ -419,7 +406,8 @@ def joystick_uitlezen(speler, max_punten):
                     print(vorige_pos)
                     print(gekozen_positie)
                     print("😮")
-                    pixels.show()
+                    # pixels.show()
+                    neo_klasse_obj.show_pixels()
 
                     neo_klasse_obj.clear_pixel(vorige_pos)
                     vorige_pos = gekozen_positie
@@ -529,7 +517,8 @@ def joystick_uitlezen(speler, max_punten):
                     print("🤢")
                     print(vorige_pos)
                     print(gekozen_positie)
-                    pixels.show()
+                    # pixels.show()
+                    neo_klasse_obj.show_pixels()
                     
                     neo_klasse_obj.clear_pixel(vorige_pos)
                     vorige_pos = gekozen_positie
@@ -644,7 +633,8 @@ def joystick_uitlezen(speler, max_punten):
 def positie(x, y, z, player, vorige_pos):
     neonummer = neo_klasse_obj.get_key(x, y, z)
     print(neonummer)
-    pixels[vorige_pos] = (0,0,0)
+    # pixels[vorige_pos] = (0,0,0)
+    neo_klasse_obj.vorige_positie(vorige_pos)
 
     print(f"dit zijn de coordinaten {neonummer}")
     print(led_pos1, led_pos2)

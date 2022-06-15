@@ -137,6 +137,13 @@ class Neos_klasse():
                 pixels[i] = (0,0,255)
                 pixels.show()
     
+    def vorige_positie(self, vorige_pos):
+        pixels[vorige_pos] = (0,0,0)
+    
+    def show_pixels(self):
+        pixels.show()
+        
+    
 # pixels[0] = (255,0,0)
 #     pixels.show()
 #     time.sleep(0.2)
