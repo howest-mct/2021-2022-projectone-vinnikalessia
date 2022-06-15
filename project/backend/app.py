@@ -30,7 +30,6 @@ motor_klasse_obj = Motor_klasse()
 neo_klasse_obj =  Neos_klasse()
 oled_klasse_obj = Oled_klasse()
 
-global pwm_motor1, pwm_motor2
 
 ########### JOYSTICK ###########
 # deze hangen aan de mcp
@@ -57,16 +56,16 @@ tellerStapY = 0
 tellerStapZ = 0
 
 ########### TOUCHSENSOR ###########
-t1 = 13
-t2 = 19
+t1 = 27
+t2 = 17
 
 # teller aantal keer aangeraakt
 teller7 = 0 # t1
 teller8 = 0 # t2
 
 ########### MOTOR ###########
-motor1 = 17
-motor2 = 22
+motor1 = 19
+motor2 = 13
 hoek1 = 5
 hoek2 = 5
 
@@ -450,7 +449,6 @@ def joystick_uitlezen(speler, max_punten):
 
                 # bij het bevestigen
                 if gekozen_positie in led_pos2 or gekozen_positie in led_pos1:
-                    # neo_klasse_obj.bezet(speler, gekozen_positie)
                     neo_klasse_obj.bezet(gekozen_positie)
                 
                 if GPIO.input(t1):
@@ -481,7 +479,6 @@ def joystick_uitlezen(speler, max_punten):
                         speler = 1
                     else:
                         print("OZODNCOSAPOPOD   ALQSK?C%    Z")
-                        # neo_klasse_obj.bezet(speler, gekozen_positie)
                         neo_klasse_obj.bezet(gekozen_positie)
                         draw.rectangle((0, 0, oled.width, oled.height), outline=255, fill=255)
                         draw.rectangle(
@@ -559,7 +556,6 @@ def joystick_uitlezen(speler, max_punten):
 
                 # bij het bevestigen
                 if gekozen_positie in led_pos2 or gekozen_positie in led_pos1:
-                    # neo_klasse_obj.bezet(speler, gekozen_positie)
                     neo_klasse_obj.bezet(gekozen_positie)
 
                 if GPIO.input(t2):
