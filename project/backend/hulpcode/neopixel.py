@@ -102,10 +102,10 @@ class Neos_klasse():
                 pixels.fill((0, 0, 255))
                 print("blauw heeft gewonnen")
             pixels.show()
-            time.sleep(1)
+            time.sleep(0.5)
             pixels.fill((0, 0, 0))
             pixels.show()
-            time.sleep(1)
+            time.sleep(0.5)
 
     def alles_uit(self):
         pixels.fill((0, 0, 0))
@@ -118,7 +118,7 @@ class Neos_klasse():
             pixels[coordinaten] = (0,0,255)
         pixels.show()
 
-    def bezet(self, player, pixel):
+    def bezet(self, pixel):
         pixels[pixel] = (255,255,0)
         # if player == 0:
         #     pixels[pixel] = (255,0,0)

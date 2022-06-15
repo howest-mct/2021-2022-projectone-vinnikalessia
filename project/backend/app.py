@@ -450,7 +450,8 @@ def joystick_uitlezen(speler, max_punten):
 
                 # bij het bevestigen
                 if gekozen_positie in led_pos2 or gekozen_positie in led_pos1:
-                    neo_klasse_obj.bezet(speler, gekozen_positie)
+                    # neo_klasse_obj.bezet(speler, gekozen_positie)
+                    neo_klasse_obj.bezet(gekozen_positie)
                 
                 if GPIO.input(t1):
                     print("🐑")
@@ -480,7 +481,8 @@ def joystick_uitlezen(speler, max_punten):
                         speler = 1
                     else:
                         print("OZODNCOSAPOPOD   ALQSK?C%    Z")
-                        neo_klasse_obj.bezet(speler, gekozen_positie)
+                        # neo_klasse_obj.bezet(speler, gekozen_positie)
+                        neo_klasse_obj.bezet(gekozen_positie)
                         draw.rectangle((0, 0, oled.width, oled.height), outline=255, fill=255)
                         draw.rectangle(
                             (BORDER, BORDER, oled.width - BORDER - 1, oled.height - BORDER - 1),
@@ -557,7 +559,8 @@ def joystick_uitlezen(speler, max_punten):
 
                 # bij het bevestigen
                 if gekozen_positie in led_pos2 or gekozen_positie in led_pos1:
-                    neo_klasse_obj.bezet(speler, gekozen_positie)
+                    # neo_klasse_obj.bezet(speler, gekozen_positie)
+                    neo_klasse_obj.bezet(gekozen_positie)
 
                 if GPIO.input(t2):
                     print("🐑")
@@ -637,8 +640,6 @@ def joystick_uitlezen(speler, max_punten):
         oud_gekozen_pixelsB.clear()
         led_pos1.clear() 
         led_pos2.clear()
-        print(positie_lijst, oud_gekozen_pixelsB, oud_gekozen_pixelsR, led_pos1, led_pos2)
-
         print("done😺😺😺😺😺😺")
         print("DOOOONNNNNEEEE")
         neo_klasse_obj.eind_kleur(winnaar)
