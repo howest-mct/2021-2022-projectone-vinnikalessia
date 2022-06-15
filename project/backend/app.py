@@ -328,6 +328,7 @@ def joystick_uitlezen(speler, max_punten):
     while choice_running and True:
         ########################################################
         oled_klasse_obj.oled_clear()
+        oled_klasse_obj.xyz(tellerStapX, tellerStapY, tellerStapZ)
         # draw.text((5, 17), str(tellerStapX), font=font, fill=255) 
         # draw.text((5, 32), str(tellerStapY), font=font, fill=255)
         # draw.text((5, 47), str(tellerStapZ), font=font, fill=255)
@@ -484,15 +485,13 @@ def joystick_uitlezen(speler, max_punten):
                     print("🤢")
                     print(vorige_pos)
                     print(gekozen_positie)
-                    # pixels.show()
                     neo_klasse_obj.show_pixels()
-                    
                     neo_klasse_obj.clear_pixel(vorige_pos)
                     vorige_pos = gekozen_positie
                     print(vorige_pos)
                 else:
                     print("😆")
-                    
+
                 # de sw
                 # for joy_id in [19]:
                 #     waarde, commentaar = joysw_id(joy_id)
@@ -505,11 +504,7 @@ def joystick_uitlezen(speler, max_punten):
                 #     print(f"TELLER Z: {tellerStapZ}")
                 #     tellerStapZ -= 1
                 oled_klasse_obj.xyz(tellerStapX, tellerStapY, tellerStapZ)
-                # draw.text((5, 17), str(tellerStapX), font=font, fill=255) 
-                # draw.text((5, 32), str(tellerStapY), font=font, fill=255)
-                # draw.text((5, 47), str(tellerStapZ), font=font, fill=255)
-                # oled.image(image)
-                # oled.show()
+
 
                 # bij het bevestigen
                 if gekozen_positie in led_pos2 or gekozen_positie in led_pos1:
@@ -528,32 +523,16 @@ def joystick_uitlezen(speler, max_punten):
                         time.sleep(0.2) # anders dubbel positie in lijst
                         # lijst leeg maken voor de volgende keer
                         # nu is het aan de ander
-                        draw.rectangle((0, 0, oled.width, oled.height), outline=255, fill=255)
-                        draw.rectangle(
-                            (BORDER, BORDER, oled.width - BORDER - 1, oled.height - BORDER - 1),
-                            outline=0,
-                            fill=0,
-                        )
-                        draw.rectangle( [(0,0), (oled.width, oled.height)], fill=0)
-                        oled.image(image)
-                        oled.show()
+                        oled_klasse_obj.oled_clear()
                         print(led_pos2)
                         positie_lijst = []
                         speler = 0
                     else:
                         print("OZODNCOSAPOPOD   ALQSK?C%    Z")
-                        draw.rectangle((0, 0, oled.width, oled.height), outline=255, fill=255)
-                        draw.rectangle(
-                            (BORDER, BORDER, oled.width - BORDER - 1, oled.height - BORDER - 1),
-                            outline=0,
-                            fill=0,
-                        )
-                        draw.rectangle( [(0,0), (oled.width, oled.height)], fill=0)
-                        oled.image(image)
-                        oled.show()
+                        oled_klasse_obj.oled_clear()
+                        oled_klasse_obj.bezet()
                         time.sleep(0.2)
-                        draw.text((5, 2), "Deze led kan je niet kiezen!\nkies een andere led", font=font, fill=255)# gekozen
-                        oled.show()
+                        oled_klasse_obj.oled_clear()
                 vorige_pos = gekozen_positie
         neo_klasse_obj.led_onthouden(0, led_pos1)
         neo_klasse_obj.led_onthouden(1, led_pos2)
