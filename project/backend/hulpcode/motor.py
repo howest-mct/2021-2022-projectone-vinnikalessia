@@ -8,7 +8,7 @@ motor2 = 27
 
 
 # dit is de beginhoek => 0 punten
-hoek = 5
+# hoek = 5
 GPIO.setup(motor1, GPIO.OUT)
 GPIO.setup(motor2, GPIO.OUT)
 GPIO.setmode(GPIO.BCM)
@@ -16,7 +16,8 @@ pwm_motor1 = GPIO.PWM(motor1, 1000)
 pwm_motor2 = GPIO.PWM(motor2, 1000)
 pwm_motor1.start(0)
 pwm_motor2.start(0)
-
+hoek1 = 5
+hoek2 = 5
 
 class Motor_klasse():
     def hoek_tot_duty(self, getal):
@@ -35,11 +36,20 @@ class Motor_klasse():
             punten += 1
         return punten
     
-    def punt_bij(self, pwmmotor):
-        global hoek
-        hoek += 9
-        pwm = self.hoek_tot_duty(hoek)
-        pwmmotor.changeDutyCycle(pwm)
+    def punt_bij(self, speler):
+        global hoek1, hoek2
+        if speler == 0:
+            hoek1 += 9
+            pwm = self.hoek_tot_duty(hoek1)
+            pwm_motor1.ChangeDutyCycle(pwm)
+        elif speler == 1:
+            hoek2 += 9
+            pwm = self.hoek_tot_duty(hoek2)
+            pwm_motor2.ChangeDutyCycle(pwm)
+    
+    def motor_stop(self):
+        pwm_motor1.stop()
+        pwm_motor2.stop()
 
     # try:
     #     motorpwm = GPIO.PWM(motor, 40)

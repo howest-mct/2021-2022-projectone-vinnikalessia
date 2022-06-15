@@ -30,6 +30,8 @@ motor_klasse_obj = Motor_klasse()
 neo_klasse_obj =  Neos_klasse()
 oled_klasse_obj = Oled_klasse()
 
+global pwm_motor1, pwm_motor2
+
 ########### JOYSTICK ###########
 # deze hangen aan de mcp
 y_as1 = 0
@@ -203,10 +205,10 @@ def setup():
     # motoren
     GPIO.setup(motor1, GPIO.OUT)
     GPIO.setup(motor2, GPIO.OUT)
-    pwm_motor1 = GPIO.PWM(motor1, 1000)
-    pwm_motor2 = GPIO.PWM(motor2, 1000)
-    pwm_motor1.start(0)
-    pwm_motor2.start(0)
+    # pwm_motor1 = GPIO.PWM(motor1, 1000)
+    # pwm_motor2 = GPIO.PWM(motor2, 1000)
+    # pwm_motor1.start(0)
+    # pwm_motor2.start(0)
 
     # knoppen
     GPIO.setup(up1, GPIO.IN, GPIO.PUD_UP)
@@ -461,7 +463,6 @@ def joystick_uitlezen(speler, max_punten):
                         print(f"gekozen_positie: {gekozen_positie}")
                         print("opgeslaan!")
                         print(f"dit is de gekozen positie{positie_lijst}")
-                        # choice_running = False
                         # positie(positie_lijst, 0)
                         time.sleep(0.2) # anders dubbel positie in lijst
                         # nu is het aan de ander
@@ -568,7 +569,6 @@ def joystick_uitlezen(speler, max_punten):
                         neo_klasse_obj.chosen_one(gekozen_positie, speler)
                         print("opgeslaan!")
                         print(positie_lijst)
-                        # choice_running = False
                         time.sleep(0.2) # anders dubbel positie in lijst
                         # lijst leeg maken voor de volgende keer
                         # nu is het aan de ander
@@ -609,7 +609,7 @@ def joystick_uitlezen(speler, max_punten):
                 print(f"de key R: {key}")
                 puntenR = motor_klasse_obj.puntentelling(0, puntenR)
                 print(f"punt voor rood {puntenR}")
-                motor_klasse_obj.punt_bij(pwm_motor1)
+                motor_klasse_obj.punt_bij(speler)
                 oud_gekozen_pixelsR.append(key)
                 print(f"winnende combi R: {oud_gekozen_pixelsR}")
 
@@ -617,7 +617,7 @@ def joystick_uitlezen(speler, max_punten):
                 print(f"de key B: {key}")
                 puntenB = motor_klasse_obj.puntentelling(1, puntenB)
                 print(f"punt voor blauw {puntenB}")
-                motor_klasse_obj.punt_bij(pwm_motor2)
+                motor_klasse_obj.punt_bij(speler)
                 oud_gekozen_pixelsB.append(key)
                 print(f"winnende combi B: {oud_gekozen_pixelsB}")
         if max_punten == puntenR or max_punten == puntenB:
@@ -631,6 +631,14 @@ def joystick_uitlezen(speler, max_punten):
             choice_running = False
             winnaar = "blauw"
     if not choice_running:
+        # eens proberen
+        positie_lijst.clear()
+        oud_gekozen_pixelsR.clear()
+        oud_gekozen_pixelsB.clear()
+        led_pos1.clear() 
+        led_pos2.clear()
+        print(positie_lijst, oud_gekozen_pixelsB, oud_gekozen_pixelsR, led_pos1, led_pos2)
+
         print("done😺😺😺😺😺😺")
         print("DOOOONNNNNEEEE")
         neo_klasse_obj.eind_kleur(winnaar)
@@ -679,7 +687,8 @@ def keuzelijst():
         return tellerKeuze
 
 def spel_starten():
-    global tellerKeuze, keuzeSpel, app_running
+    global tellerKeuze, keuzeSpel, app_running, choice_running
+    choice_running = True
     app_running = True
     tellerKeuze = 0
     print(tellerKeuze)
@@ -930,8 +939,9 @@ if __name__ == "__main__":
         time.sleep(1)
         print("cleanup pi")
         app_running = False
-        pwm_motor1.stop()
-        pwm_motor2.stop()
+        # pwm_motor1.stop()
+        # pwm_motor2.stop()
+        motor_klasse_obj.motor_stop()
         spi.close()
         neo_klasse_obj.alles_uit()
         time.sleep(0.2)
