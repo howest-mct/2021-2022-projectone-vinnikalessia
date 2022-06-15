@@ -492,6 +492,7 @@ def joystick_uitlezen(speler, max_punten):
                     print(vorige_pos)
                 else:
                     print("😆")
+                    
                 # de sw
                 # for joy_id in [19]:
                 #     waarde, commentaar = joysw_id(joy_id)
