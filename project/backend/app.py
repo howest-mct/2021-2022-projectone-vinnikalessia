@@ -330,7 +330,6 @@ def joystick_uitlezen(speler, max_punten):
                             tellerStapY -= 1
                 
                 gekozen_positie = int(positie(tellerStapX, tellerStapY, tellerStapZ, 0, vorige_pos))
-                
                 if vorige_pos != gekozen_positie and (vorige_pos not in led_pos2 and vorige_pos not in led_pos1):
                     # dan moet vorige led uit en volgende aan
                     print(vorige_pos)
