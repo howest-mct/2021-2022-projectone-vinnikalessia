@@ -177,13 +177,19 @@
 import RPi.GPIO as GPIO
 import time
 
-control = [5,5.5,6,6.5,7,7.5,8,8.5,9,9.5,10]
+# control = [5,5.5,6,6.5,7,7.5,8,8.5,9,9.5,10]
+control = [2,3,4,5,6,7,8,9,10,11]
 
-servo = 33
+teller1 = 0
+teller2 = 0
+
+servo1 = 33
+servo2 = 35
 
 GPIO.setmode(GPIO.BOARD)
 
-GPIO.setup(servo,GPIO.OUT)
+GPIO.setup(servo1,GPIO.OUT)
+GPIO.setup(servo2,GPIO.OUT)
 # in servo motor,
 # 1ms pulse for 0 degree (LEFT)
 # 1.5ms pulse for 90 degree (MIDDLE)
@@ -194,25 +200,55 @@ GPIO.setup(servo,GPIO.OUT)
 # duty cycle for 90 degree = (1.5/20)*100 = 7.5%
 # duty cycle for 180 degree = (2/20)*100 = 10%
 
-p=GPIO.PWM(servo,50)# 50hz frequency
+p1 = GPIO.PWM(servo1,50)# 50hz frequency
+p2 = GPIO.PWM(servo2,50)# 50hz frequency
 
-p.start(2.5)# starting duty cycle ( it set the servo to 0 degree )
+p1.start(2.5)# starting duty cycle ( it set the servo to 0 degree )
+p2.start(2.5)# starting duty cycle ( it set the servo to 0 degree )
 
 
 try:
     while True:
-        for x in range(11):
-            p.ChangeDutyCycle(control[x])
-            time.sleep(0.2)
-            print(x)
-        print("turning back to 0")
-        p.ChangeDutyCycle(2)
-        time.sleep(1)
-        p.ChangeDutyCycle(0)
-        # for x in range(9,0,-1):
-        #     p.ChangeDutyCycle(control[x])
-        #     time.sleep(0.2)
-        #     print(x)
+        msg = int(input(f"geef 0 of 1: "))
+        if teller1 < 9 and teller2 < 9:
+            if msg == 0:
+                teller1 += 1
+                # p1.ChangeDutyCycle(control[x])
+                p1.ChangeDutyCycle(control[teller1])
+                time.sleep(0.2)
+                print(teller1)
+            elif msg == 1:
+                teller2 += 1
+                p2.ChangeDutyCycle(control[teller2])
+                time.sleep(0.2)
+                print(teller2)
+        
+        elif teller1 >= 8:
+            teller1 = 0
+            teller2 = 0
+            print("turning back to 0")
+            p1.ChangeDutyCycle(2)
+            p2.ChangeDutyCycle(2)
+            time.sleep(1)
+            p1.ChangeDutyCycle(0)
+            p2.ChangeDutyCycle(0)
+        
+        elif teller2 >= 8:
+            teller1 = 0
+            teller2 = 0
+            print("turning back to 0")
+            p1.ChangeDutyCycle(2)
+            p2.ChangeDutyCycle(2)
+            time.sleep(1)
+            p1.ChangeDutyCycle(0)
+            p2.ChangeDutyCycle(0)
+        
+        else:
+            print("nope")
+            # for x in range(8,0,-1):
+            #     p.ChangeDutyCycle(control[x])
+            #     time.sleep(0.2)
+            #     print(x)
            
 except KeyboardInterrupt:
     GPIO.cleanup()
