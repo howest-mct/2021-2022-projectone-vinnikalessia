@@ -135,4 +135,4 @@ class Oled_klasse():
         draw.text((5, 2), "Deze led kan je niet kiezen!\nkies een andere led", font=font, fill=255)# gekozen
         oled.image(image)
         oled.show()
-        time.sleep(0.2)
+        time.sleep(1)

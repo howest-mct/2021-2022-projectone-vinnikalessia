@@ -61,7 +61,6 @@ class Neos_klasse():
 
     
     def chosen_one(self, getal, speler):
-        print(f"dit is de player: {speler} {getal}")
         if speler == 0:
             # rood
             pixels[getal] = (255,0,0)
@@ -69,7 +68,7 @@ class Neos_klasse():
             # blauw
             pixels[getal] = (0,0,255)
         pixels.show()
-        # time.sleep(0.2)
+        time.sleep(0.2)
 
 
     ##### kijken of combinatie klopt #####
@@ -81,8 +80,6 @@ class Neos_klasse():
         val.append(z)
         for key, value in neopixel_dict.items():
             if val == value:
-                print("key exists JIPPY")
-                print(val)
                 return key
         return "key doesn't exist"
 
@@ -105,7 +102,7 @@ class Neos_klasse():
             time.sleep(0.2)
             pixels.fill((0, 0, 0))
             pixels.show()
-            time.sleep(0.2)
+            # time.sleep(0.2)
 
     def alles_uit(self):
         pixels.fill((0, 0, 0))
@@ -120,10 +117,6 @@ class Neos_klasse():
 
     def bezet(self, pixel):
         pixels[pixel] = (255,255,0)
-        # if player == 0:
-        #     pixels[pixel] = (255,0,0)
-        # else:
-        #     pixels[pixel] = (0,0,255)
         pixels.show()
         time.sleep(0.2)
 

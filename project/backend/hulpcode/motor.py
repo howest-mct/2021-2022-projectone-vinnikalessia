@@ -29,9 +29,9 @@ class Motor_klasse():
         global teller1, teller2
         if speler == 0:
             punten += 1
-            motor1.ChangeDutyCycle(control[teller1])
+            pwm_motor1.ChangeDutyCycle(control[teller1])
         elif speler == 1:
-            motor2.ChangeDutyCycle(control[teller2])
+            pwm_motor2.ChangeDutyCycle(control[teller2])
             punten += 1
         time.sleep(0.2)
         print(teller1, teller2)
@@ -42,11 +42,11 @@ class Motor_klasse():
         teller1 = 0
         teller2 = 0
         print("turning back to 0")
-        motor1.ChangeDutyCycle(2)
-        motor2.ChangeDutyCycle(2)
+        pwm_motor1.ChangeDutyCycle(2)
+        pwm_motor2.ChangeDutyCycle(2)
         time.sleep(1)
-        motor1.ChangeDutyCycle(0)
-        motor2.ChangeDutyCycle(0)
+        pwm_motor1.ChangeDutyCycle(0)
+        pwm_motor2.ChangeDutyCycle(0)
 
 
     # def hoek_tot_duty(self, getal):
