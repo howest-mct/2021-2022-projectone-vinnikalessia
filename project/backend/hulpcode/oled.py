@@ -82,7 +82,6 @@ class Oled_klasse():
         oled.image(image)
         oled.show()
 
-
     def ip_adressen(self):
         print("in status 1")
         ips = str(check_output(['hostname', '--all-ip-addresses']))
@@ -113,3 +112,25 @@ class Oled_klasse():
         oled.image(image)
         oled.show()
         print("Clear?")
+    
+    def oled_clear(self):
+        draw.rectangle((0, 0, oled.width, oled.height), outline=255, fill=255)
+        draw.rectangle(
+            (BORDER, BORDER, oled.width - BORDER - 1, oled.height - BORDER - 1),
+            outline=0,
+            fill=0,
+        )
+        draw.rectangle( [(0,0), (oled.width, oled.height)], fill=0)
+        oled.image(image)
+        oled.show()
+
+
+    def xyz(self, x, y, z):
+        draw.text((5, 17), str(x), font=font, fill=255) 
+        draw.text((5, 32), str(y), font=font, fill=255)
+        draw.text((5, 47), str(z), font=font, fill=255)
+        oled.show()
+    
+    def bezet(self):
+        draw.text((5, 2), "Deze led kan je niet kiezen!\nkies een andere led", font=font, fill=255)# gekozen
+        oled.show()

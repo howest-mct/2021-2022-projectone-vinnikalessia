@@ -74,24 +74,24 @@ tellerm1 = 0
 tellerm2 = 0
 
 ########### OLED ###########
-tellerOled = 0
-oled_reset = digitalio.DigitalInOut(board.D4)
-WIDTH = 128
-HEIGHT = 64
-BORDER = 1
-i2c = board.I2C()
-oled = adafruit_ssd1306.SSD1306_I2C(WIDTH, HEIGHT, i2c, addr=0x3C, reset=oled_reset)
-oled.fill(0)
-oled.show()
-image = Image.new("1", (oled.width, oled.height))
-draw = ImageDraw.Draw(image)
-font = ImageFont.load_default()
-draw.rectangle((0, 0, oled.width, oled.height), outline=255, fill=255)
-draw.rectangle(
-    (BORDER, BORDER, oled.width - BORDER - 1, oled.height - BORDER - 1),
-    outline=0,
-    fill=0,
-)
+# tellerOled = 0
+# oled_reset = digitalio.DigitalInOut(board.D4)
+# WIDTH = 128
+# HEIGHT = 64
+# BORDER = 1
+# i2c = board.I2C()
+# oled = adafruit_ssd1306.SSD1306_I2C(WIDTH, HEIGHT, i2c, addr=0x3C, reset=oled_reset)
+# oled.fill(0)
+# oled.show()
+# image = Image.new("1", (oled.width, oled.height))
+# draw = ImageDraw.Draw(image)
+# font = ImageFont.load_default()
+# draw.rectangle((0, 0, oled.width, oled.height), outline=255, fill=255)
+# draw.rectangle(
+#     (BORDER, BORDER, oled.width - BORDER - 1, oled.height - BORDER - 1),
+#     outline=0,
+#     fill=0,
+# )
 
 ########### KNOP ###########
 up1 = 12
@@ -299,53 +299,16 @@ def joystick_id(deviceID):
         print(f"dit is y van joystick 2: {waarde}\n")
     return waarde, commentaar
 
-##################### FUNCTIONS - TOUCHSENSOR #####################
-# def touch1():
-#     global teller7, hoek1, pwm_motor1
-#     teller7 += 1
-#     print("AHA! aangeraakt!")
-#     print(f"\t je hebt {teller7} keer t1 aangeraakt!")
-#     hoek1 += 9
-#     pwm = motor_klasse_obj.hoek_tot_duty(hoek1)
-#     pwm_motor1.changeDutyCycle(pwm)
-#     print("een punt bij?")
-#     return teller7
-
-# def touch2():
-#     global teller8, hoek2
-#     teller8 += 1
-#     print("AHA! aangeraakt!")
-#     print(f"\t je hebt {teller8} keer t2 aangeraakt!")
-#     hoek2 += 9
-#     pwm = motor_klasse_obj.hoek_tot_duty(hoek2)
-#     pwm_motor2.changeDutyCycle(pwm)
-#     print("een punt bij?")
-#     return teller8
-
-##################### FUNCTIONS - MOTOR #####################
-# def hoek_tot_duty(getal):
-#     print(f"Dit is de hoek: {getal}")
-#     pwm = int(getal * 0.555555)
-#     print(f"Dit is de hoek in pwm: {pwm}")
-#     return pwm
-
 ##################### ANDERE FUNCTIONS #####################
-# ##### kijken of combinatie klopt #####
-# def get_key(val):
-#     for key, value in neopixel_dict.items():
-#          if val == value:
-#              print("key exists")
-#              return key
-#     return "key doesn't exist"
-def oled_clear():
-    draw.rectangle((0, 0, oled.width, oled.height), outline=255, fill=255)
-    draw.rectangle(
-        (BORDER, BORDER, oled.width - BORDER - 1, oled.height - BORDER - 1),
-        outline=0,
-        fill=0,
-    )
-    draw.rectangle( [(0,0), (oled.width, oled.height)], fill=0)
-    oled.image(image)
+# def oled_clear():
+#     draw.rectangle((0, 0, oled.width, oled.height), outline=255, fill=255)
+#     draw.rectangle(
+#         (BORDER, BORDER, oled.width - BORDER - 1, oled.height - BORDER - 1),
+#         outline=0,
+#         fill=0,
+#     )
+#     draw.rectangle( [(0,0), (oled.width, oled.height)], fill=0)
+#     oled.image(image)
 
 
 ##### joystick uitlezen tijdens spel #####
@@ -364,11 +327,11 @@ def joystick_uitlezen(speler, max_punten):
     oud_gekozen_pixelsB = []
     while choice_running and True:
         ########################################################
-        oled_clear()
-        draw.text((5, 17), str(tellerStapX), font=font, fill=255) 
-        draw.text((5, 32), str(tellerStapY), font=font, fill=255)
-        draw.text((5, 47), str(tellerStapZ), font=font, fill=255)
-        oled.show()
+        oled_klasse_obj.oled_clear()
+        # draw.text((5, 17), str(tellerStapX), font=font, fill=255) 
+        # draw.text((5, 32), str(tellerStapY), font=font, fill=255)
+        # draw.text((5, 47), str(tellerStapZ), font=font, fill=255)
+        # oled.show()
         # ROOD
         if speler == 0:
             GPIO.output(b, GPIO.LOW)
@@ -429,11 +392,12 @@ def joystick_uitlezen(speler, max_punten):
                 #     tellerStapZ -= 1
                 
                 # de coordinaten noteren op oled
-                draw.text((5, 17), str(tellerStapX), font=font, fill=255) 
-                draw.text((5, 32), str(tellerStapY), font=font, fill=255)
-                draw.text((5, 47), str(tellerStapZ), font=font, fill=255)
-                oled.image(image)
-                oled.show()
+                oled_klasse_obj.xyz(tellerStapX, tellerStapY, tellerStapZ)
+                # draw.text((5, 17), str(tellerStapX), font=font, fill=255) 
+                # draw.text((5, 32), str(tellerStapY), font=font, fill=255)
+                # draw.text((5, 47), str(tellerStapZ), font=font, fill=255)
+                # oled.image(image)
+                # oled.show()
 
                 # bij het bevestigen
                 if gekozen_positie in led_pos2 or gekozen_positie in led_pos1:
@@ -453,32 +417,35 @@ def joystick_uitlezen(speler, max_punten):
                         # positie(positie_lijst, 0)
                         time.sleep(0.2) # anders dubbel positie in lijst
                         # nu is het aan de ander
-                        draw.rectangle((0, 0, oled.width, oled.height), outline=255, fill=255)
-                        draw.rectangle(
-                            (BORDER, BORDER, oled.width - BORDER - 1, oled.height - BORDER - 1),
-                            outline=0,
-                            fill=0,
-                        )
-                        draw.rectangle( [(0,0), (oled.width, oled.height)], fill=0)
-                        oled.image(image)
-                        oled.show()
+                        oled_klasse_obj.oled_clear()
+                        # draw.rectangle((0, 0, oled.width, oled.height), outline=255, fill=255)
+                        # draw.rectangle(
+                        #     (BORDER, BORDER, oled.width - BORDER - 1, oled.height - BORDER - 1),
+                        #     outline=0,
+                        #     fill=0,
+                        # )
+                        # draw.rectangle( [(0,0), (oled.width, oled.height)], fill=0)
+                        # oled.image(image)
+                        # oled.show()
                         print(led_pos1)
                         positie_lijst = []
                         speler = 1
                     else:
                         print("OZODNCOSAPOPOD   ALQSK?C%    Z")
                         neo_klasse_obj.bezet(gekozen_positie)
-                        draw.rectangle((0, 0, oled.width, oled.height), outline=255, fill=255)
-                        draw.rectangle(
-                            (BORDER, BORDER, oled.width - BORDER - 1, oled.height - BORDER - 1),
-                            outline=0,
-                            fill=0,
-                        )
-                        draw.rectangle( [(0,0), (oled.width, oled.height)], fill=0)
-                        oled.image(image)
-                        oled.show()
-                        draw.text((5, 2), "Deze led kan je niet kiezen!\nkies een andere led", font=font, fill=255)# gekozen
-                        oled.show()
+                        oled_klasse_obj.oled_clear()
+                        # draw.rectangle((0, 0, oled.width, oled.height), outline=255, fill=255)
+                        # draw.rectangle(
+                        #     (BORDER, BORDER, oled.width - BORDER - 1, oled.height - BORDER - 1),
+                        #     outline=0,
+                        #     fill=0,
+                        # )
+                        # draw.rectangle( [(0,0), (oled.width, oled.height)], fill=0)
+                        # oled.image(image)
+                        # oled.show()
+                        oled_klasse_obj.bezet()
+                        # draw.text((5, 2), "Deze led kan je niet kiezen!\nkies een andere led", font=font, fill=255)# gekozen
+                        # oled.show()
                         time.sleep(0.2)
                 vorige_pos = gekozen_positie
         ########################################################
@@ -536,12 +503,12 @@ def joystick_uitlezen(speler, max_punten):
                 # elif down1 and tellerStapZ > 1:
                 #     print(f"TELLER Z: {tellerStapZ}")
                 #     tellerStapZ -= 1
-                
-                draw.text((5, 17), str(tellerStapX), font=font, fill=255) 
-                draw.text((5, 32), str(tellerStapY), font=font, fill=255)
-                draw.text((5, 47), str(tellerStapZ), font=font, fill=255)
-                oled.image(image)
-                oled.show()
+                oled_klasse_obj.xyz(tellerStapX, tellerStapY, tellerStapZ)
+                # draw.text((5, 17), str(tellerStapX), font=font, fill=255) 
+                # draw.text((5, 32), str(tellerStapY), font=font, fill=255)
+                # draw.text((5, 47), str(tellerStapZ), font=font, fill=255)
+                # oled.image(image)
+                # oled.show()
 
                 # bij het bevestigen
                 if gekozen_positie in led_pos2 or gekozen_positie in led_pos1:
@@ -905,13 +872,13 @@ def start_thread():
 if __name__ == "__main__":
     try:
         # debug NIET op True zetten
-        draw.text((5, 2), "__ tot 1 spelen __", font=font,     fill=255)# gekozen
-        draw.text((5, 17), "   tot 3 spelen", font=font,     fill=255) 
-        draw.text((5, 32), "   tot 5 spelen", font=font,     fill=255)
-        draw.text((5, 47), "   tot 9 spelen", font=font,     fill=255)
+        # draw.text((5, 2), "__ tot 1 spelen __", font=font,     fill=255)# gekozen
+        # draw.text((5, 17), "   tot 3 spelen", font=font,     fill=255) 
+        # draw.text((5, 32), "   tot 5 spelen", font=font,     fill=255)
+        # draw.text((5, 47), "   tot 9 spelen", font=font,     fill=255)
         
-        oled.image(image)
-        oled.show()
+        # oled.image(image)
+        # oled.show()
         time.sleep(1)
         setup()
         start_thread()
@@ -922,7 +889,7 @@ if __name__ == "__main__":
     except KeyboardInterrupt as e:
         print(e)
     finally:
-        oled_clear()
+        oled_klasse_obj.oled_clear()
         time.sleep(1)
         print("cleanup pi")
         app_running = False
