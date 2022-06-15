@@ -69,7 +69,7 @@ class Neos_klasse():
             # blauw
             pixels[getal] = (0,0,255)
         pixels.show()
-        time.sleep(0.2)
+        # time.sleep(0.2)
 
 
     ##### kijken of combinatie klopt #####
@@ -102,10 +102,10 @@ class Neos_klasse():
                 pixels.fill((0, 0, 255))
                 print("blauw heeft gewonnen")
             pixels.show()
-            time.sleep(0.5)
+            time.sleep(0.2)
             pixels.fill((0, 0, 0))
             pixels.show()
-            time.sleep(0.5)
+            time.sleep(0.2)
 
     def alles_uit(self):
         pixels.fill((0, 0, 0))
@@ -143,12 +143,3 @@ class Neos_klasse():
     def show_pixels(self):
         pixels.show()
         
-    
-# pixels[0] = (255,0,0)
-#     pixels.show()
-#     time.sleep(0.2)
-#     pixels[0] = (0,0,0)
-#     pixels.show()
-#     time.sleep(0.2)
-
-    #     rainbow_cycle(0.001)

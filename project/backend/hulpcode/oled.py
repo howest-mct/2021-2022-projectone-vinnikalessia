@@ -90,7 +90,7 @@ class Oled_klasse():
         draw.text((25, 25), f"{ip_adresses[0]}\n{ip_adresses[1]}", font=font, fill=255)
         oled.image(image)
         oled.show()
-        time.sleep(2)
+        time.sleep(4)
         # clear ip adressen?
         draw.rectangle((0, 0, oled.width, oled.height), outline=255, fill=255)
         draw.rectangle(
@@ -135,3 +135,4 @@ class Oled_klasse():
         draw.text((5, 2), "Deze led kan je niet kiezen!\nkies een andere led", font=font, fill=255)# gekozen
         oled.image(image)
         oled.show()
+        time.sleep(0.2)
