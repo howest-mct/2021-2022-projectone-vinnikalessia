@@ -174,22 +174,6 @@
 
 
 #################################################################################################
-import RPi.GPIO as GPIO
-import time
-
-# control = [5,5.5,6,6.5,7,7.5,8,8.5,9,9.5,10]
-control = [2,3,4,5,6,7,8,9,10,11]
-
-teller1 = 0
-teller2 = 0
-
-servo1 = 33
-servo2 = 35
-
-GPIO.setmode(GPIO.BOARD)
-
-GPIO.setup(servo1,GPIO.OUT)
-GPIO.setup(servo2,GPIO.OUT)
 # in servo motor,
 # 1ms pulse for 0 degree (LEFT)
 # 1.5ms pulse for 90 degree (MIDDLE)
@@ -199,14 +183,25 @@ GPIO.setup(servo2,GPIO.OUT)
 # duty cycle for 0 degree = (1/20)*100 = 5%
 # duty cycle for 90 degree = (1.5/20)*100 = 7.5%
 # duty cycle for 180 degree = (2/20)*100 = 10%
+import RPi.GPIO as GPIO
+import time
 
+# control = [5,5.5,6,6.5,7,7.5,8,8.5,9,9.5,10]
+control = [2,3,4,5,6,7,8,9,10,11]
+teller1 = 0
+teller2 = 0
+# servo1 = 33
+# servo2 = 35
+servo1 = 13
+servo2 = 19
+# GPIO.setmode(GPIO.BOARD)
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(servo1,GPIO.OUT)
+GPIO.setup(servo2,GPIO.OUT)
 p1 = GPIO.PWM(servo1,50)# 50hz frequency
 p2 = GPIO.PWM(servo2,50)# 50hz frequency
-
 p1.start(2.5)# starting duty cycle ( it set the servo to 0 degree )
 p2.start(2.5)# starting duty cycle ( it set the servo to 0 degree )
-
-
 try:
     while True:
         msg = int(input(f"geef 0 of 1: "))

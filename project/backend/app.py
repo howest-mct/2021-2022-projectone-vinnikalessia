@@ -204,10 +204,10 @@ def setup():
     # motoren
     GPIO.setup(motor1, GPIO.OUT)
     GPIO.setup(motor2, GPIO.OUT)
-    # pwm_motor1 = GPIO.PWM(motor1, 1000)
-    # pwm_motor2 = GPIO.PWM(motor2, 1000)
-    # pwm_motor1.start(0)
-    # pwm_motor2.start(0)
+    pwm_motor1 = GPIO.PWM(motor1, 1000)
+    pwm_motor2 = GPIO.PWM(motor2, 1000)
+    pwm_motor1.start(0)
+    pwm_motor2.start(0)
 
     # knoppen
     GPIO.setup(up1, GPIO.IN, GPIO.PUD_UP)
