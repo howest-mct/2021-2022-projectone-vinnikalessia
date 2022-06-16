@@ -634,7 +634,7 @@ def get_player(playerID):
             return jsonify(message = "error"), 404
 
 # historiek/waarden
-@app.route(endpoint + '/waarden/', methods = ['GET'])
+@app.route(endpoint + '/historiek/', methods = ['GET'])
 def get_waarden_joy():
     if request.method == "GET":
         data = DataRepository.read_alle_waarden()

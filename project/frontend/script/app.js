@@ -89,13 +89,16 @@ const listenToSocket = function(){
 
 
   socket.on('B2F_value_joy_2_x', function(jsonObject){
+    console.info("😁")
+    console.info(typeof(jsonObject)) // object
     console.info(jsonObject)
     // ${jsonObject.waarden.waarde}
     let htmlString = ""
     htmlString += `
     <div class="c-waarde">
-    hoeveel keer er op de knop is gedrukt: ${jsonObject.teller}
+    hoeveel keer er op de knop is gedrukt: ${jsonObject.joy_2_x}
     </div>`
+    console.info(htmlString)
     htmlJoystick.innerHTML = htmlString
     })
 
@@ -105,7 +108,7 @@ const listenToSocket = function(){
     let htmlString = ""
     htmlString += `
     <div class="c-waarde">
-    hoeveel keer er op de knop is gedrukt: ${jsonObject.teller}
+    hoeveel keer er op de knop is gedrukt: ${jsonObject.joy_2_y}
     </div>`
     htmlJoystick.innerHTML = htmlString
     })
