@@ -653,13 +653,6 @@ def get_waarden_joy():
 # START een thread op. Belangrijk!!! Debugging moet UIT staan op start van de server, anders start de thread dubbel op
 # werk enkel met de packages gevent en gevent-websocket. 
 
-
-# def start_thread_teller():
-#     print("***** Starting THREAD teller *****")
-#     thread2 = threading.Thread(target = teller_doorsturen, args = (), daemon = True)
-#     thread2.start()
-#     #threading.Timer(10, joystick_uitlezen).start()    
-
 # # # om de joystick uit te lezen ===> ToDo!!!!
 # def teller_doorsturen():
 #     global teller, socketio, last_val
@@ -674,9 +667,8 @@ def get_waarden_joy():
 # ALS JE DE ENE LEEST, KAN JE DE ANDER NIET UITLEZEN!!
 def start_thread():
     print("***** Starting THREAD *****")
-    thread1 = threading.Thread(target = spel_starten, args = (), daemon = True)
-    thread1.start()
-    # threading.Timer(1, joystick_uitlezen).start() # niet nodig want anders start je het 2 keer
+    thread = threading.Thread(target = spel_starten, args = (), daemon = True)
+    thread.start()
 
 ##################### SOCKETIO.RUN #####################
 
