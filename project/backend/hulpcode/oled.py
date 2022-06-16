@@ -37,27 +37,28 @@ class Oled_klasse():
         )
         if tellerKeuze == 0:
             print("keuze 1")
-            draw.text((5, 2), "__ tot 1 spelen __", font=font, fill=255)# gekozen
+            draw.text((5, 2), "__ tot 1 spelen __", font=font, fill=255)
             draw.text((5, 17), "   tot 3 spelen", font=font, fill=255) 
             draw.text((5, 32), "   tot 5 spelen", font=font, fill=255)
             draw.text((5, 47), "   tot 9 spelen", font=font, fill=255)
+
         elif tellerKeuze == 1:
             print("keuze 2")
-            draw.text((5, 2), "   tot 1 spelen", font=font, fill=255)# gekozen
+            draw.text((5, 2), "   tot 1 spelen", font=font, fill=255)
             draw.text((5, 17), "__ tot 3 spelen __", font=font, fill=255) 
             draw.text((5, 32), "   tot 5 spelen", font=font, fill=255)
             draw.text((5, 47), "   tot 9 spelen", font=font, fill=255)
 
         elif tellerKeuze == 2:
             print("keuze 3")
-            draw.text((5, 2), "   tot 1 spelen", font=font, fill=255)# gekozen
+            draw.text((5, 2), "   tot 1 spelen", font=font, fill=255)
             draw.text((5, 17), "   tot 3 spelen", font=font, fill=255) 
             draw.text((5, 32), "__ tot 5 spelen __", font=font, fill=255)
             draw.text((5, 47), "   tot 9 spelen", font=font, fill=255)
 
         elif tellerKeuze == 3:
             print("keuze 4")
-            draw.text((5, 2), "   tot 1 spelen", font=font, fill=255)# gekozen
+            draw.text((5, 2), "   tot 1 spelen", font=font, fill=255)
             draw.text((5, 17), "   tot 3 spelen", font=font, fill=255) 
             draw.text((5, 32), "   tot 5 spelen", font=font, fill=255)
             draw.text((5, 47), "__ tot 9 spelen __", font=font, fill=255)
@@ -84,10 +85,11 @@ class Oled_klasse():
 
     def ip_adressen(self):
         print("in status 1")
-        ips = str(check_output(['hostname', '--all-ip-addresses']))
-        ip = ips.decode(encoding='utf-8').strip()
+        self.oled_clear()
+        ips = check_output(['hostname', '--all-ip-addresses'])
+        ip = ips.decode(encoding='UTF-8').strip()
         ip_adresses = ip.split()
-        draw.text((25, 25), f"{ip_adresses[0]}\n{ip_adresses[1]}", font=font, fill=255)
+        draw.text((15, 15), f"{ip_adresses[0]}\n{ip_adresses[1]}", font=font, fill=255)
         oled.image(image)
         oled.show()
         time.sleep(4)
@@ -100,8 +102,6 @@ class Oled_klasse():
         )
         oled.image(image)
         oled.show()
-
-
         draw.rectangle((0, 0, oled.width, oled.height), outline=255, fill=255)
         draw.rectangle(
             (BORDER, BORDER, oled.width - BORDER - 1, oled.height - BORDER - 1),

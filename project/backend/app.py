@@ -217,7 +217,12 @@ def callback_sw2(pin):
 def callback_up(pin):
     global tellerKeuze, tellerStapZ
     tellerKeuze += 1
+    if pin == 12:
+        id = 3
+    elif pin == 20:
+        id = 5
     if tellerStapZ < 3:
+        DataRepository.create_historiek(id, "1 UP", tellerStapZ)
         tellerStapZ += 1
     print("1 UP")
     return tellerKeuze, tellerStapZ
@@ -225,8 +230,13 @@ def callback_up(pin):
 def callback_down(pin):
     global tellerKeuze, tellerStapZ
     tellerKeuze -= 1
+    if pin == 16:
+        id = 2
+    elif pin == 21:
+        id = 4
     if tellerStapZ > 1:
         tellerStapZ -= 1
+        DataRepository.create_historiek(id, "1 DOWN", tellerStapZ)
     print("1 DOWN")
     return tellerKeuze, tellerStapZ
 
@@ -249,6 +259,7 @@ def joysw_id(sw_id):
             waarde = 1
             prev_teller19 = teller19
         socketio.emit('B2F_value_joy_2_sw', {'teller':teller19})
+    # oled_klasse_obj.ip_adressen()
     return waarde, commentaar
 
 def joystick_id(deviceID):
@@ -330,19 +341,7 @@ def joystick_uitlezen(speler, max_punten):
                     vorige_pos = gekozen_positie
                 else:
                     print("😡")
-                # # de sw
-                # for joy_id in [16]:
-                #     waarde, commentaar = joysw_id(joy_id)
-                #     if waarde == 1:
-                #         DataRepository.create_historiek(joy_id, commentaar, waarde)
-                # if up1 and tellerStapZ < 3:
-                #     # DataRepository.create_historiek(joy_id, commentaar, waarde) # ?
-                #     print(f"TELLER Z: {tellerStapZ}")
-                #     tellerStapZ += 1
-                # elif down1 and tellerStapZ > 1:
-                #     print(f"TELLER Z: {tellerStapZ}")
-                #     # DataRepository.create_historiek(joy_id, commentaar, waarde) # ?
-                #     tellerStapZ -= 1
+
                 
                 # de coordinaten noteren op oled
                 oled_klasse_obj.xyz(tellerStapX, tellerStapY, tellerStapZ)
@@ -498,14 +497,20 @@ def positie(x, y, z, player, vorige_pos):
     return neonummer
 
 def keuzelijst():
-    global tellerKeuze, app_running
+    global tellerKeuze, app_running, prev_teller19, teller19, prev_teller16, teller16
     print("Kies tot hoeveel er gespeeld wordt")
     while app_running and True:
         if tellerKeuze > 3:
                 tellerKeuze = 3
         elif tellerKeuze < 0:
             tellerKeuze = 0
-        oled_klasse_obj.lijst(tellerKeuze)
+
+        if prev_teller19 == teller19 and prev_teller16 == teller16:
+            oled_klasse_obj.lijst(tellerKeuze)
+        elif prev_teller19 == teller19 or prev_teller16 == teller16:
+            oled_klasse_obj.ip_adressen()
+            prev_teller19 = teller19
+            prev_teller16 = teller16
         if GPIO.input(t1) or GPIO.input(t2):
             print('touchsensor aangeraakt => confirm de keuze')
             print(f"dit is de tellerKeuze: {tellerKeuze}")
