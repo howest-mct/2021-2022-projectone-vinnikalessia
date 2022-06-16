@@ -73,7 +73,7 @@ class Neos_klasse():
 
     ##### kijken of combinatie klopt #####
     # def get_key(val):
-    def get_key(self, x, y, z):
+    def get_key(self, x, y, z, vorige_pos):
         val = []
         val.append(x)
         val.append(y)
@@ -81,7 +81,7 @@ class Neos_klasse():
         for key, value in neopixel_dict.items():
             if val == value:
                 return key
-        return "key doesn't exist"
+        pixels[vorige_pos] = (0,0,0)
 
     def start_kleur(self):
         pixels.fill((0, 255, 0))
@@ -129,9 +129,6 @@ class Neos_klasse():
             for i in ledpos:
                 pixels[i] = (0,0,255)
                 pixels.show()
-    
-    def vorige_positie(self, vorige_pos):
-        pixels[vorige_pos] = (0,0,0)
     
     def show_pixels(self):
         pixels.show()
