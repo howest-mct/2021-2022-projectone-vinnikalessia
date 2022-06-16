@@ -29,6 +29,7 @@ from hulpcode.neopixel import Neos_klasse
 motor_klasse_obj = Motor_klasse()
 neo_klasse_obj =  Neos_klasse()
 oled_klasse_obj = Oled_klasse()
+joy_klasse_obj = Joy_klasse()
 
 
 ########### JOYSTICK ###########
@@ -261,25 +262,25 @@ def joysw_id(sw_id):
 def joystick_id(deviceID):
     if deviceID == 14:
         commentaar = "joystick 1 registreerde beweging op x-as"
-        waarde = Joy_klasse.readChannel(x_as1)
+        waarde = joy_klasse_obj.readChannel(x_as1)
         socketio.emit('B2F_value_joy_1_x', {'joy_1_x':waarde})
         print(f"dit is x van joystick 1: {waarde}")
 
     elif deviceID == 15:
         commentaar = 'joystick 1 registreerde beweging op y-as'
-        waarde = Joy_klasse.readChannel(y_as1)
+        waarde = joy_klasse_obj.readChannel(y_as1)
         socketio.emit('B2F_value_joy_1_y', {'joy_1_y':waarde})
         print(f"dit is y van joystick 1: {waarde}\n")
 
     elif deviceID == 17:
         commentaar = 'joystick 2 registreerde beweging op x-as'
-        waarde = Joy_klasse.readChannel(x_as2)
+        waarde = joy_klasse_obj.readChannel(x_as2)
         socketio.emit('B2F_value_joy_2_x', {'joy_2_x':waarde})
         print(f"dit is x van joystick 2: {waarde}")
 
     elif deviceID == 18:
         commentaar = 'joystick 2 registreerde beweging op y-as'
-        waarde = Joy_klasse.readChannel(y_as2)
+        waarde = joy_klasse_obj.readChannel(y_as2)
         socketio.emit('B2F_value_joy_2_y', {'joy_2_y':waarde})
         print(f"dit is y van joystick 2: {waarde}\n")
     return waarde, commentaar
@@ -357,7 +358,6 @@ def joystick_uitlezen(speler, max_punten):
                         oled_klasse_obj.oled_clear()
                         oled_klasse_obj.bezet()
                 vorige_pos = gekozen_positie
-                time.sleep(0.5)
         ########################################################
         # als het speler 1 is, dan moet je alleen joy 1 uitlezen
         elif speler == 1:
@@ -441,6 +441,7 @@ def joystick_uitlezen(speler, max_punten):
             print(f"blauw heeft gewonnen met {puntenB}")
             choice_running = False
             winnaar = "blauw"
+        time.sleep(0.02)
     if not choice_running:
         positie_lijst.clear()
         oud_gekozen_pixelsR.clear()
@@ -456,7 +457,7 @@ def positie(x, y, z, player, vorige_pos):
         neo_klasse_obj.player_color(player, neonummer)
     else:
         print("kies een andere led")
-    time.sleep(0.3)
+    # time.sleep(0.3)
     return neonummer
 
 def keuzelijst():
@@ -560,7 +561,6 @@ def joystick(data):
     # while True:
     joy_id = data["deviceid"]
     if joy_id in [14, 15, 17, 18]:
-        # waarde, commentaar = joystick_id(joy_id)
         waarde, commentaar = joystick_id(joy_id)
 
     elif joy_id in [16, 19]:
@@ -675,27 +675,8 @@ def get_waarden_joy():
 def start_thread():
     print("***** Starting THREAD *****")
     thread1 = threading.Thread(target = spel_starten, args = (), daemon = True)
-    # thread2 = threading.Thread(target = touch_uitlezen, args = (), daemon = True)
     thread1.start()
-    # thread2.start()
     # threading.Timer(1, joystick_uitlezen).start() # niet nodig want anders start je het 2 keer
-
-
-# def joystick_uitlezen():
-#     while True:
-#         print("\n***Joysticks uitlezen***")
-#         for joy_id in [14, 15, 17, 18]:
-#             waarde, commentaar = joystick_id(joy_id)
-#             if waarde > 800 or waarde < 200:
-#                 DataRepository.create_historiek(joy_id, commentaar, waarde)
-#         for joy_id in [16, 19]:
-#             waarde, commentaar = joysw_id(joy_id)
-#             if waarde == 1:
-#                 DataRepository.create_historiek(joy_id, commentaar, waarde)
-
-#         time.sleep(0.7)
-
-
 
 ##################### SOCKETIO.RUN #####################
 

@@ -29,47 +29,47 @@ spi.open(0,1)
 spi.max_speed_hz = 10 ** 5
 
 
-class Joy_klasse:    
-    def callback_sw1(pin):
+class Joy_klasse():    
+    def callback_sw1(self, pin):
         global teller16
         teller16 += 1
         print("Knop joystick 1 is {} keer ingedrukt\n".format(teller16))
         return teller16
 
-    def callback_sw2(pin):
+    def callback_sw2(self, pin):
         global teller19
         teller19 += 1
         print("Knop joystick 1 is {} keer ingedrukt\n".format(teller19))
         return teller19
 
-    def readChannel(channel):
+    def readChannel(self, channel):
         val = spi.xfer2([1,(8|channel)<<4,0])
         data = (((val[1] & 3) << 8) | val[2])
         return data
 
-    def joystick_id(deviceID):
-        if deviceID == 14:
-            commentaar = "joystick 1 registreerde beweging op x-as"
-            waarde = Joy_klasse.readChannel(x_as1)
-            print(f"dit is x van joystick 1: {waarde}")
+    # def joystick_id(self, deviceID):
+    #     if deviceID == 14:
+    #         commentaar = "joystick 1 registreerde beweging op x-as"
+    #         waarde = self.readChannel(x_as1)
+    #         print(f"dit is x van joystick 1: {waarde}")
 
-        elif deviceID == 15:
-            commentaar = 'joystick 1 registreerde beweging op y-as'
-            waarde = Joy_klasse.readChannel(y_as1)
-            print(f"dit is y van joystick 1: {waarde}\n")
+    #     elif deviceID == 15:
+    #         commentaar = 'joystick 1 registreerde beweging op y-as'
+    #         waarde = self.readChannel(y_as1)
+    #         print(f"dit is y van joystick 1: {waarde}\n")
 
-        elif deviceID == 17:
-            commentaar = 'joystick 2 registreerde beweging op x-as'
-            waarde = Joy_klasse.readChannel(x_as2)
-            print(f"dit is x van joystick 2: {waarde}")
+    #     elif deviceID == 17:
+    #         commentaar = 'joystick 2 registreerde beweging op x-as'
+    #         waarde = self.readChannel(x_as2)
+    #         print(f"dit is x van joystick 2: {waarde}")
 
-        elif deviceID == 18:
-            commentaar = 'joystick 2 registreerde beweging op y-as'
-            waarde = Joy_klasse.readChannel(y_as2)
-            print(f"dit is y van joystick 2: {waarde}\n")
-        return waarde, commentaar
+    #     elif deviceID == 18:
+    #         commentaar = 'joystick 2 registreerde beweging op y-as'
+    #         waarde = self.readChannel(y_as2)
+    #         print(f"dit is y van joystick 2: {waarde}\n")
+    #     return waarde, commentaar
     
-    def joysw_id(sw_id):
+    def joysw_id(self, sw_id):
         global teller16, prev_teller16, teller19, prev_teller19
         waarde = 0 # als de callback gecalled is, dan 1, anders 0
         if sw_id == 16:
