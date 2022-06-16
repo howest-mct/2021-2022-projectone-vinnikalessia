@@ -489,8 +489,7 @@ def joystick_uitlezen(speler, max_punten):
         return winnaar
 
 def positie(x, y, z, player, vorige_pos):
-    neonummer = neo_klasse_obj.get_key(x, y, z)
-    neo_klasse_obj.vorige_positie(vorige_pos)
+    neonummer = neo_klasse_obj.get_key(x, y, z, vorige_pos)
     if neonummer not in led_pos1 and neonummer not in led_pos2:
         neo_klasse_obj.player_color(player, neonummer)
     else:
