@@ -1,4 +1,4 @@
-##################### IMPORT #####################
+#################### IMPORT #####################
 from repositories.DataRepository import DataRepository
 from flask_socketio import SocketIO, emit, send
 from PIL import Image, ImageDraw, ImageFont
@@ -19,7 +19,7 @@ import spidev
 import board
 import time
 
-##################### MY IMPORT #####################
+#################### MY IMPORT #####################
 from hulpcode.joystick import Joy_klasse
 # from hulpcode.touch import Touch_klasse
 from hulpcode.oled import Oled_klasse
@@ -32,7 +32,7 @@ oled_klasse_obj = Oled_klasse()
 joy_klasse_obj = Joy_klasse()
 
 
-########### JOYSTICK ###########
+########## JOYSTICK ###########
 y_as1 = 0
 x_as1 = 1
 y_as2 = 2
@@ -95,7 +95,7 @@ r = 23
 g = 24
 b = 25
 
-##################### NEOPIXEL #####################
+#################### NEOPIXEL #####################
 # lednummer:[x-as, y-as, z-as]
 neopixel_dict = {
         1:[1, 1, 1], 2:[2, 1, 1], 3:[3, 1, 1], 
@@ -124,18 +124,18 @@ win_combinaties = {
     42:[5,13,21], 43:[6,10,26], 44:[8,10,24], 45:[4,13,22], 46:[0,6,8], 
     47:[6,13,20], 48:[2,13,24], 49:[0,13,26], 50:[8,12,18]}
 
-########### SPELERS ###########
+########## SPELERS ###########
 led_pos1 = [] # posities dat speler 1 had gekozen
 led_pos2 = [] # posities dat speler 2 had gekozen
 
-##################### BUSSEN #####################
+#################### BUSSEN #####################
 # de spi-bus
 spi = spidev.SpiDev()
 spi.open(0,0)
 spi.open(0,1)
 spi.max_speed_hz = 10 ** 5
 
-##################### FLASK #####################
+#################### FLASK #####################
 # start app
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'geheim!'
@@ -146,7 +146,7 @@ socketio = SocketIO(app, cors_allowed_origins="*",
 CORS(app)
 print("program started")
 
-##################### SETUP #####################
+#################### SETUP #####################
 def setup():
     global pwm_motor1, pwm_motor2
     print("setup")
@@ -197,7 +197,7 @@ def setup():
     GPIO.output(b, GPIO.LOW)
 
 
-##################### CALLBACK #####################
+#################### CALLBACK #####################
 def callback_sw1(pin):
     global teller16, teller19
     teller16 += 1
@@ -285,8 +285,8 @@ def joystick_id(deviceID):
         # print(f"dit is y van joystick 2: {waarde}\n")
     return waarde, commentaar
 
-##################### ANDERE FUNCTIONS #####################
-##### joystick uitlezen tijdens spel #####
+#################### ANDERE FUNCTIONS #####################
+#### joystick uitlezen tijdens spel #####
 def joystick_uitlezen(speler, max_punten):
     global choice_running, tellerStapX, tellerStapY, tellerStapZ, led_pos1, led_pos2, vorige_pos
     positie_lijst = []
@@ -545,7 +545,7 @@ def game(beginner, tellerKeuze):
         tellerKeuze = 0
         spel_starten()
 
-##################### SOCKETIO #####################
+#################### SOCKETIO #####################
 @socketio.on_error()        # Handles the default namespace
 def error_handler(e):
     print(e)
@@ -568,25 +568,25 @@ def joystick(data):
 
     DataRepository.create_historiek(joy_id, commentaar, waarde, 1)
 
-# @socketio.on('F2B_touch')
-# def touch(data):
-#     touch_id = data['deviceid']
-#     if touch_id == 7:
-#         print(f"sensor 1: {touch_id}")
-#         teller7, commentaar, waarde = Touch_klasse.touch1()
-#         print(teller7)
+@socketio.on('F2B_touch')
+def touch(data):
+    touch_id = data['deviceid']
+    if touch_id == 7:
+        print(f"sensor 1: {touch_id}")
+        teller7, commentaar, waarde = Touch_klasse.touch1()
+        print(teller7)
 
-#     elif touch_id == 8:
-#         print(f"sensor 2: {touch_id}")
-#         teller8, commentaar, waarde = Touch_klasse.touch2()
-#         print(teller8)
+    elif touch_id == 8:
+        print(f"sensor 2: {touch_id}")
+        teller8, commentaar, waarde = Touch_klasse.touch2()
+        print(teller8)
 
-#     else:
-#         print('IDK')
-#     DataRepository.create_historiek(touch_id, commentaar, waarde)
+    else:
+        print('IDK')
+    DataRepository.create_historiek(touch_id, commentaar, waarde)
 
 
-##################### ENDPOINTS #####################
+#################### ENDPOINTS #####################
 endpoint = '/api/v1'
 
 @app.route('/')
@@ -649,20 +649,20 @@ def get_waarden_joy():
         data = DataRepository.create_historiek(gegevens["deviceid"], gegevens["commentaar"], gegevens["waarde"], gegevens["actieid"])
         return jsonify(volgnummer = data), 201
     
-##################### THREADS #####################
+#################### THREADS #####################
 # START een thread op. Belangrijk!!! Debugging moet UIT staan op start van de server, anders start de thread dubbel op
 # werk enkel met de packages gevent en gevent-websocket. 
 
-# # # om de joystick uit te lezen ===> ToDo!!!!
-# def teller_doorsturen():
-#     global teller, socketio, last_val
-#     while True:
-#         if teller != last_val:
-#             print("sending teller")
-#             # het aantal keren gedrukt op de joystick
-#             socketio.emit('B2F_value_joy_1_sw', {'teller':teller})
-#             last_val = teller
-#         time.sleep(.5)
+# # om de joystick uit te lezen ===> ToDo!!!!
+def teller_doorsturen():
+    global teller, socketio, last_val
+    while True:
+        if teller != last_val:
+            print("sending teller")
+            # het aantal keren gedrukt op de joystick
+            socketio.emit('B2F_value_joy_1_sw', {'teller':teller})
+            last_val = teller
+        time.sleep(.5)
 
 # ALS JE DE ENE LEEST, KAN JE DE ANDER NIET UITLEZEN!!
 def start_thread():
@@ -670,7 +670,7 @@ def start_thread():
     thread = threading.Thread(target = spel_starten, args = (), daemon = True)
     thread.start()
 
-##################### SOCKETIO.RUN #####################
+#################### SOCKETIO.RUN #####################
 
 if __name__ == "__main__":
     try:
