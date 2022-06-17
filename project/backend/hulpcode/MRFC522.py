@@ -306,7 +306,6 @@ class MFRC522:
             return 0
 
     def MFRC522_Auth(self, authMode, BlockAddr, Sectorkey, serNum):
-        print("FFFFFFFFFFFFFFF")
         buff = []
 
         # First byte should be the authMode (A or B)
@@ -336,11 +335,9 @@ class MFRC522:
         return status
 
     def MFRC522_StopCrypto1(self):
-        print("A")
         self.ClearBitMask(self.Status2Reg, 0x08)
 
     def MFRC522_Read(self, blockAddr):
-        print("E_R_R_O_R")
         recvData = []
         recvData.append(self.PICC_READ)
         recvData.append(blockAddr)
@@ -358,7 +355,6 @@ class MFRC522:
             return None
 
     def MFRC522_Write(self, blockAddr, writeData):
-        print("B")
         buff = []
         buff.append(self.PICC_WRITE)
         buff.append(blockAddr)
@@ -386,18 +382,15 @@ class MFRC522:
 
 
     def MFRC522_DumpClassic1K(self, key, uid):
-        print("C")
         for i in range(64):
             status = self.MFRC522_Auth(self.PICC_AUTHENT1A, i, key, uid)
             # Check if authenticated
             if status == self.MI_OK:
-                print("HIER KOMT ERROR")
                 self.MFRC522_Read(i)
             else:
                 self.logger.error("Authentication error")
 
     def MFRC522_Init(self):
-        print("D")
         self.MFRC522_Reset()
 
         self.Write_MFRC522(self.TModeReg, 0x8D)

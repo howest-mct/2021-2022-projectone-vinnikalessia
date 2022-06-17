@@ -32,15 +32,10 @@ def multiproces_rfid():
 
 try:
     while True:
-        print("Hold a tag near the reader")
         id, text = reader.read()
-        print("ID: %s\nText: %s" % (id,text))
-        print("YAAAAAAAY!!!\n")
         time.sleep(3)
         # id_rfid, text = reader.read_no_block()  # uitlezen van de id_rfid en text constant
-        if (id is None):  # als er niets wordt uitgelezen
-            print("onbekend")
-        else:
+        if (id is not None):  # als er niets wordt uitgelezen
             print(id, text)
         time.sleep(1)
         # id_rfid, text = reader.read_no_block()  # uitlezen van de id_rfid en text

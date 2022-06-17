@@ -12,7 +12,7 @@ class Touch_klasse:
     def touch1():
         global teller7
         teller7 += 1
-        print(f"\t je hebt {teller7} keer de touch geraakt!")
+        # print(f"\t je hebt {teller7} keer de touch geraakt!")
         commentaar = "Aanraking touchsensor 1 gedetecteerd"
         waarde = 1
         return waarde, commentaar
@@ -20,7 +20,7 @@ class Touch_klasse:
     def touch2():
         global teller8
         teller8 += 1
-        print(f"\t je hebt {teller8} keer de touch geraakt!")
+        # print(f"\t je hebt {teller8} keer de touch geraakt!")
         commentaar = "Aanraking touchsensor 2 gedetecteerd"
         waarde = 1
         return waarde, commentaar

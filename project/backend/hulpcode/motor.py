@@ -34,7 +34,7 @@ class Motor_klasse():
             pwm_motor2.ChangeDutyCycle(control[teller2])
             punten += 1
         time.sleep(0.2)
-        print(teller1, teller2)
+        #print(teller1, teller2)
         return punten
     
     def motor_stop(self):
@@ -44,7 +44,7 @@ class Motor_klasse():
         print("turning back to 0")
         pwm_motor1.ChangeDutyCycle(2)
         pwm_motor2.ChangeDutyCycle(2)
-        time.sleep(1)
+        # time.sleep(1)
         pwm_motor1.ChangeDutyCycle(0)
         pwm_motor2.ChangeDutyCycle(0)
 

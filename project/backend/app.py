@@ -201,7 +201,7 @@ def setup():
 def callback_sw1(pin):
     global teller16, teller19
     teller16 += 1
-    print("Knop joystick 1 is {} keer ingedrukt\n".format(teller16))
+    # print("Knop joystick 1 is {} keer ingedrukt\n".format(teller16))
     # socketio.emit('B2F_value_joy_1_sw', {'teller':teller16}) # niet nodig?
     # joystick_id(pin)
     return teller16
@@ -209,7 +209,7 @@ def callback_sw1(pin):
 def callback_sw2(pin):
     global teller19
     teller19 += 1
-    print("Knop joystick 1 is {} keer ingedrukt\n".format(teller19))
+    # print("Knop joystick 1 is {} keer ingedrukt\n".format(teller19))
     return teller19
 
 def callback_up(pin):
@@ -220,9 +220,9 @@ def callback_up(pin):
     elif pin == 20:
         id = 5
     if tellerStapZ < 3:
-        DataRepository.create_historiek(id, "1 UP", tellerStapZ)
+        DataRepository.create_historiek(id, "1 UP", tellerStapZ, 3)
         tellerStapZ += 1
-    print("1 UP")
+    # print("1 UP")
     return tellerKeuze, tellerStapZ
 
 def callback_down(pin):
@@ -234,8 +234,8 @@ def callback_down(pin):
         id = 4
     if tellerStapZ > 1:
         tellerStapZ -= 1
-        DataRepository.create_historiek(id, "1 DOWN", tellerStapZ)
-    print("1 DOWN")
+        DataRepository.create_historiek(id, "1 DOWN", tellerStapZ, 3)
+    # print("1 DOWN")
     return tellerKeuze, tellerStapZ
 
 ##################### FUNCTIONS - JOYSTICK #####################
@@ -264,25 +264,25 @@ def joystick_id(deviceID):
         commentaar = "joystick 1 registreerde beweging op x-as"
         waarde = joy_klasse_obj.readChannel(x_as1)
         socketio.emit('B2F_value_joy_1_x', {'joy_1_x':waarde})
-        print(f"dit is x van joystick 1: {waarde}")
+        # print(f"dit is x van joystick 1: {waarde}")
 
     elif deviceID == 15:
         commentaar = 'joystick 1 registreerde beweging op y-as'
         waarde = joy_klasse_obj.readChannel(y_as1)
         socketio.emit('B2F_value_joy_1_y', {'joy_1_y':waarde})
-        print(f"dit is y van joystick 1: {waarde}\n")
+        # print(f"dit is y van joystick 1: {waarde}\n")
 
     elif deviceID == 17:
         commentaar = 'joystick 2 registreerde beweging op x-as'
         waarde = joy_klasse_obj.readChannel(x_as2)
         socketio.emit('B2F_value_joy_2_x', {'joy_2_x':waarde})
-        print(f"dit is x van joystick 2: {waarde}")
+        # print(f"dit is x van joystick 2: {waarde}")
 
     elif deviceID == 18:
         commentaar = 'joystick 2 registreerde beweging op y-as'
         waarde = joy_klasse_obj.readChannel(y_as2)
         socketio.emit('B2F_value_joy_2_y', {'joy_2_y':waarde})
-        print(f"dit is y van joystick 2: {waarde}\n")
+        # print(f"dit is y van joystick 2: {waarde}\n")
     return waarde, commentaar
 
 ##################### ANDERE FUNCTIONS #####################
@@ -312,7 +312,7 @@ def joystick_uitlezen(speler, max_punten):
                 for joy_id in [14]:
                     waarde, commentaar = joystick_id(joy_id)
                     if waarde > 800 or waarde < 200:
-                        DataRepository.create_historiek(joy_id, commentaar, waarde)
+                        DataRepository.create_historiek(joy_id, commentaar, waarde, 1)
                         if waarde > 800 and tellerStapX < 3:
                             tellerStapX += 1
                         elif waarde < 200 and tellerStapX > 1:
@@ -321,7 +321,7 @@ def joystick_uitlezen(speler, max_punten):
                 for joy_id in [15]:
                     waarde, commentaar = joystick_id(joy_id)
                     if waarde > 800 or waarde < 200:
-                        DataRepository.create_historiek(joy_id, commentaar, waarde)
+                        DataRepository.create_historiek(joy_id, commentaar, waarde, 1)
                         if waarde > 800 and tellerStapY < 3:
                             tellerStapY += 1
                         elif waarde < 200 and tellerStapY > 1:
@@ -347,8 +347,8 @@ def joystick_uitlezen(speler, max_punten):
                         positie_lijst.append(tellerStapZ)
                         led_pos1.append(gekozen_positie)
                         neo_klasse_obj.chosen_one(gekozen_positie, speler)
-                        print("opgeslaan!")
-                        print(f"dit is de gekozen positie{positie_lijst}")
+                        #print("opgeslaan!")
+                        # print(f"dit is de gekozen positie{positie_lijst}")
                         time.sleep(0.2) # anders dubbel positie in lijst
                         oled_klasse_obj.oled_clear()
                         positie_lijst = []
@@ -368,7 +368,7 @@ def joystick_uitlezen(speler, max_punten):
                 for joy_id in [17]:
                     waarde, commentaar = joystick_id(joy_id)
                     if waarde > 800 or waarde < 200:
-                        DataRepository.create_historiek(joy_id, commentaar, waarde)
+                        DataRepository.create_historiek(joy_id, commentaar, waarde, 1)
                         if waarde > 800 and tellerStapX < 3:
                             tellerStapX += 1
                         elif waarde < 200 and tellerStapX > 1:
@@ -377,7 +377,7 @@ def joystick_uitlezen(speler, max_punten):
                 for joy_id in [18]:
                     waarde, commentaar = joystick_id(joy_id)
                     if waarde > 800 or waarde < 200:
-                        DataRepository.create_historiek(joy_id, commentaar, waarde)
+                        DataRepository.create_historiek(joy_id, commentaar, waarde, 1)
                         if waarde > 800 and tellerStapY < 3:
                             tellerStapY += 1
                         elif waarde < 200 and tellerStapY > 1:
@@ -402,7 +402,7 @@ def joystick_uitlezen(speler, max_punten):
                         positie_lijst.append(tellerStapZ)
                         led_pos2.append(gekozen_positie)
                         neo_klasse_obj.chosen_one(gekozen_positie, speler)
-                        print("opgeslaan!")
+                        # print("opgeslaan!")
                         time.sleep(0.2) # anders dubbel positie in lijst
                         oled_klasse_obj.oled_clear()
                         positie_lijst = []
@@ -417,28 +417,28 @@ def joystick_uitlezen(speler, max_punten):
 
         for key, value in win_combinaties.items():
             if (len(set(led_pos1) & set(value)) == 3) and (key not in oud_gekozen_pixelsR and key not in oud_gekozen_pixelsB):
-                print(f"de key R: {key}")
+                # print(f"de key R: {key}")
                 puntenR = motor_klasse_obj.puntentelling(0, puntenR)
-                print(f"punt voor rood {puntenR}")
+                # print(f"punt voor rood {puntenR}")
                 motor_klasse_obj.punt_bij(speler)
                 oud_gekozen_pixelsR.append(key)
-                print(f"winnende combi R: {oud_gekozen_pixelsR}")
+                # print(f"winnende combi R: {oud_gekozen_pixelsR}")
 
             elif len(set(led_pos2) & set(value)) == 3 and (key not in oud_gekozen_pixelsR and key not in oud_gekozen_pixelsB):
-                print(f"de key B: {key}")
+                # print(f"de key B: {key}")
                 puntenB = motor_klasse_obj.puntentelling(1, puntenB)
-                print(f"punt voor blauw {puntenB}")
+                # print(f"punt voor blauw {puntenB}")
                 motor_klasse_obj.punt_bij(speler)
                 oud_gekozen_pixelsB.append(key)
-                print(f"winnende combi B: {oud_gekozen_pixelsB}")
+                # print(f"winnende combi B: {oud_gekozen_pixelsB}")
         if max_punten == puntenR or max_punten == puntenB:
             print(f"stand van het spel: max: {max_punten}, R: {puntenR}, B:{puntenB}")
         if puntenR == max_punten:
-            print(f"rood heeft gewonnen met {puntenR}")
+            # print(f"rood heeft gewonnen met {puntenR}")
             choice_running = False
             winnaar = "rood"
         elif puntenB == max_punten:
-            print(f"blauw heeft gewonnen met {puntenB}")
+            # print(f"blauw heeft gewonnen met {puntenB}")
             choice_running = False
             winnaar = "blauw"
         time.sleep(0.02)
@@ -462,7 +462,7 @@ def positie(x, y, z, player, vorige_pos):
 
 def keuzelijst():
     global tellerKeuze, app_running, prev_teller19, teller19, prev_teller16, teller16
-    print("Kies tot hoeveel er gespeeld wordt")
+    #print("Kies tot hoeveel er gespeeld wordt")
     while app_running and True:
         if tellerKeuze > 3:
                 tellerKeuze = 3
@@ -477,8 +477,8 @@ def keuzelijst():
             prev_teller16 = teller16
 
         if GPIO.input(t1) or GPIO.input(t2):
-            print('touchsensor aangeraakt => confirm de keuze')
-            print(f"dit is de tellerKeuze: {tellerKeuze}")
+            # print('touchsensor aangeraakt => confirm de keuze')
+            # print(f"dit is de tellerKeuze: {tellerKeuze}")
             app_running = False
         else:
             time.sleep(0.02)
@@ -490,29 +490,29 @@ def spel_starten():
     choice_running = True
     app_running = True
     tellerKeuze = 0
-    print(tellerKeuze)
+    # print(tellerKeuze)
     keuzeSpel = keuzelijst() # => in oled ook 
-    print("keuzelijst overlopen en gekozen")
+    # print("keuzelijst overlopen en gekozen")
     time.sleep(0.2)
-    print("LET'S START THE GAME!")
+    # print("LET'S START THE GAME!")
     start_game()
 
 def start_game():
-    print(f"DIT IS TELLERKEUZE: {tellerKeuze}")
-    print('we starten het spel ☺ ')
+    # print(f"DIT IS TELLERKEUZE: {tellerKeuze}")
+    # print('we starten het spel ☺ ')
     # alles uitzetten van de rgb
     GPIO.output(r, GPIO.LOW)
     GPIO.output(g, GPIO.LOW)
     GPIO.output(b, GPIO.LOW)
     randomPlayer = random.randint(0, 1)
-    print(f"DIT IS RANDOM: {randomPlayer}")
-    print("EN WIE MAG ER BEGINNEN?......")
+    # print(f"DIT IS RANDOM: {randomPlayer}")
+    # print("EN WIE MAG ER BEGINNEN?......")
     oled_klasse_obj.display_player(randomPlayer)
     if randomPlayer == 0:
-        print("Player 1 begint")
+        # print("Player 1 begint")
         GPIO.output(r, GPIO.HIGH)
     elif randomPlayer == 1:
-        print("Player 2 begint")
+        # print("Player 2 begint")
         GPIO.output(b, GPIO.HIGH)
     game(randomPlayer, tellerKeuze)
 
@@ -537,10 +537,10 @@ def game(beginner, tellerKeuze):
         time.sleep(1)
         neo_klasse_obj.start_kleur()
         winnaar = joystick_uitlezen(beginner, max_punten)
-        print(winnaar)
+        # print(winnaar)
         game_running = False
     if not game_running:
-        print("THE END OF THE GAME")
+        # print("THE END OF THE GAME")
         game_running = True
         tellerKeuze = 0
         spel_starten()
@@ -566,7 +566,7 @@ def joystick(data):
     elif joy_id in [16, 19]:
         waarde, commentaar = joysw_id(joy_id)
 
-    DataRepository.create_historiek(joy_id, commentaar, waarde)
+    DataRepository.create_historiek(joy_id, commentaar, waarde, 1)
 
 # @socketio.on('F2B_touch')
 # def touch(data):
@@ -606,7 +606,7 @@ def get_devices():
 @app.route(endpoint + '/devices/<deviceID>/', methods = ['GET'])
 def get_device(deviceID):
     if request.method == "GET":
-        print(deviceID)
+        # print(deviceID)
         data = DataRepository.read_device_by_id(deviceID)
         if data is not None:
             return jsonify(device = data), 200
@@ -645,7 +645,7 @@ def get_waarden_joy():
             return jsonify(message = "error"), 404
     elif request.method == 'POST':
         gegevens = DataRepository.json_or_formdata(request)
-        print(gegevens)
+        # print(gegevens)
         data = DataRepository.create_historiek(gegevens["deviceid"], gegevens["commentaar"], gegevens["waarde"], gegevens["actieid"])
         return jsonify(volgnummer = data), 201
     

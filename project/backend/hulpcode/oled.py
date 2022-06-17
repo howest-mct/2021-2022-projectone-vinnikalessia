@@ -36,28 +36,24 @@ class Oled_klasse():
             fill=0,
         )
         if tellerKeuze == 0:
-            print("keuze 1")
             draw.text((5, 2), "__ tot 1 spelen __", font=font, fill=255)
             draw.text((5, 17), "   tot 3 spelen", font=font, fill=255) 
             draw.text((5, 32), "   tot 5 spelen", font=font, fill=255)
             draw.text((5, 47), "   tot 9 spelen", font=font, fill=255)
 
         elif tellerKeuze == 1:
-            print("keuze 2")
             draw.text((5, 2), "   tot 1 spelen", font=font, fill=255)
             draw.text((5, 17), "__ tot 3 spelen __", font=font, fill=255) 
             draw.text((5, 32), "   tot 5 spelen", font=font, fill=255)
             draw.text((5, 47), "   tot 9 spelen", font=font, fill=255)
 
         elif tellerKeuze == 2:
-            print("keuze 3")
             draw.text((5, 2), "   tot 1 spelen", font=font, fill=255)
             draw.text((5, 17), "   tot 3 spelen", font=font, fill=255) 
             draw.text((5, 32), "__ tot 5 spelen __", font=font, fill=255)
             draw.text((5, 47), "   tot 9 spelen", font=font, fill=255)
 
         elif tellerKeuze == 3:
-            print("keuze 4")
             draw.text((5, 2), "   tot 1 spelen", font=font, fill=255)
             draw.text((5, 17), "   tot 3 spelen", font=font, fill=255) 
             draw.text((5, 32), "   tot 5 spelen", font=font, fill=255)
@@ -84,7 +80,6 @@ class Oled_klasse():
         oled.show()
 
     def ip_adressen(self):
-        print("in status 1")
         self.oled_clear()
         ips = check_output(['hostname', '--all-ip-addresses'])
         ip = ips.decode(encoding='UTF-8').strip()
