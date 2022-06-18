@@ -1,37 +1,39 @@
-from logging import exception
-from smbus import SMBus
+# from logging import exception
+# from smbus import SMBus
 from RPi import GPIO
 import time
 
-# motor1 = 17
-# motor2 = 27
-motor1 = 33
-motor2 = 35
-
-control = [2,3,4,5,6,7,8,9,10,11]
-
-teller1 = 0
-teller2 = 0
+# motor1 = 33
+# motor2 = 35
 
 # dit is de beginhoek => 0 punten
 # hoek = 5
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(motor1, GPIO.OUT)
-GPIO.setup(motor2, GPIO.OUT)
-pwm_motor1 = GPIO.PWM(motor1, 50)
-pwm_motor2 = GPIO.PWM(motor2, 50)
-pwm_motor1.start(2.5)
-pwm_motor2.start(2.5)
 
 
 class Motor_klasse():
+    def setup(self):
+        self.motor1 = 17
+        self.motor2 = 27
+
+        self.control = [2,3,4,5,6,7,8,9,10,11]
+
+        self.teller1 = 0
+        self.teller2 = 0
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setup(self.motor1, GPIO.OUT)
+        GPIO.setup(self.motor2, GPIO.OUT)
+        self.pwm_motor1 = GPIO.PWM(self.motor1, 50)
+        self.pwm_motor2 = GPIO.PWM(self.motor2, 50)
+        self.pwm_motor1.start(2.5)
+        self.pwm_motor2.start(2.5)
+
     def puntentelling(self, speler, punten):
         global teller1, teller2
         if speler == 0:
             punten += 1
-            pwm_motor1.ChangeDutyCycle(control[teller1])
+            self.pwm_motor1.ChangeDutyCycle(self.control[teller1])
         elif speler == 1:
-            pwm_motor2.ChangeDutyCycle(control[teller2])
+            self.pwm_motor2.ChangeDutyCycle(self.control[teller2])
             punten += 1
         time.sleep(0.2)
         #print(teller1, teller2)
@@ -42,11 +44,11 @@ class Motor_klasse():
         teller1 = 0
         teller2 = 0
         print("turning back to 0")
-        pwm_motor1.ChangeDutyCycle(2)
-        pwm_motor2.ChangeDutyCycle(2)
+        self.pwm_motor1.ChangeDutyCycle(2)
+        self.pwm_motor2.ChangeDutyCycle(2)
         # time.sleep(1)
-        pwm_motor1.ChangeDutyCycle(0)
-        pwm_motor2.ChangeDutyCycle(0)
+        self.pwm_motor1.ChangeDutyCycle(0)
+        self.pwm_motor2.ChangeDutyCycle(0)
 
 
     # def hoek_tot_duty(self, getal):

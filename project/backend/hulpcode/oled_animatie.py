@@ -1,179 +1,179 @@
 
-"""
-Rotating 3D box wireframe & color dithering.
-Adapted from:
-http://codentronix.com/2011/05/12/rotating-3d-cube-using-python-and-pygame/
-"""
-from luma.core.sprite_system import framerate_regulator
-from luma.core import cmdline, error
-from luma.core.render import canvas
-from operator import itemgetter
-import logging
-import math
-import sys
+# """
+# Rotating 3D box wireframe & color dithering.
+# Adapted from:
+# http://codentronix.com/2011/05/12/rotating-3d-cube-using-python-and-pygame/
+# """
+# from luma.core.sprite_system import framerate_regulator
+# from luma.core import cmdline, error
+# from luma.core.render import canvas
+# from operator import itemgetter
+# import logging
+# import math
+# import sys
 
 
-# logging
-logging.basicConfig(
-    level=logging.DEBUG,
-    format='%(asctime)-15s - %(message)s'
-)
-# ignore PIL debug messages
-logging.getLogger('PIL').setLevel(logging.ERROR)
+# # logging
+# logging.basicConfig(
+#     level=logging.DEBUG,
+#     format='%(asctime)-15s - %(message)s'
+# )
+# # ignore PIL debug messages
+# logging.getLogger('PIL').setLevel(logging.ERROR)
 
-def display_settings(device, args):
-    """
-    Display a short summary of the settings.
-    :rtype: str
-    """
-    iface = ''
-    display_types = cmdline.get_display_types()
-    if args.display not in display_types['emulator']:
-        iface = 'Interface: {}\n'.format(args.interface)
+# def display_settings(device, args):
+#     """
+#     Display a short summary of the settings.
+#     :rtype: str
+#     """
+#     iface = ''
+#     display_types = cmdline.get_display_types()
+#     if args.display not in display_types['emulator']:
+#         iface = 'Interface: {}\n'.format(args.interface)
 
-    lib_name = cmdline.get_library_for_display_type(args.display)
-    if lib_name is not None:
-        lib_version = cmdline.get_library_version(lib_name)
-    else:
-        lib_name = lib_version = 'unknown'
+#     lib_name = cmdline.get_library_for_display_type(args.display)
+#     if lib_name is not None:
+#         lib_version = cmdline.get_library_version(lib_name)
+#     else:
+#         lib_name = lib_version = 'unknown'
 
-    import luma.core
-    version = 'luma.{} {} (luma.core {})'.format(
-        lib_name, lib_version, luma.core.__version__)
+#     import luma.core
+#     version = 'luma.{} {} (luma.core {})'.format(
+#         lib_name, lib_version, luma.core.__version__)
 
-    return 'Version: {}\nDisplay: {}\n{}Dimensions: {} x {}\n{}'.format(
-        version, args.display, iface, device.width, device.height, '-' * 60)
-
-
-def get_device(actual_args=None):
-    """
-    Create device from command-line arguments and return it.
-    """
-    if actual_args is None:
-        actual_args = sys.argv[1:]
-    parser = cmdline.create_parser(description='luma.examples arguments')
-    args = parser.parse_args(actual_args)
-
-    if args.config:
-        # load config from file
-        config = cmdline.load_config(args.config)
-        args = parser.parse_args(config + actual_args)
-
-    # create device
-    try:
-        device = cmdline.create_device(args)
-        print(display_settings(device, args))
-        return device
-
-    except error.Error as e:
-        parser.error(e)
-        return None
-
-def radians(degrees):
-    return degrees * math.pi / 180
+#     return 'Version: {}\nDisplay: {}\n{}Dimensions: {} x {}\n{}'.format(
+#         version, args.display, iface, device.width, device.height, '-' * 60)
 
 
-class point(object):
+# def get_device(actual_args=None):
+#     """
+#     Create device from command-line arguments and return it.
+#     """
+#     if actual_args is None:
+#         actual_args = sys.argv[1:]
+#     parser = cmdline.create_parser(description='luma.examples arguments')
+#     args = parser.parse_args(actual_args)
 
-    def __init__(self, x, y, z):
-        self.coords = (x, y, z)
-        self.xy = (x, y)
-        self.z = z
+#     if args.config:
+#         # load config from file
+#         config = cmdline.load_config(args.config)
+#         args = parser.parse_args(config + actual_args)
 
-    def rotate_x(self, angle):
-        x, y, z = self.coords
-        rad = radians(angle)
-        c = math.cos(rad)
-        s = math.sin(rad)
-        return point(x, y * c - z * s, y * s + z * c)
+#     # create device
+#     try:
+#         device = cmdline.create_device(args)
+#         print(display_settings(device, args))
+#         return device
 
-    def rotate_y(self, angle):
-        x, y, z = self.coords
-        rad = radians(angle)
-        c = math.cos(rad)
-        s = math.sin(rad)
-        return point(z * s + x * c, y, z * c - x * s)
+#     except error.Error as e:
+#         parser.error(e)
+#         return None
 
-    def rotate_z(self, angle):
-        x, y, z = self.coords
-        rad = radians(angle)
-        c = math.cos(rad)
-        s = math.sin(rad)
-        return point(x * c - y * s, x * s + y * c, z)
-
-    def project(self, size, fov, viewer_distance):
-        x, y, z = self.coords
-        factor = fov / (viewer_distance + z)
-        return point(x * factor + size[0] / 2, -y * factor + size[1] / 2, z)
+# def radians(degrees):
+#     return degrees * math.pi / 180
 
 
-def sine_wave(min, max, step=1):
-    angle = 0
-    diff = max - min
-    diff2 = diff / 2
-    offset = min + diff2
-    while True:
-        yield angle, offset + math.sin(radians(angle)) * diff2
-        angle += step
+# class point(object):
+
+#     def __init__(self, x, y, z):
+#         self.coords = (x, y, z)
+#         self.xy = (x, y)
+#         self.z = z
+
+#     def rotate_x(self, angle):
+#         x, y, z = self.coords
+#         rad = radians(angle)
+#         c = math.cos(rad)
+#         s = math.sin(rad)
+#         return point(x, y * c - z * s, y * s + z * c)
+
+#     def rotate_y(self, angle):
+#         x, y, z = self.coords
+#         rad = radians(angle)
+#         c = math.cos(rad)
+#         s = math.sin(rad)
+#         return point(z * s + x * c, y, z * c - x * s)
+
+#     def rotate_z(self, angle):
+#         x, y, z = self.coords
+#         rad = radians(angle)
+#         c = math.cos(rad)
+#         s = math.sin(rad)
+#         return point(x * c - y * s, x * s + y * c, z)
+
+#     def project(self, size, fov, viewer_distance):
+#         x, y, z = self.coords
+#         factor = fov / (viewer_distance + z)
+#         return point(x * factor + size[0] / 2, -y * factor + size[1] / 2, z)
 
 
-def main(num_iterations=sys.maxsize):
-    regulator = framerate_regulator(fps=30)
-    vertices = [
-        point(-1, 1, -1),
-        point(1, 1, -1),
-        point(1, -1, -1),
-        point(-1, -1, -1),
-        point(-1, 1, 1),
-        point(1, 1, 1),
-        point(1, -1, 1),
-        point(-1, -1, 1)
-    ]
-
-    faces = [
-        ((0, 1, 2, 3), "red"),
-        ((1, 5, 6, 2), "green"),
-        ((0, 4, 5, 1), "blue"),
-        ((5, 4, 7, 6), "magenta"),
-        ((4, 0, 3, 7), "yellow"),
-        ((3, 2, 6, 7), "cyan")
-    ]
-
-    a, b, c = 0, 0, 0
-
-    for angle, dist in sine_wave(8, 40, 1.5):
-        with regulator:
-            num_iterations -= 1
-            if num_iterations == 0:
-                break
-
-            t = [v.rotate_x(a).rotate_y(b).rotate_z(c).project(device.size, 256, dist)
-                for v in vertices]
-
-            depth = []
-            for idx, face in enumerate(faces):
-                v1, v2, v3, v4 = face[0]
-                avg_z = (t[v1].z + t[v2].z + t[v3].z + t[v4].z) / 4.0
-                depth.append((idx, avg_z))
-
-            with canvas(device, dither=True) as draw:
-                for idx, depth in sorted(depth, key=itemgetter(1), reverse=True)[3:]:
-                    (v1, v2, v3, v4), color = faces[idx]
-
-                    if angle // 720 % 2 == 0:
-                        fill, outline = color, color
-                    else:
-                        fill, outline = "black", "white"
-                    draw.polygon(t[v1].xy + t[v2].xy + t[v3].xy + t[v4].xy, fill, outline)
-            a += 0.3
-            b -= 1.1
-            c += 0.85
+# def sine_wave(min, max, step=1):
+#     angle = 0
+#     diff = max - min
+#     diff2 = diff / 2
+#     offset = min + diff2
+#     while True:
+#         yield angle, offset + math.sin(radians(angle)) * diff2
+#         angle += step
 
 
-if __name__ == "__main__":
-    try:
-        print("start")
-        device = get_device()
-        main()
-    except KeyboardInterrupt:
-        pass
+# def main(num_iterations=sys.maxsize):
+#     regulator = framerate_regulator(fps=30)
+#     vertices = [
+#         point(-1, 1, -1),
+#         point(1, 1, -1),
+#         point(1, -1, -1),
+#         point(-1, -1, -1),
+#         point(-1, 1, 1),
+#         point(1, 1, 1),
+#         point(1, -1, 1),
+#         point(-1, -1, 1)
+#     ]
+
+#     faces = [
+#         ((0, 1, 2, 3), "red"),
+#         ((1, 5, 6, 2), "green"),
+#         ((0, 4, 5, 1), "blue"),
+#         ((5, 4, 7, 6), "magenta"),
+#         ((4, 0, 3, 7), "yellow"),
+#         ((3, 2, 6, 7), "cyan")
+#     ]
+
+#     a, b, c = 0, 0, 0
+
+#     for angle, dist in sine_wave(8, 40, 1.5):
+#         with regulator:
+#             num_iterations -= 1
+#             if num_iterations == 0:
+#                 break
+
+#             t = [v.rotate_x(a).rotate_y(b).rotate_z(c).project(device.size, 256, dist)
+#                 for v in vertices]
+
+#             depth = []
+#             for idx, face in enumerate(faces):
+#                 v1, v2, v3, v4 = face[0]
+#                 avg_z = (t[v1].z + t[v2].z + t[v3].z + t[v4].z) / 4.0
+#                 depth.append((idx, avg_z))
+
+#             with canvas(device, dither=True) as draw:
+#                 for idx, depth in sorted(depth, key=itemgetter(1), reverse=True)[3:]:
+#                     (v1, v2, v3, v4), color = faces[idx]
+
+#                     if angle // 720 % 2 == 0:
+#                         fill, outline = color, color
+#                     else:
+#                         fill, outline = "black", "white"
+#                     draw.polygon(t[v1].xy + t[v2].xy + t[v3].xy + t[v4].xy, fill, outline)
+#             a += 0.3
+#             b -= 1.1
+#             c += 0.85
+
+
+# if __name__ == "__main__":
+#     try:
+#         print("start")
+#         device = get_device()
+#         main()
+#     except KeyboardInterrupt:
+#         pass

@@ -1,6 +1,7 @@
 from RPi import GPIO
 import spidev
 import time
+spi = spidev.SpiDev()
 
 
 class Joy_klasse():
@@ -23,12 +24,11 @@ class Joy_klasse():
 
         self.teller = 0
         # de spi-bus
-        self.spi = spidev.SpiDev()
-        self.spi.open(0,1)
-        self.spi.max_speed_hz = 10 ** 5
+        spi.open(0,1)
+        spi.max_speed_hz = 10 ** 5
           
     def readChannel(self, channel):
-        val = self.spi.xfer2([1,(8|channel)<<4,0])
+        val = spi.xfer2([1,(8|channel)<<4,0])
         data = (((val[1] & 3) << 8) | val[2])
         return data
 
