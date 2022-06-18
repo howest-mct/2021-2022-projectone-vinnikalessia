@@ -675,16 +675,13 @@ def start_thread():
 if __name__ == "__main__":
     try:
         # debug NIET op True zetten
-        getal = 0
-        while getal < 6:
-            time.sleep(1)
-            setup()
-            start_thread()
-            # start_chrome_thread()
-            # start_thread_teller()
-            print("**** Starting APP ****")
-            socketio.run(app,debug = False, host = '0.0.0.0')
-            getal += 1
+        time.sleep(1)
+        setup()
+        start_thread()
+        # start_chrome_thread()
+        # start_thread_teller()
+        print("**** Starting APP ****")
+        socketio.run(app,debug = False, host = '0.0.0.0')
     except KeyboardInterrupt:
         print("kb")
     finally:

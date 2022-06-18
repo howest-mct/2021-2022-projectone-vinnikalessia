@@ -60,7 +60,7 @@ class Oled_klasse():
             self.draw.text((5, 17), "   tot 3 spelen", font=self.font, fill=255) 
             self.draw.text((5, 32), "   tot 5 spelen", font=self.font, fill=255)
             self.draw.text((5, 47), "__ tot 9 spelen __", font=self.font, fill=255)
-        self.oled.image(image)
+        self.oled.image(self.image)
         self.oled.show()
 
     def display_player(self, randomPlayer):
@@ -78,7 +78,7 @@ class Oled_klasse():
         elif randomPlayer == 1:
             # rood
             self.draw.text((25, 25), "    BLAUW", font=self.font, fill=255)
-        self.oled.image(image)
+        self.oled.image(self.image)
         self.oled.show()
 
     def ip_adressen(self):
@@ -86,10 +86,10 @@ class Oled_klasse():
         ips = check_output(['hostname', '--all-ip-addresses'])
         ip = ips.decode(encoding='UTF-8').strip()
         ip_adresses = ip.split()
-        self.draw.text((15, 15), f"{ip_adresses[0]}\n{ip_adresses[1]}", font=font, fill=255)
+        self.draw.text((15, 15), f"{ip_adresses[0]}\n{ip_adresses[1]}", font=self.font, fill=255)
         self.oled.image(self.image)
         self.oled.show()
-        self.time.sleep(4)
+        time.sleep(4)
         # clear ip adressen?
         self.draw.rectangle((0, 0, self.oled.width, self.oled.height), outline=255, fill=255)
         self.draw.rectangle(
