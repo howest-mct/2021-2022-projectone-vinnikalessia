@@ -96,7 +96,7 @@ class Neos_klasse():
                 self.pixels.fill((0, 0, 255))
                 print("blauw heeft gewonnen")
             self.pixels.show()
-            time.sleep(0.2)
+            time.sleep(0.5)
             self.pixels.fill((0, 0, 0))
             self.pixels.show()
 
