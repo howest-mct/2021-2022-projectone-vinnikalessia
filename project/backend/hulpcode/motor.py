@@ -3,13 +3,6 @@
 from RPi import GPIO
 import time
 
-# motor1 = 33
-# motor2 = 35
-
-# dit is de beginhoek => 0 punten
-# hoek = 5
-
-
 class Motor_klasse():
     def setup(self):
         self.motor1 = 17

@@ -3,8 +3,6 @@ import time
 import board
 import neopixel
 
-
-
 class Neos_klasse():
     def __init__(self) -> None:
         self.pixel_pin = board.D18

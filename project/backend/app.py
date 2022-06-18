@@ -573,12 +573,12 @@ print("program started")
 #     touch_id = data['deviceid']
 #     if touch_id == 7:
 #         print(f"sensor 1: {touch_id}")
-#         teller7, commentaar, waarde = Touch_klasse.touch1()
+#         # teller7, commentaar, waarde = Touch_klasse.touch1()
 #         print(teller7)
 
 #     elif touch_id == 8:
 #         print(f"sensor 2: {touch_id}")
-#         teller8, commentaar, waarde = Touch_klasse.touch2()
+#         # teller8, commentaar, waarde = Touch_klasse.touch2()
 #         print(teller8)
 
 #     else:
