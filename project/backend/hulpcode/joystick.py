@@ -31,4 +31,7 @@ class Joy_klasse():
         val = spi.xfer2([1,(8|channel)<<4,0])
         data = (((val[1] & 3) << 8) | val[2])
         return data
+    
+    def closing(self):
+        spi.close()
 
