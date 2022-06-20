@@ -184,6 +184,18 @@ a:focus {
     color: #3E3EA8;
 }
 
+table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+  }
+  
+  td, th {
+    border: 1px solid #7fc9c6;
+    text-align: left;
+    padding: 8px;
+  }
+
 /*------------------------------------*\
   #OBJECTS
 \*------------------------------------*/
