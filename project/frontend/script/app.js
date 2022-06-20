@@ -7,7 +7,7 @@ const socket = io(`http://${lanIP}`, {transports: ["polling", "websocket"] });
 
 let htmlDevices, htmlXWaarde
 let htmlJoystick, htmlJoystick1X, htmlJoystick1Y, htmlJoystick1SW, htmlJoystick2X, htmlJoystick2Y, htmlJoystick2SW
-let htmlKnop1, htmlKnop2
+let htmlKnop1, htmlKnop2, htmlKeuze
 console.info(lanIP)
 
 const listenToSocket = function(){
@@ -84,7 +84,7 @@ const listenToSocket = function(){
     htmlJoystick2SW.innerHTML = htmlString
     })
   
-  // knoppen omhoog en omlaag
+  ////////////___knoppen___////////////
   socket.on('B2F_value_knopup1', function(jsonObject){
     console.info("up")
     console.info(jsonObject)
@@ -126,6 +126,33 @@ const listenToSocket = function(){
     </div>`
     htmlKnop2.innerHTML = htmlString
   })
+
+  ////////////___oled___////////////
+  socket.on('B2F_choice_oled', function(jsonObject){
+    console.info(jsonObject)
+    let htmlString = ''
+    if (jsonObject.keuze == 0){
+      htmlString = `<div class="o-layout__item js-keuze">
+      We spelen tot 1
+      </div>`
+    }
+    else if (jsonObject.keuze == 1){
+      htmlString = `<div class="o-layout__item js-keuze">
+      We spelen tot 3
+      </div>`
+    }
+    else if (jsonObject.keuze == 2){
+      htmlString = `<div class="o-layout__item js-keuze">
+      We spelen tot 5
+      </div>`
+    }
+    else if (jsonObject.keuze == 3){
+      htmlString = `<div class="o-layout__item js-keuze">
+      We spelen tot 9
+      </div>`
+    }
+    htmlKeuze.innerHTML = htmlString
+  })
 }
 
 const init = function(){
@@ -142,6 +169,8 @@ const init = function(){
 
   htmlKnop1 = document.querySelector('.js-knop1')
   htmlKnop2 = document.querySelector('.js-knop2')
+
+  htmlKeuze = document.querySelector('.js-keuze')
 
   listenToSocket()
 }

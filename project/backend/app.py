@@ -477,12 +477,14 @@ def keuzelijst():
             prev_teller19 = teller19
             prev_teller16 = teller16
 
+        socketio.emit('B2F_choice_oled', {'keuze':tellerKeuze})
         if GPIO.input(t1) or GPIO.input(t2):
             print('touchsensor aangeraakt => confirm de keuze')
             print(f"dit is de tellerKeuze: {tellerKeuze}")
             app_running = False
         else:
             time.sleep(0.02)
+        time.sleep(0.5)
     if not app_running:
         return tellerKeuze
 
