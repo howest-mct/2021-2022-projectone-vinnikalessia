@@ -7,8 +7,9 @@
     <title>OXO-Cube</title>
     <link rel="stylesheet" type="text/css" media="screen" href="style/screen.css">
     <script src="https://cdn.socket.io/4.0.1/socket.io.min.js" integrity="sha384-LzhRnpGmQP+lOvWruF/lgkcqD+WDVt9fU3H4BWmwP5u5LTmkUGafMcpZKNObVMLU" crossorigin="anonymous"></script>
-    <script src="script/app.js"></script>
+    <script src="script/historiek.js"></script>
     <script src="script/datahandler.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 </head>
 <body>
     <div class="c-page">
@@ -42,56 +43,9 @@
                 </div>
             </div>
         </header>
-        <section class="o-row o-row--lg">
+        <section class="o-row o-row--md">
             <div class="o-container">
-                <div class="o-layout o-layout--gutter o-layout—align-center o-layout--justify-center">
-                    <div class="o-layout js-devices">
-                        <div class="o-layout__item js-ip">
-                            <p>
-                                IP-adres: 172.30.248.56
-                            </p>
-                        </div>
-                        <div class="o-layout__item js-beurtkleur">
-                            <p>het is aan: </p>
-                        </div>
-                        <div class="o-layout__item js-keuze">
-                            We spelen tot 1
-                        </div>
-                    </div>
-                </div>                
-                <div class="o-section o-section">
-                    <div class="o-layout o-layout--gutter js-devices">
-                        <div class="o-layout__item u-1-of-2-bp1">
-                            <p>Rood</p>
-                            <div class="c-waarde js-joystick1X">
-                                waarden x-as: 520
-                            </div>
-                            <div class="c-waarde js-joystick1Y">
-                                waarden y-as: 520
-                            </div>
-                            <div class="c-waarde js-joystick1SW">
-                                aantal keer op de joystickknop gedrukt: 0
-                            </div>
-                            <div class="c-waarde js-knop1">
-                                1 verdieping naar beneden
-                            </div>
-                        </div>
-                        <div class="o-layout__item u-1-of-2-bp1">
-                            <p>Blauw</p>
-                            <div class="c-waarde js-joystick2X">
-                                waarden x-as: 520
-                            </div>
-                            <div class="c-waarde js-joystick2Y">
-                                waarden y-as: 520
-                            </div>
-                            <div class="c-waarde js-joystick2SW">
-                                aantal keer op de joystickknop gedrukt: 0
-                            </div>
-                            <div class="c-waarde js-knop2">
-                                1 verdieping naar boven
-                            </div>
-                        </div>
-                    </div>
+                <div id="chart" class="js-historiek">
                 </div>
             </div>
         </section>

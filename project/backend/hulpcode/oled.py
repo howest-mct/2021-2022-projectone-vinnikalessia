@@ -1,86 +1,137 @@
+from PIL import Image, ImageDraw, ImageFont
 from subprocess import check_output
-from luma.oled.device import ssd1306, ssd1309, ssd1325, ssd1331, sh1106, ws0010
-from luma.core.virtual import viewport, snapshot, range_overlap
-from luma.core.interface.serial import i2c, spi, pcf8574
-from luma.core.interface.parallel import bitbang_6800
-from luma.core.render import canvas
-from PIL import Image
+import adafruit_ssd1306
 from RPi import GPIO
+import digitalio
+import neopixel
+import board
 import time
-
-test_knop = 20
-teller = 0
-vorige = 0
-
-serial = i2c(port=1, address=0x3C)
-device = ssd1306(serial)
-
-def setup():
-    print("setup")
-    GPIO.setmode(GPIO.BCM)
-    GPIO.setup(test_knop, GPIO.IN, GPIO.PUD_UP)
-
-    GPIO.add_event_detect(test_knop, GPIO.FALLING, callback_knop, bouncetime = 100)
-
-def callback_knop(pin):
-    global teller
-    teller += 1
-    print("De TEST knop is {} keer ingedrukt\n".format(teller))
-    status_2()
-    return teller
+import random
 
 
-def status_1():
-    ips = check_output(['hostname', '--all-ip-addresses'])
-    write_ip_address(ips)
+class Oled_klasse():
+    def __init__(self) -> None:
+        self.tellerOled = 0
+        self.oled_reset = digitalio.DigitalInOut(board.D4)
+        self.WIDTH = 128
+        self.HEIGHT = 64
+        self.BORDER = 1
+        self.i2c = board.I2C()
+        self.oled = adafruit_ssd1306.SSD1306_I2C(self.WIDTH, self.HEIGHT, self.i2c, addr=0x3C, reset=self.oled_reset)
+        self.oled.fill(0)
+        self.oled.show()
+        self.image = Image.new("1", (self.oled.width, self.oled.height))
+        self.draw = ImageDraw.Draw(self.image)
+        self.font = ImageFont.load_default()
+        self.draw.rectangle((0, 0, self.oled.width, self.oled.height), outline=255, fill=255)
+        self.draw.rectangle(
+            (self.BORDER, self.BORDER, self.oled.width - self.BORDER - 1, self.oled.height - self.BORDER - 1),
+            outline=0,
+            fill=0,
+        )
 
-def write_ip_address(msg):
-    print(msg)
-    with canvas(device, dither = False) as draw:
-        draw.text((30, 40), msg, fill="white")
-    time.sleep(3)
+    def lijst(self, tellerKeuze):
+        self.draw.rectangle((0, 0, self.oled.width, self.oled.height), outline=255, fill=255)
+        self.draw.rectangle(
+            (self.BORDER, self.BORDER, self.oled.width - self.BORDER - 1, self.oled.height - self.BORDER - 1),
+            outline=0,
+            fill=0,
+        )
+        if tellerKeuze == 0:
+            self.draw.text((5, 2), "__ tot 1 spelen __", font=self.font, fill=255)
+            self.draw.text((5, 17), "   tot 3 spelen", font=self.font, fill=255) 
+            self.draw.text((5, 32), "   tot 5 spelen", font=self.font, fill=255)
+            self.draw.text((5, 47), "   tot 9 spelen", font=self.font, fill=255)
 
+        elif tellerKeuze == 1:
+            self.draw.text((5, 2), "   tot 1 spelen", font=self.font, fill=255)
+            self.draw.text((5, 17), "__ tot 3 spelen __", font=self.font, fill=255) 
+            self.draw.text((5, 32), "   tot 5 spelen", font=self.font, fill=255)
+            self.draw.text((5, 47), "   tot 9 spelen", font=self.font, fill=255)
 
-def status_2():
-    with canvas(device, dither = False) as draw:
-        print("player 1")
-        draw.rectangle(device.bounding_box, outline="white", fill="black")
-        draw.text((30, 40), "__Eliah__", fill="white")
-        points = ((123, 32), (118, 37), (108, 37), (108, 27), (118, 27))
-        draw.polygon((points), fill="White")
-    time.sleep(3)
-    with canvas(device, dither = False) as draw:
-        print("player 2")
-        draw.rectangle(device.bounding_box, outline="white", fill="black")
-        draw.text((30, 40), "__Aléssia__", fill="white")
-        points = ((5, 32), (10, 37), (20, 37), (20, 27), (10, 27))
-        draw.polygon((points), fill="White")
-    time.sleep(3)
+        elif tellerKeuze == 2:
+            self.draw.text((5, 2), "   tot 1 spelen", font=self.font, fill=255)
+            self.draw.text((5, 17), "   tot 3 spelen", font=self.font, fill=255) 
+            self.draw.text((5, 32), "__ tot 5 spelen __", font=self.font, fill=255)
+            self.draw.text((5, 47), "   tot 9 spelen", font=self.font, fill=255)
 
-try:
-    setup()
-    vorige = 0
-    while True:
-        print(vorige, teller)
-        if vorige != teller:
-            print("GEDRUKT")
-            status_1()
-            vorige = teller
-        else:
-            print("...Playing...")
+        elif tellerKeuze == 3:
+            self.draw.text((5, 2), "   tot 1 spelen", font=self.font, fill=255)
+            self.draw.text((5, 17), "   tot 3 spelen", font=self.font, fill=255) 
+            self.draw.text((5, 32), "   tot 5 spelen", font=self.font, fill=255)
+            self.draw.text((5, 47), "__ tot 9 spelen __", font=self.font, fill=255)
+        self.oled.image(self.image)
+        self.oled.show()
 
-        print("hello")
-        # with canvas(device, dither=True) as draw:
-        #     draw.rectangle((10, 10, 30, 30), outline="white", fill="red")
-        time.sleep(1)
-except KeyboardInterrupt as k:
-    print(k)
-finally:
+    def display_player(self, randomPlayer):
+        self.draw.rectangle((0, 0, self.oled.width, self.oled.height), outline=255, fill=255)
+        self.draw.rectangle(
+            (self.BORDER, self.BORDER, self.oled.width - self.BORDER - 1, self.oled.height - self.BORDER - 1),
+            outline=0,
+            fill=0,
+        )
+        self.oled.image(self.image)
+        self.oled.show()
+        if randomPlayer == 0:
+            # blauw
+            self.draw.text((25, 25), "    ROOD", font=self.font, fill=255)
+        elif randomPlayer == 1:
+            # rood
+            self.draw.text((25, 25), "    BLAUW", font=self.font, fill=255)
+        self.oled.image(self.image)
+        self.oled.show()
+
+    def ip_adressen(self):
+        self.oled_clear()
+        ips = check_output(['hostname', '--all-ip-addresses'])
+        ip = ips.decode(encoding='UTF-8').strip()
+        ip_adresses = ip.split()
+        self.draw.text((15, 15), f"{ip_adresses[0]}\n{ip_adresses[1]}", font=self.font, fill=255)
+        self.oled.image(self.image)
+        self.oled.show()
+        time.sleep(4)
+        # clear ip adressen?
+        self.draw.rectangle((0, 0, self.oled.width, self.oled.height), outline=255, fill=255)
+        self.draw.rectangle(
+            (self.BORDER, self.BORDER, self.oled.width - self.BORDER - 1, self.oled.height - self.BORDER - 1),
+            outline=0,
+            fill=0,
+        )
+        self.oled.image(self.image)
+        self.oled.show()
+        self.draw.rectangle((0, 0, self.oled.width, self.oled.height), outline=255, fill=255)
+        self.draw.rectangle(
+            (self.BORDER, self.BORDER, self.oled.width - self.BORDER - 1, self.oled.height - self.BORDER - 1),
+            outline=0,
+            fill=0,
+        )
+        self.draw.rectangle( [(0,0), (self.oled.width, self.oled.height)], fill=0)
+        self.oled.image(self.image)
+        self.oled.show()
+        return ip_adresses
+
     
-    print("einde")
+    def oled_clear(self):
+        self.draw.rectangle((0, 0, self.oled.width, self.oled.height), outline=255, fill=255)
+        self.draw.rectangle(
+            (self.BORDER, self.BORDER, self.oled.width - self.BORDER - 1, self.oled.height - self.BORDER - 1),
+            outline=0,
+            fill=0,
+        )
+        self.draw.rectangle( [(0,0), (self.oled.width, self.oled.height)], fill=0)
+        self.oled.image(self.image)
+        self.oled.show()
 
-# rev.1 users set port=0
-# substitute spi(device=0, port=0) below if using that interface
-# substitute bitbang_6800(RS=7, E=8, PINS=[25,24,23,27]) below if using that interface
 
-# substitute ssd1331(...) or sh1106(...) below if using that device
+    def xyz(self, x, y, z):
+        self.draw.text((5, 17), str(x), font=self.font, fill=255) 
+        self.draw.text((5, 32), str(y), font=self.font, fill=255)
+        self.draw.text((5, 47), str(z), font=self.font, fill=255)
+        self.oled.image(self.image)
+        self.oled.show()
+    
+    def bezet(self):
+        self.draw.text((5, 2), "Deze led kan je niet kiezen!\nkies een andere led", font=self.font, fill=255)# gekozen
+        self.oled.image(self.image)
+        self.oled.show()
+        time.sleep(1)

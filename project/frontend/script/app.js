@@ -7,8 +7,8 @@ const socket = io(`http://${lanIP}`, {transports: ["polling", "websocket"] });
 
 let htmlDevices, htmlXWaarde
 let htmlJoystick, htmlJoystick1X, htmlJoystick1Y, htmlJoystick1SW, htmlJoystick2X, htmlJoystick2Y, htmlJoystick2SW
+let htmlKnop1, htmlKnop2, htmlKeuze, htmlKleur, htmlIP, htmlHistoriek
 console.info(lanIP)
-
 
 const listenToSocket = function(){
   console.info("hello!")
@@ -19,32 +19,12 @@ const listenToSocket = function(){
   socket.on("B2F_connected", function(payload){
     console.info(payload)
     console.info(`eerste boodschap server: ${payload.message}`)
-    // tot hier lukt alles
   })
-  
-
-  // socket.on('B2F_value_joy', function(jsonObject){
-  //     console.info(jsonObject)
-  //     // ${jsonObject.waarden.waarde}
-  //     let htmlString = ""
-  //     htmlString += `<div class="c-waarde js-xwaarde">
-  //     waarden x-as: 0
-  //     </div>
-  //     <div class="c-waarde">
-  //     waarden y-as: 321
-  //     </div>
-  //     <div class="c-waarde">
-  //     hoeveel keer er op de knop is gedrukt: ${jsonObject.teller}
-  //     </div>`
-  //     htmlJoystick.innerHTML = htmlString
-  //     // tot hier werkt het
-  //     })
 
   //////////////////////////////___JOYSTICKS___//////////////////////////////
-  // joy 1
+  ////////////___joy 1___////////////
   socket.on('B2F_value_joy_1_sw', function(jsonObject){
     console.info(jsonObject)
-    // ${jsonObject.waarden.waarde}
     let htmlString = ""
     htmlString += `
     <div class="c-waarde">
@@ -54,8 +34,7 @@ const listenToSocket = function(){
     })
 
   socket.on('B2F_value_joy_1_x', function(jsonObject){
-    console.info(jsonObject, jsonObject.joy_1_x)
-    // ${jsonObject.waarden.waarde}
+    console.info(jsonObject)
     let htmlString = ""
     htmlString += `
     <div class="c-waarde">
@@ -65,50 +44,135 @@ const listenToSocket = function(){
     })
 
   socket.on('B2F_value_joy_1_y', function(jsonObject){
-    console.info(jsonObject, jsonObject.joy_1_y)
-    // ${jsonObject.waarden.waarde}
+    console.info(jsonObject)
     let htmlString = ""
     htmlString += `
     <div class="c-waarde">
     waarden y-as: ${jsonObject.joy_1_y}
     </div>`
     htmlJoystick1Y.innerHTML = htmlString
-    })
-
-  //////////////////////////////___joy 2___//////////////////////////////
-  socket.on('B2F_value_joy_2_sw', function(jsonObject){
-    console.info(jsonObject)
-    // ${jsonObject.waarden.waarde}
-    let htmlString = ""
-    htmlString += `
-    <div class="c-waarde">
-    hoeveel keer er op de knop is gedrukt: ${jsonObject.teller}
-    </div>`
-    htmlJoystick.innerHTML = htmlString
-    })
-
-
+  })
+  
+  ////////////___joy 2___////////////
   socket.on('B2F_value_joy_2_x', function(jsonObject){
     console.info(jsonObject)
-    // ${jsonObject.waarden.waarde}
     let htmlString = ""
     htmlString += `
     <div class="c-waarde">
-    hoeveel keer er op de knop is gedrukt: ${jsonObject.teller}
+    waarden x-as: ${jsonObject.joy_2_x}
     </div>`
-    htmlJoystick.innerHTML = htmlString
-    })
+    htmlJoystick2X.innerHTML = htmlString
+  })
 
   socket.on('B2F_value_joy_2_y', function(jsonObject){
     console.info(jsonObject)
-    // ${jsonObject.waarden.waarde}
+    let htmlString = ""
+    htmlString += `
+    <div class="c-waarde">
+    waarden y-as: ${jsonObject.joy_2_y}
+    </div>`
+    htmlJoystick2Y.innerHTML = htmlString
+  })
+
+  socket.on('B2F_value_joy_2_sw', function(jsonObject){
+    console.info(jsonObject)
     let htmlString = ""
     htmlString += `
     <div class="c-waarde">
     hoeveel keer er op de knop is gedrukt: ${jsonObject.teller}
     </div>`
-    htmlJoystick.innerHTML = htmlString
+    htmlJoystick2SW.innerHTML = htmlString
     })
+  
+  ////////////___knoppen___////////////
+  socket.on('B2F_value_knopup1', function(jsonObject){
+    console.info("up")
+    console.info(jsonObject)
+    let htmlString = ""
+    htmlString += `
+    <div class="c-waarde js-knop1">
+    1 verdieping naar boven
+    </div>`
+    htmlKnop1.innerHTML = htmlString
+  })
+  
+  socket.on('B2F_value_knopdown1', function(jsonObject){
+    console.info("down")
+    console.info(jsonObject)
+    let htmlString = ""
+    htmlString += `<div class="c-waarde js-knop1">
+    1 verdieping naar beneden
+    </div>`
+    htmlKnop1.innerHTML = htmlString
+  })
+  
+  socket.on('B2F_value_knopup2', function(jsonObject){
+    console.info("up")
+    console.info(jsonObject)
+    let htmlString = ""
+    htmlString += `
+    <div class="c-waarde js-knop2">
+    1 verdieping naar boven
+    </div>`
+    htmlKnop2.innerHTML = htmlString
+  })
+
+  socket.on('B2F_value_knopdown2', function(jsonObject){
+    console.info("down")
+    console.info(jsonObject)
+    let htmlString = ""
+    htmlString += `<div class="c-waarde js-knop2">
+    1 verdieping naar beneden
+    </div>`
+    htmlKnop2.innerHTML = htmlString
+  })
+
+  ////////////___oled___////////////
+  socket.on('B2F_choice_oled', function(jsonObject){
+    console.info(jsonObject)
+    let htmlString = ''
+    if (jsonObject.keuze == 0){
+      htmlString = `<div class="o-layout__item js-keuze">
+      We spelen tot 1
+      </div>`
+    }
+    else if (jsonObject.keuze == 1){
+      htmlString = `<div class="o-layout__item js-keuze">
+      We spelen tot 3
+      </div>`
+    }
+    else if (jsonObject.keuze == 2){
+      htmlString = `<div class="o-layout__item js-keuze">
+      We spelen tot 5
+      </div>`
+    }
+    else if (jsonObject.keuze == 3){
+      htmlString = `<div class="o-layout__item js-keuze">
+      We spelen tot 9
+      </div>`
+    }
+    htmlKeuze.innerHTML = htmlString
+  })
+
+  socket.on('B2F_player', function(jsonObject){
+    console.info(jsonObject)
+    let htmlString = ''
+    htmlString =`<div class="o-layout__item js-beurtkleur">
+    <p>het is aan: ${jsonObject.speler}</p>
+    </div>`
+    htmlKleur.innerHTML = htmlString
+  })
+
+  socket.on('B2F_show_ip', function(jsonObject){
+    console.info(jsonObject)
+    let htmlString = ''
+    htmlString =`<div class="o-layout__item js-ip">
+    <p>
+        IP-adres: ${jsonObject.ip_adres}
+    </p>
+    </div>`
+    htmlIP.innerHTML = htmlString
+  })
 }
 
 const init = function(){
@@ -122,6 +186,14 @@ const init = function(){
   htmlJoystick2X = document.querySelector('.js-joystick2X')
   htmlJoystick2Y = document.querySelector('.js-joystick2Y')
   htmlJoystick2SW = document.querySelector('.js-joystick2SW')
+
+  htmlKnop1 = document.querySelector('.js-knop1')
+  htmlKnop2 = document.querySelector('.js-knop2')
+
+  htmlKeuze = document.querySelector('.js-keuze')
+  htmlKleur = document.querySelector('.js-beurtkleur')
+  htmlIP = document.querySelector('.js-ip')
+
 
   listenToSocket()
 }

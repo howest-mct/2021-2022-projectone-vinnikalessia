@@ -7,6 +7,6 @@ WorkingDirectory=/home/student/<2021-2022-projectone-vinnikalessia>/backend
 StandardOutput=inherit
 StandardError=inherit
 Restart=always
-User=student
+User=root
 [Install]
 WantedBy=multi-user.target

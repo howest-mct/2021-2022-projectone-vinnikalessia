@@ -12,6 +12,11 @@ class DataRepository:
         return gegevens
 
     @staticmethod
+    def read_spellen():
+        sql = "SELECT * from spel"
+        return Database.get_rows(sql)
+
+    @staticmethod
     def read_devices():
         sql = "SELECT * from device"
         return Database.get_rows(sql)
@@ -40,22 +45,18 @@ class DataRepository:
 
     @staticmethod
     def create_historiek(deviceid, commentaar, waarde = 1, actieid = 1):
-    # def create_historiek_joy_1_x(waarde, commentaar = "joystick 1 registreerde beweging op x-as"):
         sql = "INSERT INTO historiek(deviceid, actieid, waarde, commentaar, actiedatum) VALUE(%s, %s, %s, %s, %s)"
         params = [deviceid, actieid, waarde, commentaar, datetime.datetime.now()]
         result = Database.execute_sql(sql, params)
-        print("history created")
+        print(result)
         return result
 
-    # # todo    
-    # @staticmethod
-    # def update_status_lamp(x_as, y_as):
-    #     sql = "UPDATE  SET status = %s WHERE id = %s"
-    #     params = []
-    #     return Database.execute_sql(sql, params)
+    @staticmethod
+    def create_game(winnaar, verliezer):
+        sql = "insert into spel(winnerid, verliezerid, datum) value(%s, %s, %s)"
+        params = [winnaar, verliezer, datetime.datetime.now()]
+        result = Database.execute_sql(sql, params)
+        return result
 
-    # @staticmethod
-    # def update_status_alle_lampen(status):
-    #     sql = "UPDATE lampen SET status = %s"
-    #     params = [status]
-    #     return Database.execute_sql(sql, params)
+    
+        

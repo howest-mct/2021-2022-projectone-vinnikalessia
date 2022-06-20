@@ -123,7 +123,7 @@ CREATE TABLE `player` (
 
 LOCK TABLES `player` WRITE;
 /*!40000 ALTER TABLE `player` DISABLE KEYS */;
-INSERT INTO `player` VALUES (1,'Van Goud','Amber',4,2,2),(2,'Van Gent','Bo',4,2,2),(3,'De Keyser','Eliah',4,2,2),(4,'Dal','Elizabet',2,2,0),(5,'Boogaard','Tom',3,2,1),(6,'Van Impe','Margeaux',3,2,1),(7,'Van den Bosche','Tim',5,2,3),(8,'Corte','Alisa',3,1,2),(9,'Maegerman','Sander',3,1,2),(10,'Vinnik','Aléssia',4,4,0);
+INSERT INTO `player` VALUES (0,'Van Zilver','Jim',4,2,2), (1,'Van Goud','Amber',4,2,2),(2,'Van Gent','Bo',4,2,2),(3,'De Keyser','Eliah',4,2,2),(4,'Dal','Elizabet',2,2,0),(5,'Boogaard','Tom',3,2,1),(6,'Van Impe','Margeaux',3,2,1),(7,'Van den Bosche','Tim',5,2,3),(8,'Corte','Alisa',3,1,2),(9,'Maegerman','Sander',3,1,2),(10,'Vinnik','Aléssia',4,4,0);
 /*!40000 ALTER TABLE `player` ENABLE KEYS */;
 UNLOCK TABLES;
 
