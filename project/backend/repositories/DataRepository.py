@@ -12,6 +12,11 @@ class DataRepository:
         return gegevens
 
     @staticmethod
+    def read_spellen():
+        sql = "SELECT * from spel"
+        return Database.get_rows(sql)
+
+    @staticmethod
     def read_devices():
         sql = "SELECT * from device"
         return Database.get_rows(sql)
@@ -48,8 +53,10 @@ class DataRepository:
 
     @staticmethod
     def create_game(winnaar, verliezer):
-        sql = "INSERT INTO spel(winnerid, verliezerid, datum) VALUE(%s, %s, %s)"
+        sql = "insert into spel(winnerid, verliezerid, datum) value(%s, %s, %s)"
         params = [winnaar, verliezer, datetime.datetime.now()]
         result = Database.execute_sql(sql, params)
         return result
 
+    
+        

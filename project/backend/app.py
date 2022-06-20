@@ -226,7 +226,7 @@ def callback_up2(pin):
 def callback_down1(pin):
     global tellerKeuze, tellerStapZ, player
     tellerKeuze -= 1
-    if player == 0:
+    if player == 1:
         socketio.emit('B2F_value_knopdown1', {'teller':tellerStapZ})
         if tellerStapZ > 1:
             tellerStapZ -= 1
@@ -236,7 +236,7 @@ def callback_down1(pin):
 def callback_down2(pin):
     global tellerKeuze, tellerStapZ, player
     tellerKeuze -= 1
-    if player == 1:
+    if player == 2:
         socketio.emit('B2F_value_knopdown2', {'teller':tellerStapZ})
         if tellerStapZ > 1:
             tellerStapZ -= 1
@@ -306,7 +306,7 @@ def joystick_uitlezen(speler, max_punten):
         oled_klasse_obj.oled_clear()
         oled_klasse_obj.xyz(tellerStapX, tellerStapY, tellerStapZ)
         # ROOD
-        if speler == 0:
+        if speler == 1:
             socketio.emit('B2F_player', {'speler':'rood'})
             GPIO.output(b, GPIO.LOW)
             GPIO.output(r, GPIO.HIGH)
@@ -353,7 +353,7 @@ def joystick_uitlezen(speler, max_punten):
                         time.sleep(0.2) # anders dubbel positie in lijst
                         oled_klasse_obj.oled_clear()
                         positie_lijst = []
-                        speler = 1
+                        speler = 2
                     else:
                         neo_klasse_obj.bezet(gekozen_positie)
                         oled_klasse_obj.oled_clear()
@@ -361,7 +361,7 @@ def joystick_uitlezen(speler, max_punten):
                 vorige_pos = gekozen_positie
         ########################################################
         # als het speler 1 is, dan moet je alleen joy 1 uitlezen
-        elif speler == 1:
+        elif speler == 2:
             socketio.emit('B2F_player', {'speler':'blauw'})
             GPIO.output(r, GPIO.LOW)
             GPIO.output(b, GPIO.HIGH)
@@ -407,7 +407,7 @@ def joystick_uitlezen(speler, max_punten):
                         time.sleep(0.2) # anders dubbel positie in lijst
                         oled_klasse_obj.oled_clear()
                         positie_lijst = []
-                        speler = 0
+                        speler = 1
                     else:
                         oled_klasse_obj.oled_clear()
                         oled_klasse_obj.bezet()
@@ -442,13 +442,13 @@ def joystick_uitlezen(speler, max_punten):
         led_pos1.clear() 
         led_pos2.clear()
         neo_klasse_obj.eind_kleur(winnaar)
-        # socketio.emit('B2F_games', {'speler_1':puntenR, 'speler_2':puntenB})
         if winnaar == "rood":
             DataRepository.create_game(puntenR, puntenB)
             socketio.emit('B2F_games', {'winnaar':"Rood"})
         elif winnaar == "blauw":
             DataRepository.create_game(puntenB, puntenR)
             socketio.emit('B2F_games', {'winnaar':"Blauw"})
+
         return winnaar, puntenR, puntenB
 
 def positie(x, y, z, player, vorige_pos):
@@ -501,12 +501,12 @@ def start_game():
     GPIO.output(r, GPIO.LOW)
     GPIO.output(g, GPIO.LOW)
     GPIO.output(b, GPIO.LOW)
-    randomPlayer = random.randint(0, 1)
+    randomPlayer = random.randint(1, 2)
     oled_klasse_obj.display_player(randomPlayer)
-    if randomPlayer == 0:
+    if randomPlayer == 1:
         GPIO.output(r, GPIO.HIGH)
         kleur = "Rood"
-    elif randomPlayer == 1:
+    elif randomPlayer == 2:
         GPIO.output(b, GPIO.HIGH)
         kleur = 'Blauw'
     player = randomPlayer

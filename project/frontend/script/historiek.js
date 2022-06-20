@@ -33,8 +33,8 @@ const listenToSocket = function(){
         // jsonData2.push(1)
         jsonData2 ++
     }
-    dataSpel = [jsonData1, jsonData2]
     console.info(jsonData1, jsonData2)
+    dataSpel = [jsonData1, jsonData2]
     var options = {
         series: [{
         data: [jsonData1, jsonData2]
@@ -77,6 +77,8 @@ const listenToSocket = function(){
     var chart = new ApexCharts(document.querySelector(".js-historiek"), options);
     chart.render();
     })
+
+    socket.on("B2F_grafiek", function(jsonObject){})
 }
 
 const init = function(){
