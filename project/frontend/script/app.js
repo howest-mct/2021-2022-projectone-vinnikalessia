@@ -7,9 +7,8 @@ const socket = io(`http://${lanIP}`, {transports: ["polling", "websocket"] });
 
 let htmlDevices, htmlXWaarde
 let htmlJoystick, htmlJoystick1X, htmlJoystick1Y, htmlJoystick1SW, htmlJoystick2X, htmlJoystick2Y, htmlJoystick2SW
-let htmlKnop
+let htmlKnop1, htmlKnop2
 console.info(lanIP)
-
 
 const listenToSocket = function(){
   console.info("hello!")
@@ -86,25 +85,46 @@ const listenToSocket = function(){
     })
   
   // knoppen omhoog en omlaag
-  socket.on('B2F_value_knopup', function(jsonObject){
+  socket.on('B2F_value_knopup1', function(jsonObject){
     console.info("up")
     console.info(jsonObject)
     let htmlString = ""
     htmlString += `
-    <div class="c-waarde js-knop">
+    <div class="c-waarde js-knop1">
     1 verdieping naar boven
     </div>`
-    htmlKnop.innerHTML = htmlString
+    htmlKnop1.innerHTML = htmlString
   })
   
-  socket.on('B2F_value_knopdown', function(jsonObject){
+  socket.on('B2F_value_knopdown1', function(jsonObject){
     console.info("down")
     console.info(jsonObject)
     let htmlString = ""
     htmlString += `<div class="c-waarde js-knop1">
     1 verdieping naar beneden
     </div>`
-    htmlKnop.innerHTML = htmlString
+    htmlKnop1.innerHTML = htmlString
+  })
+  
+  socket.on('B2F_value_knopup2', function(jsonObject){
+    console.info("up")
+    console.info(jsonObject)
+    let htmlString = ""
+    htmlString += `
+    <div class="c-waarde js-knop2">
+    1 verdieping naar boven
+    </div>`
+    htmlKnop2.innerHTML = htmlString
+  })
+
+  socket.on('B2F_value_knopdown2', function(jsonObject){
+    console.info("down")
+    console.info(jsonObject)
+    let htmlString = ""
+    htmlString += `<div class="c-waarde js-knop2">
+    1 verdieping naar beneden
+    </div>`
+    htmlKnop2.innerHTML = htmlString
   })
 }
 
@@ -120,7 +140,8 @@ const init = function(){
   htmlJoystick2Y = document.querySelector('.js-joystick2Y')
   htmlJoystick2SW = document.querySelector('.js-joystick2SW')
 
-  htmlKnop = document.querySelector('.js-knop')
+  htmlKnop1 = document.querySelector('.js-knop1')
+  htmlKnop2 = document.querySelector('.js-knop2')
 
   listenToSocket()
 }
