@@ -108,6 +108,8 @@ class Oled_klasse():
         self.draw.rectangle( [(0,0), (self.oled.width, self.oled.height)], fill=0)
         self.oled.image(self.image)
         self.oled.show()
+        return ip
+
     
     def oled_clear(self):
         self.draw.rectangle((0, 0, self.oled.width, self.oled.height), outline=255, fill=255)

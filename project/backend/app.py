@@ -186,11 +186,11 @@ def setup():
 
 #################### CALLBACK #####################
 def callback_sw1(pin):
-    global teller16, teller19
+    global teller16
     teller16 += 1
     print("Knop joystick 1 is {} keer ingedrukt\n".format(teller16))
     socketio.emit('B2F_value_joy_1_sw', {'teller':teller16})
-    joystick_id(pin)
+    joysw_id(pin)
     return teller16
 
 def callback_sw2(pin):
@@ -198,6 +198,7 @@ def callback_sw2(pin):
     teller19 += 1
     print("Knop joystick 1 is {} keer ingedrukt\n".format(teller19))
     socketio.emit('B2F_value_joy_2_sw', {'teller':teller19})
+    joysw_id(pin)
     return teller19
 
 def callback_up1(pin):
@@ -245,48 +246,46 @@ def callback_down2(pin):
     return tellerKeuze, tellerStapZ
 
 # ##################### FUNCTIONS - JOYSTICK #####################
-def joysw_id(sw_id):
-    global teller16, prev_teller16, teller19, prev_teller19
-    waarde = 0 # als de callback gecalled is, dan 1, anders 0
-    if sw_id == 16:
-        commentaar = "joystick 1 is niet ingedrukt"
-        if teller16 != prev_teller16:
-            commentaar = 'joystick 1 ingedrukt'
-            waarde = 1
-            prev_teller16 = teller16
-
-    elif sw_id == 19:
-        commentaar = 'joystick 2 niet ingedrukt'
-        if teller19 != prev_teller19:
-            commentaar = "joystick 2 ingedrukt"
-            waarde = 1
-            prev_teller19 = teller19
-    return waarde, commentaar
-
 def joystick_id(deviceID):
+    waarde = 0
+    commentaar = ''
     if deviceID == 14:
         commentaar = "joystick 1 registreerde beweging op x-as"
         waarde = joy_klasse_obj.readChannel(x_as1)
         socketio.emit('B2F_value_joy_1_x', {'joy_1_x':waarde})
-        # print(f"dit is x van joystick 1: {waarde}")
 
     elif deviceID == 15:
         commentaar = 'joystick 1 registreerde beweging op y-as'
         waarde = joy_klasse_obj.readChannel(y_as1)
         socketio.emit('B2F_value_joy_1_y', {'joy_1_y':waarde})
-        # print(f"dit is y van joystick 1: {waarde}\n")
 
     elif deviceID == 17:
         commentaar = 'joystick 2 registreerde beweging op x-as'
         waarde = joy_klasse_obj.readChannel(x_as2)
         socketio.emit('B2F_value_joy_2_x', {'joy_2_x':waarde})
-        # print(f"dit is x van joystick 2: {waarde}")
 
     elif deviceID == 18:
         commentaar = 'joystick 2 registreerde beweging op y-as'
         waarde = joy_klasse_obj.readChannel(y_as2)
         socketio.emit('B2F_value_joy_2_y', {'joy_2_y':waarde})
-        # print(f"dit is y van joystick 2: {waarde}\n")
+    return waarde, commentaar
+
+def joysw_id(sw_id):
+    print(sw_id)
+    global teller16, prev_teller16, teller19, prev_teller19
+    waarde = 0 # als de callback gecalled is, dan 1, anders 0
+    if sw_id == 5:
+        commentaar = "joystick 1 is niet ingedrukt"
+        if teller16 != prev_teller16:
+            commentaar = 'joystick 1 ingedrukt'
+            waarde = 1
+            prev_teller16 = teller16
+    elif sw_id == 6:
+        commentaar = 'joystick 2 niet ingedrukt'
+        if teller19 != prev_teller19:
+            commentaar = "joystick 2 ingedrukt"
+            waarde = 1
+            prev_teller19 = teller19
     return waarde, commentaar
 
 #################### ANDERE FUNCTIONS #####################
@@ -468,19 +467,21 @@ def positie(x, y, z, player, vorige_pos):
 
 def keuzelijst():
     global tellerKeuze, app_running, prev_teller19, teller19, prev_teller16, teller16
-    #print("Kies tot hoeveel er gespeeld wordt")
     while app_running and True:
         if tellerKeuze > 3:
                 tellerKeuze = 3
         elif tellerKeuze < 0:
             tellerKeuze = 0
 
-        if prev_teller19 == teller19 and prev_teller16 == teller16:
+        print(prev_teller19, teller19, prev_teller16, teller16)
+        if prev_teller19 == teller19 == prev_teller16 == teller16:
             oled_klasse_obj.lijst(tellerKeuze)
-        elif prev_teller19 == teller19 or prev_teller16 == teller16:
-            oled_klasse_obj.ip_adressen()
-            prev_teller19 = teller19
-            prev_teller16 = teller16
+        else:
+            print("🐈")
+            ip = oled_klasse_obj.ip_adressen()
+            print(ip, "🐱")
+            prev_teller19 = teller19 = teller16 = prev_teller16
+
 
         socketio.emit('B2F_choice_oled', {'keuze':tellerKeuze})
         if GPIO.input(t1) or GPIO.input(t2):
