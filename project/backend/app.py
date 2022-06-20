@@ -306,6 +306,7 @@ def joystick_uitlezen(speler, max_punten):
         oled_klasse_obj.xyz(tellerStapX, tellerStapY, tellerStapZ)
         # ROOD
         if speler == 0:
+            socketio.emit('B2F_player', {'speler':'Rood'})
             GPIO.output(b, GPIO.LOW)
             GPIO.output(r, GPIO.HIGH)
             for joy_id in [14, 15, 16]:
@@ -362,6 +363,7 @@ def joystick_uitlezen(speler, max_punten):
         ########################################################
         # als het speler 1 is, dan moet je alleen joy 1 uitlezen
         elif speler == 1:
+            socketio.emit('B2F_player', {'speler':'Blauw'})
             GPIO.output(r, GPIO.LOW)
             GPIO.output(b, GPIO.HIGH)
             for joy_id in [17, 18, 19]:
@@ -502,7 +504,7 @@ def spel_starten():
 
 def start_game():
     # print(f"DIT IS TELLERKEUZE: {tellerKeuze}")
-    global speler
+    global speler, kleur
     # print('we starten het spel ☺ ')
     # alles uitzetten van de rgb
     GPIO.output(r, GPIO.LOW)
@@ -515,9 +517,11 @@ def start_game():
     if randomPlayer == 0:
         # print("Player 1 begint")
         GPIO.output(r, GPIO.HIGH)
+        kleur = "Rood"
     elif randomPlayer == 1:
         # print("Player 2 begint")
         GPIO.output(b, GPIO.HIGH)
+        kleur = 'Blauw'
     speler = randomPlayer
     game(randomPlayer, tellerKeuze)
 

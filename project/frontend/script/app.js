@@ -7,7 +7,7 @@ const socket = io(`http://${lanIP}`, {transports: ["polling", "websocket"] });
 
 let htmlDevices, htmlXWaarde
 let htmlJoystick, htmlJoystick1X, htmlJoystick1Y, htmlJoystick1SW, htmlJoystick2X, htmlJoystick2Y, htmlJoystick2SW
-let htmlKnop1, htmlKnop2, htmlKeuze
+let htmlKnop1, htmlKnop2, htmlKeuze, htmlKleur
 console.info(lanIP)
 
 const listenToSocket = function(){
@@ -153,6 +153,15 @@ const listenToSocket = function(){
     }
     htmlKeuze.innerHTML = htmlString
   })
+
+  socket.on('B2F_player', function(jsonObject){
+    console.info(jsonObject)
+    let htmlString = ''
+    htmlString =`<div class="o-layout__item js-beurtkleur">
+    <p>het is aan: ${jsonObject.speler}</p>
+    </div>`
+    htmlKleur.innerHTML = htmlString
+  })
 }
 
 const init = function(){
@@ -171,6 +180,7 @@ const init = function(){
   htmlKnop2 = document.querySelector('.js-knop2')
 
   htmlKeuze = document.querySelector('.js-keuze')
+  htmlKleur = document.querySelector('.js-beurtkleur')
 
   listenToSocket()
 }
