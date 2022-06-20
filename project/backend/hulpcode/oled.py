@@ -108,7 +108,7 @@ class Oled_klasse():
         self.draw.rectangle( [(0,0), (self.oled.width, self.oled.height)], fill=0)
         self.oled.image(self.image)
         self.oled.show()
-        return ip
+        return ip_adresses
 
     
     def oled_clear(self):

@@ -473,7 +473,6 @@ def keuzelijst():
         elif tellerKeuze < 0:
             tellerKeuze = 0
 
-        print(prev_teller19, teller19, prev_teller16, teller16)
         if prev_teller19 == teller19 == prev_teller16 == teller16:
             oled_klasse_obj.lijst(tellerKeuze)
         else:
@@ -481,7 +480,9 @@ def keuzelijst():
             ip = oled_klasse_obj.ip_adressen()
             print(ip, "🐱")
             prev_teller19 = teller19 = teller16 = prev_teller16
-
+            # print(ip[1])
+            socketio.emit('B2F_show_ip', {'ip_adres':ip[1]})
+            time.sleep(1)
 
         socketio.emit('B2F_choice_oled', {'keuze':tellerKeuze})
         if GPIO.input(t1) or GPIO.input(t2):

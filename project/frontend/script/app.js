@@ -7,7 +7,7 @@ const socket = io(`http://${lanIP}`, {transports: ["polling", "websocket"] });
 
 let htmlDevices, htmlXWaarde
 let htmlJoystick, htmlJoystick1X, htmlJoystick1Y, htmlJoystick1SW, htmlJoystick2X, htmlJoystick2Y, htmlJoystick2SW
-let htmlKnop1, htmlKnop2, htmlKeuze, htmlKleur
+let htmlKnop1, htmlKnop2, htmlKeuze, htmlKleur, htmlIP
 console.info(lanIP)
 
 const listenToSocket = function(){
@@ -162,6 +162,17 @@ const listenToSocket = function(){
     </div>`
     htmlKleur.innerHTML = htmlString
   })
+
+  socket.on('B2F_show_ip', function(jsonObject){
+    console.info(jsonObject)
+    let htmlString = ''
+    htmlString =`<div class="o-layout__item js-ip">
+    <p>
+        IP-adres: ${jsonObject.ip_adres}
+    </p>
+    </div>`
+    htmlIP.innerHTML = htmlString
+  })
 }
 
 const init = function(){
@@ -181,6 +192,7 @@ const init = function(){
 
   htmlKeuze = document.querySelector('.js-keuze')
   htmlKleur = document.querySelector('.js-beurtkleur')
+  htmlIP = document.querySelector('.js-ip')
 
   listenToSocket()
 }
