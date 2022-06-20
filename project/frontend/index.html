@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>OXO-Cube</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OXO-Cube</title>
     <link rel="stylesheet" type="text/css" media="screen" href="style/screen.css">
     <script src="https://cdn.socket.io/4.0.1/socket.io.min.js" integrity="sha384-LzhRnpGmQP+lOvWruF/lgkcqD+WDVt9fU3H4BWmwP5u5LTmkUGafMcpZKNObVMLU" crossorigin="anonymous"></script>
     <script src="script/app.js"></script>
@@ -42,12 +42,25 @@
                 </div>
             </div>
         </header>
-        <section class="o-row o-row--lg u-pt-clear">
+        <section class="o-row o-row--lg">
             <div class="o-container">
-                <div class="o-section o-section--lg">
-                    <div class="o-layout o-layout--gutter-lg js-devices">
-                        <p>Rood</p>
-                        <div class="o-layout__item u-1-of-2-bp3">
+                <div class="o-layout o-layout--gutter o-layout—align-center o-layout--justify-center">
+                    <div class="o-layout js-devices">
+                        <p>
+                            IP-adres: 
+                        </p>
+                        <div class="o-layout__item js-beurtkleur">
+                            <p>het is aan: geel</p>
+                        </div>
+                        <div class="o-layout__item js-keuze">
+                            We spelen tot 1
+                        </div>
+                    </div>
+                </div>                
+                <div class="o-section o-section">
+                    <div class="o-layout o-layout--gutter js-devices">
+                        <div class="o-layout__item u-1-of-2-bp1">
+                            <p>Rood</p>
                             <div class="c-waarde js-joystick1X">
                                 waarden x-as: 520
                             </div>
@@ -55,12 +68,14 @@
                                 waarden y-as: 520
                             </div>
                             <div class="c-waarde js-joystick1SW">
-                                hoeveel keer er op de knop is gedrukt: 0
+                                aantal keer op de joystickknop gedrukt: 0
+                            </div>
+                            <div class="c-waarde js-knop1">
+                                1 verdieping naar beneden
                             </div>
                         </div>
-                        <!-- even in commentaar omdat ik nog geen 2de joystick heb -->
-                        <p>Blauw</p>
-                        <div class="o-layout__item u-1-of-2-bp3">
+                        <div class="o-layout__item u-1-of-2-bp1">
+                            <p>Blauw</p>
                             <div class="c-waarde js-joystick2X">
                                 waarden x-as: 520
                             </div>
@@ -68,7 +83,10 @@
                                 waarden y-as: 520
                             </div>
                             <div class="c-waarde js-joystick2SW">
-                                hoeveel keer er op de knop is gedrukt: 0
+                                aantal keer op de joystickknop gedrukt: 0
+                            </div>
+                            <div class="c-waarde js-knop2">
+                                1 verdieping naar boven
                             </div>
                         </div>
                     </div>

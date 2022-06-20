@@ -7,6 +7,7 @@ const socket = io(`http://${lanIP}`, {transports: ["polling", "websocket"] });
 
 let htmlDevices, htmlXWaarde
 let htmlJoystick, htmlJoystick1X, htmlJoystick1Y, htmlJoystick1SW, htmlJoystick2X, htmlJoystick2Y, htmlJoystick2SW
+let htmlKnop
 console.info(lanIP)
 
 
@@ -19,32 +20,12 @@ const listenToSocket = function(){
   socket.on("B2F_connected", function(payload){
     console.info(payload)
     console.info(`eerste boodschap server: ${payload.message}`)
-    // tot hier lukt alles
   })
-  
-
-  // socket.on('B2F_value_joy', function(jsonObject){
-  //     console.info(jsonObject)
-  //     // ${jsonObject.waarden.waarde}
-  //     let htmlString = ""
-  //     htmlString += `<div class="c-waarde js-xwaarde">
-  //     waarden x-as: 0
-  //     </div>
-  //     <div class="c-waarde">
-  //     waarden y-as: 321
-  //     </div>
-  //     <div class="c-waarde">
-  //     hoeveel keer er op de knop is gedrukt: ${jsonObject.teller}
-  //     </div>`
-  //     htmlJoystick.innerHTML = htmlString
-  //     // tot hier werkt het
-  //     })
 
   //////////////////////////////___JOYSTICKS___//////////////////////////////
-  // joy 1
+  ////////////___joy 1___////////////
   socket.on('B2F_value_joy_1_sw', function(jsonObject){
     console.info(jsonObject)
-    // ${jsonObject.waarden.waarde}
     let htmlString = ""
     htmlString += `
     <div class="c-waarde">
@@ -54,8 +35,7 @@ const listenToSocket = function(){
     })
 
   socket.on('B2F_value_joy_1_x', function(jsonObject){
-    console.info(jsonObject, jsonObject.joy_1_x)
-    // ${jsonObject.waarden.waarde}
+    console.info(jsonObject)
     let htmlString = ""
     htmlString += `
     <div class="c-waarde">
@@ -65,20 +45,38 @@ const listenToSocket = function(){
     })
 
   socket.on('B2F_value_joy_1_y', function(jsonObject){
-    console.info(jsonObject, jsonObject.joy_1_y)
-    // ${jsonObject.waarden.waarde}
+    console.info(jsonObject)
     let htmlString = ""
     htmlString += `
     <div class="c-waarde">
     waarden y-as: ${jsonObject.joy_1_y}
     </div>`
     htmlJoystick1Y.innerHTML = htmlString
-    })
+  })
+  
+  ////////////___joy 2___////////////
+  socket.on('B2F_value_joy_2_x', function(jsonObject){
+    console.info(jsonObject)
+    let htmlString = ""
+    htmlString += `
+    <div class="c-waarde">
+    waarden x-as: ${jsonObject.joy_2_x}
+    </div>`
+    htmlJoystick2X.innerHTML = htmlString
+  })
 
-  //////////////////////////////___joy 2___//////////////////////////////
+  socket.on('B2F_value_joy_2_y', function(jsonObject){
+    console.info(jsonObject)
+    let htmlString = ""
+    htmlString += `
+    <div class="c-waarde">
+    waarden y-as: ${jsonObject.joy_2_y}
+    </div>`
+    htmlJoystick2Y.innerHTML = htmlString
+  })
+
   socket.on('B2F_value_joy_2_sw', function(jsonObject){
     console.info(jsonObject)
-    // ${jsonObject.waarden.waarde}
     let htmlString = ""
     htmlString += `
     <div class="c-waarde">
@@ -86,32 +84,28 @@ const listenToSocket = function(){
     </div>`
     htmlJoystick2SW.innerHTML = htmlString
     })
-
-
-  socket.on('B2F_value_joy_2_x', function(jsonObject){
-    console.info("😁")
-    console.info(typeof(jsonObject)) // object
+  
+  // knoppen omhoog en omlaag
+  socket.on('B2F_value_knopup', function(jsonObject){
+    console.info("up")
     console.info(jsonObject)
-    // ${jsonObject.waarden.waarde}
     let htmlString = ""
     htmlString += `
-    <div class="c-waarde">
-    waarden x-as: ${jsonObject.joy_2_x}
+    <div class="c-waarde js-knop">
+    1 verdieping naar boven
     </div>`
-    console.info(htmlString)
-    htmlJoystick2X.innerHTML = htmlString
-    })
-
-  socket.on('B2F_value_joy_2_y', function(jsonObject){
+    htmlKnop.innerHTML = htmlString
+  })
+  
+  socket.on('B2F_value_knopdown', function(jsonObject){
+    console.info("down")
     console.info(jsonObject)
-    // ${jsonObject.waarden.waarde}
     let htmlString = ""
-    htmlString += `
-    <div class="c-waarde">
-    waarden y-as: ${jsonObject.joy_2_y}
+    htmlString += `<div class="c-waarde js-knop1">
+    1 verdieping naar beneden
     </div>`
-    htmlJoystick2Y.innerHTML = htmlString
-    })
+    htmlKnop.innerHTML = htmlString
+  })
 }
 
 const init = function(){
@@ -125,6 +119,8 @@ const init = function(){
   htmlJoystick2X = document.querySelector('.js-joystick2X')
   htmlJoystick2Y = document.querySelector('.js-joystick2Y')
   htmlJoystick2SW = document.querySelector('.js-joystick2SW')
+
+  htmlKnop = document.querySelector('.js-knop')
 
   listenToSocket()
 }

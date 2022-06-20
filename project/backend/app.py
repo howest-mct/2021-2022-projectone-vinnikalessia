@@ -55,6 +55,8 @@ tellerStapX = 0
 tellerStapY = 0
 tellerStapZ = 0
 
+speler = None
+
 ########### TOUCHSENSOR ###########
 t1 = 27
 t2 = 17
@@ -128,12 +130,6 @@ win_combinaties = {
 led_pos1 = [] # posities dat speler 1 had gekozen
 led_pos2 = [] # posities dat speler 2 had gekozen
 
-# #################### BUSSEN #####################
-# # de spi-bus
-# spi = spidev.SpiDev()
-# spi.open(0,0)
-# spi.open(0,1)
-# spi.max_speed_hz = 10 ** 5
 
 #################### FLASK #####################
 # start app
@@ -148,7 +144,6 @@ print("program started")
 
 #################### SETUP #####################
 def setup():
-#     global pwm_motor1, pwm_motor2
     print("setup")
     GPIO.setwarnings(False)
     GPIO.setmode(GPIO.BCM)
@@ -165,26 +160,18 @@ def setup():
     GPIO.setup(t1, GPIO.IN, GPIO.PUD_UP)
     GPIO.setup(t2, GPIO.IN, GPIO.PUD_UP)
 
-    # motoren
-    # GPIO.setup(motor1, GPIO.OUT)
-    # GPIO.setup(motor2, GPIO.OUT)
-    # pwm_motor1 = GPIO.PWM(motor1, 1000)
-    # pwm_motor2 = GPIO.PWM(motor2, 1000)
-    # pwm_motor1.start(0)
-    # pwm_motor2.start(0)
-
     # knoppen
     GPIO.setup(up1, GPIO.IN, GPIO.PUD_UP)
-    GPIO.add_event_detect(up1, GPIO.FALLING, callback_up, bouncetime = 300)
+    GPIO.add_event_detect(up1, GPIO.FALLING, callback_up1, bouncetime = 300)
 
     GPIO.setup(down1, GPIO.IN, GPIO.PUD_UP)
-    GPIO.add_event_detect(down1, GPIO.FALLING, callback_down, bouncetime = 300)
+    GPIO.add_event_detect(down1, GPIO.FALLING, callback_down1, bouncetime = 300)
 
     GPIO.setup(up2, GPIO.IN, GPIO.PUD_UP)
-    GPIO.add_event_detect(up2, GPIO.FALLING, callback_up, bouncetime = 300)
+    GPIO.add_event_detect(up2, GPIO.FALLING, callback_up2, bouncetime = 300)
 
     GPIO.setup(down2, GPIO.IN, GPIO.PUD_UP)
-    GPIO.add_event_detect(down2, GPIO.FALLING, callback_down, bouncetime = 300)
+    GPIO.add_event_detect(down2, GPIO.FALLING, callback_down2, bouncetime = 300)
 
     # RGB led
     GPIO.setup(r, GPIO.OUT)
@@ -201,41 +188,57 @@ def setup():
 def callback_sw1(pin):
     global teller16, teller19
     teller16 += 1
-    # print("Knop joystick 1 is {} keer ingedrukt\n".format(teller16))
-    # socketio.emit('B2F_value_joy_1_sw', {'teller':teller16}) # niet nodig?
-    # joystick_id(pin)
+    print("Knop joystick 1 is {} keer ingedrukt\n".format(teller16))
+    socketio.emit('B2F_value_joy_1_sw', {'teller':teller16})
+    joystick_id(pin)
     return teller16
 
 def callback_sw2(pin):
     global teller19
     teller19 += 1
-    # print("Knop joystick 1 is {} keer ingedrukt\n".format(teller19))
+    print("Knop joystick 1 is {} keer ingedrukt\n".format(teller19))
+    socketio.emit('B2F_value_joy_2_sw', {'teller':teller19})
     return teller19
 
-def callback_up(pin):
-    global tellerKeuze, tellerStapZ
+def callback_up1(pin):
+    # voor knop 1
+    global tellerKeuze, tellerStapZ, speler
     tellerKeuze += 1
-    if pin == 12:
-        id = 3
-    elif pin == 20:
-        id = 5
-    if tellerStapZ < 3:
-        DataRepository.create_historiek(id, "1 UP", tellerStapZ, 3)
-        tellerStapZ += 1
-    # print("1 UP")
+    if speler == 0:
+        socketio.emit('B2F_value_knopup1', {'teller':tellerKeuze})
+        if tellerStapZ < 3:
+            tellerStapZ += 1
+            DataRepository.create_historiek(pin, "1 UP", tellerKeuze, 3)
     return tellerKeuze, tellerStapZ
 
-def callback_down(pin):
-    global tellerKeuze, tellerStapZ
+def callback_up2(pin):
+    global tellerKeuze, tellerStapZ, speler
+    tellerKeuze += 1
+    if speler == 1:
+        socketio.emit('B2F_value_knopup2', {'teller':tellerKeuze})
+        if tellerStapZ < 3:
+            tellerStapZ += 1
+            DataRepository.create_historiek(pin, "1 UP", tellerKeuze, 3)
+    return tellerKeuze, tellerStapZ
+
+def callback_down1(pin):
+    global tellerKeuze, tellerStapZ, speler
     tellerKeuze -= 1
-    if pin == 16:
-        id = 2
-    elif pin == 21:
-        id = 4
-    if tellerStapZ > 1:
-        tellerStapZ -= 1
-        DataRepository.create_historiek(id, "1 DOWN", tellerStapZ, 3)
-    # print("1 DOWN")
+    if speler == 0:
+        socketio.emit('B2F_value_knopdown1', {'teller':tellerKeuze})
+        if tellerStapZ > 1:
+            tellerStapZ -= 1
+            DataRepository.create_historiek(pin, "1 DOWN", tellerStapZ, 3)
+    return tellerKeuze, tellerStapZ
+
+def callback_down2(pin):
+    global tellerKeuze, tellerStapZ, speler
+    tellerKeuze -= 1
+    if speler == 1:
+        socketio.emit('B2F_value_knopdown2', {'teller':tellerKeuze})
+        if tellerStapZ > 1:
+            tellerStapZ -= 1
+            DataRepository.create_historiek(pin, "1 DOWN", tellerStapZ, 3)
     return tellerKeuze, tellerStapZ
 
 # ##################### FUNCTIONS - JOYSTICK #####################
@@ -248,7 +251,6 @@ def joysw_id(sw_id):
             commentaar = 'joystick 1 ingedrukt'
             waarde = 1
             prev_teller16 = teller16
-        socketio.emit('B2F_value_joy_1_sw', {'teller':teller16})
 
     elif sw_id == 19:
         commentaar = 'joystick 2 niet ingedrukt'
@@ -256,7 +258,6 @@ def joysw_id(sw_id):
             commentaar = "joystick 2 ingedrukt"
             waarde = 1
             prev_teller19 = teller19
-        socketio.emit('B2F_value_joy_2_sw', {'teller':teller19})
     return waarde, commentaar
 
 def joystick_id(deviceID):
@@ -499,6 +500,7 @@ def spel_starten():
 
 def start_game():
     # print(f"DIT IS TELLERKEUZE: {tellerKeuze}")
+    global speler
     # print('we starten het spel ☺ ')
     # alles uitzetten van de rgb
     GPIO.output(r, GPIO.LOW)
@@ -514,6 +516,7 @@ def start_game():
     elif randomPlayer == 1:
         # print("Player 2 begint")
         GPIO.output(b, GPIO.HIGH)
+    speler = randomPlayer
     game(randomPlayer, tellerKeuze)
 
 def game(beginner, tellerKeuze):
@@ -650,21 +653,6 @@ def get_waarden_joy():
         return jsonify(volgnummer = data), 201
     
 #################### THREADS #####################
-# START een thread op. Belangrijk!!! Debugging moet UIT staan op start van de server, anders start de thread dubbel op
-# werk enkel met de packages gevent en gevent-websocket. 
-
-# # om de joystick uit te lezen ===> ToDo!!!!
-# def teller_doorsturen():
-#     global teller, socketio, last_val
-#     while True:
-#         if teller != last_val:
-#             print("sending teller")
-#             # het aantal keren gedrukt op de joystick
-#             socketio.emit('B2F_value_joy_1_sw', {'teller':teller})
-#             last_val = teller
-#         time.sleep(.5)
-
-# ALS JE DE ENE LEEST, KAN JE DE ANDER NIET UITLEZEN!!
 def start_thread():
     print("***** Starting THREAD *****")
     thread = threading.Thread(target = spel_starten, args = (), daemon = True)
@@ -674,12 +662,9 @@ def start_thread():
 
 if __name__ == "__main__":
     try:
-        # debug NIET op True zetten
         time.sleep(1)
         setup()
         start_thread()
-        # start_chrome_thread()
-        # start_thread_teller()
         print("**** Starting APP ****")
         socketio.run(app,debug = False, host = '0.0.0.0')
     except KeyboardInterrupt:
@@ -689,8 +674,6 @@ if __name__ == "__main__":
         time.sleep(1)
         print("cleanup pi")
         app_running = False
-        # motor_klasse_obj.motor_stop()
-        # spi.close()
         joy_klasse_obj.closing()
         neo_klasse_obj.alles_uit()
         GPIO.cleanup()
