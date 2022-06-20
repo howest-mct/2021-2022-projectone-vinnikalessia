@@ -201,7 +201,6 @@ def callback_sw2(pin):
     return teller19
 
 def callback_up1(pin):
-    # voor knop 1
     global tellerKeuze, tellerStapZ, player
     tellerKeuze += 1
     if player == 0:
@@ -312,7 +311,7 @@ def joystick_uitlezen(speler, max_punten):
         oled_klasse_obj.xyz(tellerStapX, tellerStapY, tellerStapZ)
         # ROOD
         if speler == 0:
-            socketio.emit('B2F_player', {'speler':'Rood'})
+            socketio.emit('B2F_player', {'speler':'rood'})
             GPIO.output(b, GPIO.LOW)
             GPIO.output(r, GPIO.HIGH)
             for joy_id in [14, 15, 16]:
@@ -367,7 +366,7 @@ def joystick_uitlezen(speler, max_punten):
         ########################################################
         # als het speler 1 is, dan moet je alleen joy 1 uitlezen
         elif speler == 1:
-            socketio.emit('B2F_player', {'speler':'Blauw'})
+            socketio.emit('B2F_player', {'speler':'blauw'})
             GPIO.output(r, GPIO.LOW)
             GPIO.output(b, GPIO.HIGH)
             for joy_id in [17, 18, 19]:
