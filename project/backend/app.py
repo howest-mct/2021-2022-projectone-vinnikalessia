@@ -205,12 +205,10 @@ def callback_up1(pin):
     global tellerKeuze, tellerStapZ, player
     tellerKeuze += 1
     if player == 0:
-        # socketio.emit('B2F_value_knopup1', {'teller':tellerKeuze})
         socketio.emit('B2F_value_knopup1', {'teller':tellerStapZ})
         if tellerStapZ < 3:
             tellerStapZ += 1
             DataRepository.create_historiek(pin, "1 UP", tellerKeuze, 3)
-            socketio.emit('B2F_historiek', {'historiek':[pin, 3, 1, "1 UP", datetime.datetime.now()]})
             socketio.emit('B2F_historiek', {'deviceid':pin, 'actieid':3, 'waarde':"1 UP", "actiedatum":datetime.datetime.now()})
     return tellerKeuze, tellerStapZ
 
@@ -218,18 +216,17 @@ def callback_up2(pin):
     global tellerKeuze, tellerStapZ, player
     tellerKeuze += 1
     if player == 1:
-        # socketio.emit('B2F_value_knopup2', {'teller':tellerKeuze})
         socketio.emit('B2F_value_knopup2', {'teller':tellerStapZ})
         if tellerStapZ < 3:
             tellerStapZ += 1
             DataRepository.create_historiek(pin, "1 UP", tellerKeuze, 3)
+            socketio.emit('B2F_historiek', {'deviceid':pin, 'actieid':3, 'waarde':"1 UP", "actiedatum":datetime.datetime.now()})
     return tellerKeuze, tellerStapZ
 
 def callback_down1(pin):
     global tellerKeuze, tellerStapZ, player
     tellerKeuze -= 1
     if player == 0:
-        # socketio.emit('B2F_value_knopdown1', {'teller':tellerKeuze})
         socketio.emit('B2F_value_knopdown1', {'teller':tellerStapZ})
         if tellerStapZ > 1:
             tellerStapZ -= 1
@@ -240,7 +237,6 @@ def callback_down2(pin):
     global tellerKeuze, tellerStapZ, player
     tellerKeuze -= 1
     if player == 1:
-        # socketio.emit('B2F_value_knopdown2', {'teller':tellerKeuze})
         socketio.emit('B2F_value_knopdown2', {'teller':tellerStapZ})
         if tellerStapZ > 1:
             tellerStapZ -= 1
@@ -446,11 +442,13 @@ def joystick_uitlezen(speler, max_punten):
         led_pos1.clear() 
         led_pos2.clear()
         neo_klasse_obj.eind_kleur(winnaar)
-        socketio.emit('B2F_games', {'speler_1':puntenR, 'speler_2':puntenB})
+        # socketio.emit('B2F_games', {'speler_1':puntenR, 'speler_2':puntenB})
         if winnaar == "rood":
             DataRepository.create_game(puntenR, puntenB)
+            socketio.emit('B2F_games', {'winnaar':"Rood"})
         elif winnaar == "blauw":
             DataRepository.create_game(puntenB, puntenR)
+            socketio.emit('B2F_games', {'winnaar':"Blauw"})
         return winnaar, puntenR, puntenB
 
 def positie(x, y, z, player, vorige_pos):
@@ -547,7 +545,7 @@ def game(beginner, tellerKeuze):
 # #################### SOCKETIO #####################
 @socketio.on_error()        # Handles the default namespace
 def error_handler(e):
-    print(e)
+    print(e, "😀")
 
 @socketio.on('connect')
 def initial_connection():
