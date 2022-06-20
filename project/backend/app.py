@@ -202,40 +202,44 @@ def callback_sw2(pin):
 
 def callback_up1(pin):
     # voor knop 1
-    global tellerKeuze, tellerStapZ, speler
+    global tellerKeuze, tellerStapZ, player
     tellerKeuze += 1
-    if speler == 0:
-        socketio.emit('B2F_value_knopup1', {'teller':tellerKeuze})
+    if player == 0:
+        # socketio.emit('B2F_value_knopup1', {'teller':tellerKeuze})
+        socketio.emit('B2F_value_knopup1', {'teller':tellerStapZ})
         if tellerStapZ < 3:
             tellerStapZ += 1
             DataRepository.create_historiek(pin, "1 UP", tellerKeuze, 3)
     return tellerKeuze, tellerStapZ
 
 def callback_up2(pin):
-    global tellerKeuze, tellerStapZ, speler
+    global tellerKeuze, tellerStapZ, player
     tellerKeuze += 1
-    if speler == 1:
-        socketio.emit('B2F_value_knopup2', {'teller':tellerKeuze})
+    if player == 1:
+        # socketio.emit('B2F_value_knopup2', {'teller':tellerKeuze})
+        socketio.emit('B2F_value_knopup2', {'teller':tellerStapZ})
         if tellerStapZ < 3:
             tellerStapZ += 1
             DataRepository.create_historiek(pin, "1 UP", tellerKeuze, 3)
     return tellerKeuze, tellerStapZ
 
 def callback_down1(pin):
-    global tellerKeuze, tellerStapZ, speler
+    global tellerKeuze, tellerStapZ, player
     tellerKeuze -= 1
-    if speler == 0:
-        socketio.emit('B2F_value_knopdown1', {'teller':tellerKeuze})
+    if player == 0:
+        # socketio.emit('B2F_value_knopdown1', {'teller':tellerKeuze})
+        socketio.emit('B2F_value_knopdown1', {'teller':tellerStapZ})
         if tellerStapZ > 1:
             tellerStapZ -= 1
             DataRepository.create_historiek(pin, "1 DOWN", tellerStapZ, 3)
     return tellerKeuze, tellerStapZ
 
 def callback_down2(pin):
-    global tellerKeuze, tellerStapZ, speler
+    global tellerKeuze, tellerStapZ
     tellerKeuze -= 1
-    if speler == 1:
-        socketio.emit('B2F_value_knopdown2', {'teller':tellerKeuze})
+    if player == 1:
+        # socketio.emit('B2F_value_knopdown2', {'teller':tellerKeuze})
+        socketio.emit('B2F_value_knopdown2', {'teller':tellerStapZ})
         if tellerStapZ > 1:
             tellerStapZ -= 1
             DataRepository.create_historiek(pin, "1 DOWN", tellerStapZ, 3)
@@ -290,6 +294,7 @@ def joystick_id(deviceID):
 #### joystick uitlezen tijdens spel #####
 def joystick_uitlezen(speler, max_punten):
     global choice_running, tellerStapX, tellerStapY, tellerStapZ, led_pos1, led_pos2, vorige_pos
+    global player
     positie_lijst = []
     tellerStapX = 1
     tellerStapY = 1
@@ -301,6 +306,7 @@ def joystick_uitlezen(speler, max_punten):
     oud_gekozen_pixelsR = []
     oud_gekozen_pixelsB = []
     while choice_running and True:
+        player = speler # voor callbacks
         ########################################################
         oled_klasse_obj.oled_clear()
         oled_klasse_obj.xyz(tellerStapX, tellerStapY, tellerStapZ)
@@ -349,8 +355,6 @@ def joystick_uitlezen(speler, max_punten):
                         positie_lijst.append(tellerStapZ)
                         led_pos1.append(gekozen_positie)
                         neo_klasse_obj.chosen_one(gekozen_positie, speler)
-                        #print("opgeslaan!")
-                        # print(f"dit is de gekozen positie{positie_lijst}")
                         time.sleep(0.2) # anders dubbel positie in lijst
                         oled_klasse_obj.oled_clear()
                         positie_lijst = []
@@ -503,26 +507,19 @@ def spel_starten():
     start_game()
 
 def start_game():
-    # print(f"DIT IS TELLERKEUZE: {tellerKeuze}")
-    global speler, kleur
-    # print('we starten het spel ☺ ')
+    global kleur
     # alles uitzetten van de rgb
     GPIO.output(r, GPIO.LOW)
     GPIO.output(g, GPIO.LOW)
     GPIO.output(b, GPIO.LOW)
     randomPlayer = random.randint(0, 1)
-    # print(f"DIT IS RANDOM: {randomPlayer}")
-    # print("EN WIE MAG ER BEGINNEN?......")
     oled_klasse_obj.display_player(randomPlayer)
     if randomPlayer == 0:
-        # print("Player 1 begint")
         GPIO.output(r, GPIO.HIGH)
         kleur = "Rood"
     elif randomPlayer == 1:
-        # print("Player 2 begint")
         GPIO.output(b, GPIO.HIGH)
         kleur = 'Blauw'
-    speler = randomPlayer
     game(randomPlayer, tellerKeuze)
 
 def game(beginner, tellerKeuze):
