@@ -7,8 +7,9 @@
     <title>OXO-Cube</title>
     <link rel="stylesheet" type="text/css" media="screen" href="style/screen.css">
     <script src="https://cdn.socket.io/4.0.1/socket.io.min.js" integrity="sha384-LzhRnpGmQP+lOvWruF/lgkcqD+WDVt9fU3H4BWmwP5u5LTmkUGafMcpZKNObVMLU" crossorigin="anonymous"></script>
-    <script src="script/app.js"></script>
+    <script src="script/historiek.js"></script>
     <script src="script/datahandler.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 </head>
 <body>
     <div class="c-page">
@@ -44,24 +45,8 @@
         </header>
         <section class="o-row o-row--md">
             <div class="o-container">
-                <table class="o-layout o-layout--gutter o-layout—align-center o-layout--justify-center">
-                 <tr>
-                     <th>volgnummer</th>
-                     <th>deviceid</th>
-                     <th>actieid</th>
-                     <th>waarde</th>
-                     <th>commentaar</th>
-                     <th>actiedatum</th>
-                 </tr>
-                 <tr>
-                     <td>1</td>
-                     <td>1</td>
-                     <td>1</td>
-                     <td>1</td>
-                     <td></td>
-                     <td>20/06/2022</td>
-                 </tr>
-                </table> 
+                <div id="chart">
+                </div>
             </div>
         </section>
     </div>

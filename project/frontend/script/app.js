@@ -7,7 +7,7 @@ const socket = io(`http://${lanIP}`, {transports: ["polling", "websocket"] });
 
 let htmlDevices, htmlXWaarde
 let htmlJoystick, htmlJoystick1X, htmlJoystick1Y, htmlJoystick1SW, htmlJoystick2X, htmlJoystick2Y, htmlJoystick2SW
-let htmlKnop1, htmlKnop2, htmlKeuze, htmlKleur, htmlIP
+let htmlKnop1, htmlKnop2, htmlKeuze, htmlKleur, htmlIP, htmlHistoriek
 console.info(lanIP)
 
 const listenToSocket = function(){
@@ -193,6 +193,7 @@ const init = function(){
   htmlKeuze = document.querySelector('.js-keuze')
   htmlKleur = document.querySelector('.js-beurtkleur')
   htmlIP = document.querySelector('.js-ip')
+
 
   listenToSocket()
 }
