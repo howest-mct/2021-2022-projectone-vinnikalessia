@@ -1,29 +1,4 @@
 /*------------------------------------*\
-  #FONTS
-\*------------------------------------*/
-
-/* @font-face {
-    font-family: "HK Grotesk Web";
-    font-weight: 200;
-    src: url("../fonts/hkgrotesk-light-webfont.woff2") format("woff2"),
-         url("../fonts/hkgrotesk-light-webfont.woff") format("woff");
-}
-
-@font-face {
-    font-family: "HK Grotesk Web";
-    font-weight: 400;
-    src: url("../fonts/hkgrotesk-regular-webfont.woff2") format("woff2"),
-         url("../fonts/hkgrotesk-regular-webfont.woff") format("woff");
-}
-
-@font-face {
-    font-family: "HK Grotesk Web";
-    font-weight: 600;
-    src: url("../fonts/hkgrotesk-medium-webfont.woff2") format("woff2"),
-         url("../fonts/hkgrotesk-medium-webfont.woff") format("woff");
-} */
-
-/*------------------------------------*\
   #GENERIC
 \*------------------------------------*/
 
@@ -36,8 +11,8 @@
 html {
     font-size: 16px;
     line-height: 1.5;
-    font-family: "HK Grotesk Web", Helvetica, arial, sans-serif;
-    color: #202024;
+    font-family: "Articulat CF", Helvetica, arial, sans-serif;
+    color: #000000;
     box-sizing: border-box;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -64,7 +39,7 @@ html {
  */
 
 ::selection {
-    background: #5051DB;
+    background: #4D4DFF;
     color: white;
     text-shadow: none;
 }
@@ -82,6 +57,7 @@ html {
 img {
     max-width: 100%;
     vertical-align: top;
+    margin: 0 0 24px;
 }
 
 /*
@@ -97,27 +73,28 @@ h3 {
 }
 
 h1 {
-    font-size: 36px;
-    line-height: 48px;
+    font-family: "Articulat CF", Helvetica, arial, sans-serif;
+    font-size: 24px;
+    line-height: 32px;
     margin: 0 0 24px;
 }
 
 h2 {
-    font-size: 32px;
-    line-height: 40px;
+    font-size: 18px;
+    line-height: 24px;
     margin: 0 0 24px;
 }
 
 h3 {
-    font-size: 26px;
-    line-height: 32px;
+    font-size: 14px;
+    line-height: 24px;
     margin: 0 0 24px;
 }
 
 h4,
 h5,
 h6 {
-    font-size: 20px;
+    font-size: 16px;
     line-height: 24px;
     margin: 0 0 24px;
 }
@@ -129,7 +106,7 @@ dl,
 table,
 address,
 figure {
-    margin: 0 0 24px;
+    margin: 16px 0 16px;
 }
 
 ul,
@@ -147,6 +124,7 @@ blockquote {
     font-size: 23px;
     line-height: 32px;
     margin: 0 0 24px;
+    font-family: "Articulat CF", Helvetica, arial, sans-serif;
 }
 
 blockquote * {
@@ -158,7 +136,7 @@ figcaption {
     font-weight: 400;
     font-size: 12px;
     line-height: 16px;
-    margin-top: 8px;
+    padding-top: 8px;
     color: #3C3C42;
 }
 
@@ -170,18 +148,18 @@ hr {
 }
 
 a {
-    color: #5051DB;
+    color: #0000CC;
     transition: all .1s ease-in-out;
 }
 
 a:visited,
 a:active {
-    color: #3E3EA8;
+    color: #7F3F8D;
 }
 
 a:hover,
 a:focus {
-    color: #3E3EA8;
+    color: #9999FF;
 }
 
 table {
@@ -195,6 +173,7 @@ table {
     text-align: left;
     padding: 8px;
   }
+
 
 /*------------------------------------*\
   #OBJECTS
@@ -219,7 +198,7 @@ table {
 }
 
 .o-row--gradient-1 {
-    background: linear-gradient(to top right, #5051DB, #3887F7);
+    background-image: linear-gradient(to top right, #6363FF, #FF6363);
     color: #fff;
 }
 
@@ -263,7 +242,6 @@ table {
     margin-right: auto;
     width: 100%;
     max-width: 56.4em; /* 56.4 * 20px = 1128px */
-    margin-bottom: 48px 0;
 }
 
 /*
@@ -429,33 +407,30 @@ table {
     Small button reset object
 */
 
-.o-button-reset {
+.o-button {
+    background-color: #A963B9;
+    box-shadow: #A963B9 0px 100px 100px 100px;
     border: none;
-    margin: 0;
-    padding: 0;
-    width: auto;
-    overflow: visible;
-    background: transparent;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 16px 0px;
+    cursor: pointer;
+    border-radius: 10px;
+}
 
-    /* inherit font & color from ancestor */
-    color: inherit;
-    font: inherit;
-
-    /* Normalize `line-height`. Cannot be changed from `normal` in Firefox 4+. */
-    line-height: normal;
-
-    /* Corrects font smoothing for webkit */
-    -webkit-font-smoothing: inherit;
-    -moz-osx-font-smoothing: inherit;
-
-    /* Corrects inability to style clickable `input` types in iOS */
-    -webkit-appearance: none;
+.o-history{
+    background-color: white;
+    color: black;
+    border-radius: 10px;
+    margin-bottom: 32px;
 }
 
 /*------------------------------------*\
   #COMPONENTS
 \*------------------------------------*/
-
 .c-waarde{
     padding-bottom: 12px;
 }
@@ -473,11 +448,28 @@ table {
     background-color: #3a2e39;
 }
 
-
-.c-page__header{
-    background-color: #7fc9c6;
+.c-position {
+    padding: 24px;
 }
 
+.c-position--relative_header {
+    position: relative;
+    z-index: 100;
+    box-shadow: 0px 0px 10px 5px rgb(218, 218, 218);
+}
+
+.c-position--relative {
+    position: relative;
+    z-index: 10;
+}
+
+.c-position--fixed {
+    position: fixed;
+    bottom: -24px;
+    left: 48px;
+    right: 48px;
+    z-index: 100;
+}
 
 .c-logo {
     height: 32px;
@@ -494,6 +486,7 @@ table {
         height: 40px;
     }
 }
+
 
 /*
     Component: header
@@ -809,61 +802,8 @@ table {
     Small cta link with custom animation
 */
 
-.c-link-cta {
-    position: relative;
-    display: inline-block;
-    text-decoration: none;
-    font-size: 16px;
-    line-height: 24px;
-    font-weight: 400;
-    padding: 4px 0;
-    transition: color .175s ease-in;
-}
 
-.c-link-cta,
-.c-link-cta:visited,
-.c-link-cta:active {
-    color: #7373F5;
-}
 
-.c-link-cta::after {
-    content: "";
-    display: block;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    height: 1px;
-    width: 100%;
-    background-color: #7373F5;
-    transform: scaleX(.5);
-    transform-origin: left;
-    transition-property: transform, background-color;
-    transition-duration: .175s;
-    transition-timing-function: ease-in;
-}
-
-.c-link-cta:hover {
-    color: #3E3EA8;
-}
-
-.c-link-cta:hover::after {
-    transform: scaleX(1);
-    background-color: #3E3EA8;
-}
-
-/* inversed */
-
-.c-link-cta--inverse,
-.c-link-cta--inverse:visited,
-.c-link-cta--inverse:active,
-.c-link-cta--inverse:hover {
-    color: #fff;
-}
-
-.c-link-cta--inverse::after,
-.c-link-cta--inverse:hover::after {
-    background-color: #fff;
-}
 
 /*
     Component: mobile nav
@@ -935,12 +875,42 @@ table {
 }
 
 @media (min-width: 992px) {
-    /* Hide the mobile nav on larger viewports even whent it's open on smaller screens */
     .c-mobile-nav {
         display: none !important;
     }
 }
 
+.c-author {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  
+.c-author__image {
+    width: 56px;
+    height: 56px;
+    border-radius: 100%;
+}
+  
+.c-author__name,
+.c-author__description {
+    margin-bottom: 0;
+}
+  
+.c-author__name {
+    font-size: 16px;
+    line-height: 24px;
+}
+
+.c-article__date {
+    font-size: 10px;
+    margin-bottom: 0;
+    line-height: 24px;
+}
+
+.c-players{
+    text-decoration: underline;
+}
 
 
 /*------------------------------------*\
